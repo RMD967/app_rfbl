@@ -31,13 +31,13 @@
 
 es:
   user:
-      greeting: "Hello %{first_name} %{last_name}!"
-      profile_picture: "Profile Picture"
-      alt_profile_picture: "Alt Profile Picture"
-      delete_image: "Delete Image"
-      edit_profile_info: "Edit Profile information"
-      change_password: "Change Password"
-      log_out: "Log out"
+    greeting: "Hello %{first_name} %{last_name}!"
+    profile_picture: "Profile Picture"
+    alt_profile_picture: "Alt Profile Picture"
+    delete_image: "Delete Image"
+    edit_profile_info: "Edit Profile information"
+    change_password: "Change Password"
+    log_out: "Log out"
 
   events:
     title: "Título:"
