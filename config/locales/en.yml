@@ -30,4 +30,22 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  user:
+    greeting: "Hello %{first_name} %{last_name}!"
+    profile_picture: "Profile Picture"
+    alt_profile_picture: "Alt Profile Picture"
+    delete_image: "Delete Image"
+    edit_profile_info: "Edit Profile information"
+    change_password: "Change Password"
+    log_out: "Log out"
+
+  events:
+    title: "Title:"
+    description: "Description:"
+    date: "Date:"
+    duration: "Duration:"
+    genre: "Genre:"
+    address: "Address:"
+    new_event_title: "New event"
+    new_event_subtitle: "Tell us about your event"
+    new_event_description: "Let us know about the type of music you want for your event. We'll ask for information such as time, duration, and address for the show."

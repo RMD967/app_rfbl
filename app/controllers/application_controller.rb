@@ -24,6 +24,27 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :artist, :admin, :profile_picture])
   end
 
+  def set_language
+    puts "Set language action called!" # Add this line
+    referer = URI(request.referer || "").path
+    locale = referer.ends_with?("/es") ? :en : :es
+
+    if I18n.available_locales.include?(locale)
+      session[:locale] = locale
+      cookies.permanent[:locale] = { value: locale, expires: 1.year.from_now }
+    end
+
+    I18n.locale = locale # Set the current locale immediately
+
+    redirect_back(fallback_location: root_path)
+  end
+
+  def set_locale
+    I18n.locale = session[:locale] || cookies[:locale] || I18n.default_locale
+  end
+
+  skip_after_action :verify_authorized, only: :set_language
+
   private
 
   def skip_pundit?

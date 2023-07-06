@@ -44,7 +44,14 @@
         </form>
       </div>
     </div>
-
+    <div class="lang-switcher">
+      <%= I18n.locale %>
+      <% if I18n.locale == :en %>
+        <%= link_to "Haz clic aquí para Español", set_language_path(locale: :es), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token } %>
+      <% else %>
+        <%= link_to "Click here for English", set_language_path(locale: :en), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token } %>
+      <% end %>
+    </div>
     <p class="footer-mellow">© Mellow 2023</p>
   </footer>
 <% end %>
