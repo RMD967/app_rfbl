@@ -1,0 +1,280 @@
+.discover-container-header{
+  display: flex;
+  flex-direction: column;
+}
+
+.discover {
+  display: flex;
+  flex-direction: column;
+}
+
+.discover-container-trend{
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.discover-container-headline {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.discover-container-card {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 40px;
+  justify-content: center;
+  align-items: center;
+}
+
+.discover-title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 28px;
+  line-height: 140%;
+  text-transform: capitalize;
+  text-align: center;
+  color: $neutral-100;
+}
+
+.discover-subtitle {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: center;
+  line-height: 160%;
+  color: $neutral-40;
+}
+
+.discover-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.discovery-container-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+.discover-btn-primary {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 260px;
+  height: 52px;
+  gap: 10px;
+  background: $purple-primary;
+  border-radius: 20px;
+  color: $neutral-100;
+  font-weight: 500;
+  font-size: $font-size-m;
+  line-height: 140%;
+  border: none;
+}
+
+.discover-btn-secondary {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  width: 260px;
+  height: 52px;
+  gap: 10px;
+  border-radius: 20px;
+  color: $neutral-100;
+  font-weight: 500;
+  font-size: $font-size-m;
+  line-height: 140%;
+  border: 2px solid $purple-primary;
+}
+
+.discover-info-number {
+  color: $neutral-100;
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-size: $font-size-l;
+  line-height: 160%;
+  margin-bottom: 0;
+}
+
+.discover-info-text {
+  color: $neutral-100;
+  font-style: normal;
+  font-weight: 400;
+  font-size: $font-size-m;
+  line-height: 140%;
+  margin-bottom: 0;
+}
+
+.discover-card-main-text {
+  color: $neutral-100;
+  font-style: normal;
+  font-weight: 600;
+  font-size: $font-size-m;
+  line-height: 140%;
+  margin: 0;
+}
+
+.discover-card-second-text {
+  color: $neutral-20;
+  font-style: normal;
+  font-weight: 400;
+  font-size: $font-size-s;
+  line-height: 140%;
+  margin: 0;
+}
+
+.discover-card {
+  width: 320px;
+  height: auto;
+  background-color: #2A2A3F;
+  border-radius: 20px;
+}
+
+.discover-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+  padding: 20px;
+}
+
+.discover-card-header {
+  display: flex;
+  gap: 20px;
+}
+
+.imgCard {
+  width: 40px;
+  height: 40px;
+}
+
+.discover-card-foot {
+  display: flex;
+  height: 70px;
+  justify-content: space-between;
+  padding: 20px;
+  align-items: center;
+}
+
+.discover-card-footer {
+  display: flex;
+  gap: 20px;
+
+}
+
+.discover-card-footer-btn {
+  display: flex;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.discover-card-video {
+  width: 320px;
+  height: auto;
+}
+
+@media (min-width: 800px) {
+  .discover-container-header{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .discover-card {
+    width: 430px;
+    height: auto;
+  }
+
+  .discover-card-video {
+    width: 430px;
+    height: auto;
+  }
+
+  .discover {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .discover-title {
+    font-style: normal;
+    font-weight: 600;
+    font-size: $font-size-xl;
+    line-height: 140%;
+    text-transform: capitalize;
+    text-align: center;
+    color: $neutral-100;
+  }
+
+  .discover-subtitle {
+    font-style: normal;
+    font-weight: 400;
+    font-family: "Space Mono";
+    font-size: $font-size-m;
+    text-align: center;
+    line-height: 160%;
+    color: $neutral-40;
+  }
+
+}
+
+@media (min-width: 1200px) {
+  .discover-container-header{
+    display: flex;
+    flex-direction: row;
+  }
+
+  .discover {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .discover-title {
+    font-size: 67px;
+    line-height: 110%;
+    text-align: left;
+  }
+
+  .discover-subtitle {
+      font-size: $font-size-l;
+      text-align: left;
+      font-family: "Space Mono";
+  }
+
+  .discover-container-headline {
+      align-items: flex-start;
+      width: 60%;
+  }
+
+  .discover-info {
+      justify-content: start;
+      gap: 100px;
+      width: 40%;
+  }
+
+  .discovery-container-buttons {
+    flex-direction: row;
+  }
+
+  .discover-card {
+      width: 540px;
+      height: auto;
+  }
+
+  .discover-card-video {
+      width: 540px;
+      height: auto;
+  }
+}

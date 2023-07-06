@@ -1,0 +1,26 @@
+.edit-password-container {
+  margin: 40px;
+  color: white;
+}
+
+.edit-password-form {
+  margin-top: 20px;
+  border-radius: 15px;
+  border: 1px solid $neutral-80;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.update-password-button {
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: white;
+  background-color: $purple-primary;
+  padding: 10px 20px;
+  border-radius: 15px;
+}

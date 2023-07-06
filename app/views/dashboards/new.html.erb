@@ -1,0 +1,12 @@
+<%= link_to :back do %>
+  <i class="fas fa-arrow-left"></i>
+<% end %>
+
+<div class="container d-flex flex-column justify-content-center align-items-center text-center form-container">
+  <h1 class="display-4 text-white">New Dashboard</h1>
+  <h3 class="text-white my-4">Tell us about your dashboard</h3>
+  <p class="text-white">Tell us about you. Are you a solo artist or a group? If you are a band, let us know the number of artists, name, instruments, <br> location, travel preferences and cities, brief description, and hourly rate.</p>
+
+  <%= render 'form', dashboard: @dashboard %>
+  <br>
+</div>

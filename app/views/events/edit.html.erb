@@ -1,0 +1,14 @@
+<%= link_to :back do %>
+  <i class="fas fa-arrow-left"></i>
+<% end %>
+
+<div class="container d-flex flex-column justify-content-center align-items-center text-center">
+  <h1 class="display-4 text-white m-3">Editing event</h1>
+
+  <%= render "form", event: @event %>
+  <br>
+
+  <div class="mt-3">
+    <%= link_to "Show this event", @event, class: "text-decoration-none mb-5" %> |
+  </div>
+</div>

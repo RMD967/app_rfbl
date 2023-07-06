@@ -1,0 +1,38 @@
+<% if user_signed_in? %>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <%= link_to root_path do %>
+        <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687805358/mELL0W_d_zmk58k" alt="MellowD">
+        <% if current_user.artist? %>
+          <p>Artist</p>
+        <% end %>
+      <% end %>
+    </div>
+
+    <ul class="navbar-nav">
+      <li class="navbar-item">
+        <%= link_to discovers_path, class: "nav-link" do %>
+          <i class="ri-music-line ri-xl"></i> Discover
+        <% end %>
+      </li>
+
+      <li class="navbar-item">
+        <%= link_to events_path, class: "nav-link" do %>
+          <i class="ri-ticket-2-line ri-xl"></i> Events
+        <% end %>
+      </li>
+
+      <li class="navbar-item">
+        <%= link_to my_bookings_path, class: "nav-link" do %>
+          <i class="ri-calendar-check-line ri-xl"></i> Activity
+        <% end %>
+      </li>
+
+      <li class="navbar-item">
+        <%= link_to user_id_path(@user), class: "nav-link" do %>
+          <i class="ri-user-line ri-xl"></i> Profile
+        <% end %>
+      </li>
+    </ul>
+  </nav>
+<% end %>

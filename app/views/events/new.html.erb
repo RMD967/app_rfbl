@@ -1,0 +1,12 @@
+<%= link_to :back do %>
+  <i class="fas fa-arrow-left"></i>
+<% end %>
+
+<div class="new-event-container">
+  <h1 class="new-event-text-title">New event</h1>
+  <h3 class="new-event-text-subtitle">Tell us about your event</h3>
+  <p>Let us know about the type of music you want for your event. <br> We’ll ask some information for the artists, like time, <br> duration and address for the show.</p>
+
+  <%= render "form", event: @event %>
+  <br>
+</div>

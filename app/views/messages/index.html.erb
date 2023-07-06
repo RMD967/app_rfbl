@@ -1,0 +1,19 @@
+<div class="container m-5">
+  <% if @messages.empty? %>
+    <% if current_user.artist? %>
+      <h1><i class="ml-3 fs-1 far fa-envelope-open"></i>   No Messages</h1>
+      <p>No messages yet? Why not showcase your talent and find an event in need of music. Share your art with the world!</p>
+      <br>
+      <%= link_to "Go to events", events_path, class: "btn btn-primary text-white" %>
+    <% else %>
+      <h1><i class="ml-3 fs-1 far fa-envelope-open"></i>   No Messages</h1>
+      <p>It looks like you don't have any messages. Why not create an event and let our artists provide the perfect soundtrack?</p>
+      <br>
+      <%= link_to "Create new event", new_event_path, class: "text-white btn btn-primary" %>
+    <% end %>
+  <% else %>
+    <% @messages.each do |message| %>
+      <%= render "message", message: message %>
+    <% end %>
+  <% end %>
+</div>

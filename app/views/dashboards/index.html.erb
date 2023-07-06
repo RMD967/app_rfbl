@@ -1,0 +1,28 @@
+<%= link_to :back do %>
+  <i class="fas fa-arrow-left"></i>
+<% end %>
+<div class="dashboard-index-container">
+  <% if @dashboards.empty? %>
+    <h1>It looks like you don't have any dashboards.</h1>
+    <p>Create a new one to upload your content.</p>
+    <%= link_to "Create new dashboard", new_dashboard_path, class: "new-dashboard-button" %>
+  <% else %>
+    <div class="new-dashboard-row">
+      <% @dashboards.each do |dashboard| %>
+        <% if dashboard && dashboard.persisted? %>
+          <div class="col mb-4">
+            <%= link_to dashboard_path(dashboard) do %>
+              <div class="new-dashboard-card">
+                <%= image_tag dashboard.avatar, class: "dashboard-avatar-img" %>
+                <h5><strong>You are <%= dashboard.artist_name %></strong></h5>
+                <h5>From <%= dashboard.artist_location %></h5>
+                <p><strong>You are currently <%= dashboard.artist_count %> members.</strong></p>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+    <%= link_to "Create new dashboard", new_dashboard_path, class: "new-dashboard-button" %>
+  <% end %>
+</div>

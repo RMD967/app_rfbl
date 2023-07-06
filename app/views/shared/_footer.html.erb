@@ -1,0 +1,50 @@
+<% if user_signed_in? %>
+  <footer>
+    <div class="footer-container">
+      <div class="footer-brand-container">
+        <%= link_to root_path do %>
+          <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687805358/mELL0W_d_zmk58k" alt="MellowD">
+          <% if current_user.artist? %>
+            <p>Artist</p>
+          <% end %>
+        <% end %>
+        <p class="footer-info-text">Own your music and be hired as an independent artist.</p>
+
+        <div class="footer-links">
+          <a href="https://github.com/"><i class="fs-3 text-white text-decoration-none fab fa-github"></i></a>
+          <a href="https://facebook.com/"><i class="fs-3 text-white text-decoration-none fab fa-facebook"></i></a>
+          <a href="https://www.instagram.com/"><i class="fs-3 text-white text-decoration-none fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+
+
+      <div class="footer-explore-container">
+        <h4 class="footer-explore-title">Explore</h4>
+        <%= link_to "See content", discovers_path, class: "footer-info-text" %>
+        <% if current_user.artist? %>
+          <%= link_to "Upload music", dashboards_path, class: "footer-info-text" %>
+        <% else %>
+            <%= link_to "Be an artist", user_id_path(id: @user.id), class: "footer-info-text" %>
+          <% end %>
+        <%= link_to "Create an event", new_event_path, class: "footer-info-text" %>
+      </div>
+
+      <div class="footer-nesletter-container input-container">
+        <h4 class="footer-newsletter-title"> Join Our Weekly Digest</h4>
+        <p class="footer-info-text">Get exclusive promotions & updates straight to your inbox.</p>
+        <!-- Add your input fields for the newsletter subscription here -->
+
+        <form action="/subscribe" method="POST">
+          <div class="footer-input-container">
+            <input type="hidden" name="user_id" value="<%= current_user.id %>">
+            <input id="email" name="email" type="email" class="email-input" placeholder="Enter your email" required>
+            <button class="footer-btn-primary" type="submit">Subscribe</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <p class="footer-mellow">© Mellow 2023</p>
+  </footer>
+<% end %>

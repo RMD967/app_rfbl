@@ -1,0 +1,58 @@
+<%= link_to :back do %>
+  <i class="fas fa-arrow-left"></i>
+<% end %>
+
+<div class="event-show-container">
+
+  <div class="event-show-image">
+  <% if @event.image.attached?%>
+    <%= cl_image_tag @event.image.key, class: "event-image" %>
+  <% else %>
+    <%= image_tag "https://picsum.photos/seed/picsum/200/200", class: "event-image" %>
+  <% end %>
+</div>
+
+  <% if current_user.artist && current_user != @event.user %>
+    <% if current_user.applied_to?(@event) %>
+      <%= form_with url: user_received_messages_path(@event.user), method: :post, id: "message-form" do |f| %>
+        <%= f.hidden_field :content, value: "Your message here" %>
+        <%= f.submit "Send message", class: "event-show-postulate-button", id: "send-message-button" %>
+      <% end %>
+    <% else %>
+      <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "discover-btn-primary", style: "align-items: flex-end; margin-top: 40px;" do %>
+        <p>Postulate position</p>
+      <% end %>
+    <% end %>
+  <% end %>
+
+
+  <div class="event-show-edit">
+    <% if policy(@event).edit? %>
+      <%= link_to edit_event_path(@event), class: "edit-this-event-btn" do %>
+        <p>Edit this event</p>
+      <% end %>
+    <% end %>
+
+    <% if policy(@event).destroy? %>
+      <%= button_to @event, method: :delete, data: { confirm: "Are you sure?" }, class: "delete-this-event-btn" do %>
+        <p>Delete this event</p>
+      <% end %>
+    <% end %>
+  </div>
+
+
+  <div class="event-show-content-row">
+
+    <div class="event-show-details">
+      <%= render @event %>
+    </div>
+
+  <div class="event-show-map">
+    <div style="height: 600px;"
+      data-controller="map"
+      data-map-markers-value="<%= @marker.to_json %>"
+      data-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"></div>
+    </div>
+  </div>
+
+</div>

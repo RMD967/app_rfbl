@@ -1,0 +1,37 @@
+.edit-profile-container {
+  margin: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+}
+
+.artist-toggle-edit {
+  font-weight: bold;
+  color: white !important;
+  font-size: x-large;
+}
+
+.update-button-edit {
+  padding: 10px;
+  background-color: $purple-primary;
+  border-radius: 15px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.delete-button-edit {
+  background-color: #c82333;
+  border-color: #bd2130;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 15px;
+  margin-top: 40px;
+}
+
+.delete-button-edit:hover {
+  background-color: #dc3545;
+  border-color: #dc3545;
+}

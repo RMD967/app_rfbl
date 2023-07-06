@@ -1,0 +1,42 @@
+<div class="nav-container">
+
+  <div class="event-genre-icon-buttons">
+
+    <div class="nav-index-title">
+      <h1>Browse Events</h1>
+      <h3>
+      <% if params[:query].blank?%>
+        There are <%= pluralize @events.count, "event" %> events near you.</h3>
+      <% end %>
+    </div>
+
+    <div class="index-event-buttons-row">
+
+      <div class="my-events-button-index">
+        <h5> Loook at your current events.</h5>
+        <%= link_to "My events", my_events_path, class: "text-white btn btn-primary" if policy(Event).new? %>
+      </div>
+
+      <div class="my-bookings-button-index">
+        <% if current_user.artist %>
+        <h5> Loook at the events you've applied to.</h5>
+          <%= link_to "My bookings", my_bookings_path, class: "text-white btn btn-primary" %>
+        <% end %>
+      </div>
+
+  </div>
+    <div class="outer-container">
+      <div class="genre-filter-container" data-controller="genre">
+        <% @genres.each do |genre| %>
+          <%= link_to events_path(genre: genre), class: "genre-icon-link", data: {"genre-target": "genreButton", action: "click->genre#toggleColor" } do %>
+            <i data-genre="<%= genre %>" class="<%= @genre_icon_classes[genre] %>"></i>
+            <p data-genre="<%= genre %>"><%= genre %></p>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+</div>
+
+<div class="event-cards-render">
+  <%= render "events", events: @events, markers: @markers %>
+</div>

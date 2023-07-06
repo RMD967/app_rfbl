@@ -1,0 +1,105 @@
+.event-show-container{
+  margin: 40px;
+}
+
+.event-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 20px;
+  object-fit: cover;
+}
+
+.event-show-image{
+  width: 100%;
+  height: 300px;
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+}
+
+.event-show-postulate-button{
+  display: flex;
+  justify-content: center;
+  width: 260px;
+  height: 52px;
+  background: $purple-primary;
+  border-radius: 20px;
+  color: white;
+  margin-top: 40px;
+}
+
+.event-show-postulate-button:hover{
+  background: rgb(103, 0, 182);
+}
+
+.event-show-edit{
+  display: flex;
+  justify-content: start;
+  margin-top: 40px;
+  gap: 20px;
+}
+
+.event-show-edit p {
+  color: white;
+}
+
+.edit-this-event-btn {
+  display: flex;
+  justify-content: center;
+  width: 260px;
+  height: 52px;
+  background: $purple-primary;
+  border-radius: 20px;
+  color: white;
+  margin-top: 40px;
+}
+
+.delete-this-event-btn {
+  display: flex;
+  justify-content: center;
+  width: 260px;
+  height: 52px;
+  border: 1px solid red;
+  border-radius: 20px;
+  color: red;
+  margin-top: 40px;
+  background: transparent;
+}
+
+.event-show-edit input[type="submit"] {
+  /* Add your styles here */
+  all: unset;
+  background-color: transparent;
+  // border-color: transparent;
+}
+
+.event-show-content-row{
+  margin-top: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.event-show-details{
+    flex-basis: 50%;
+    max-width: 50%;
+    color: white;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    display: flex;
+    justify-content: center;
+}
+
+.event-show-map{
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
+  margin-bottom: 40px;
+  flex-basis: 50%;
+  max-width: 50%;
+  height: 100%;
+}
+
+.event-show-map [data-controller="map"] {
+  border-radius: 20px;
+  width: 100%;
+}

@@ -1,0 +1,51 @@
+.new-event-container {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.new-event-text-title {
+  color: white;
+}
+
+.new-event-text-subtitle {
+  color: white;
+  margin: 20px 0;
+}
+
+.new-event-form-inputs {
+  display: block;
+  width: 100%;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #f8f9fa;
+  border: 1px solid #ced4da;
+  border-radius: 15px;
+  border-width: 1px;
+}
+
+.mapboxgl-ctrl-geocoder {
+  padding: 5px;
+  border-radius: 10px;
+  width: auto;
+  border: 1px solid transparent;
+}
+
+.create-new-event-btn {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  vertical-align: middle;
+  padding: 6px 12px;
+  border-radius: 15px;
+  color: #fff;
+  background-color: $purple-primary;
+  margin-top: 40px;
+  margin-bottom: 20px;
+}

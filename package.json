@@ -1,0 +1,18 @@
+{
+  "name": "app",
+  "private": "true",
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.1",
+    "@hotwired/turbo-rails": "^7.3.0",
+    "@mapbox/mapbox-gl-geocoder": "^5.0.1",
+    "@popperjs/core": "^2.11.8",
+    "@rails/actioncable": "^7.0.5",
+    "bootstrap": "^5.3.0",
+    "bootstrap-icons": "^1.10.5",
+    "webpack": "^5.85.1",
+    "webpack-cli": "^5.1.4"
+  },
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  }
+}

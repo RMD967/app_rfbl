@@ -1,0 +1,243 @@
+.dashboard-container-main {
+  margin: 40px;
+}
+
+.artist-dashboard-banner {
+  width: 100%;
+  height: 400px;
+  object-fit: cover;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-banner-logo {
+  border-radius: 15px;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center !important;
+}
+
+.artist-dashboard-info {
+  padding: 15px;
+  text-align: center;
+}
+
+.dashboard-info-icons {
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard-info-icon {
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px;
+}
+
+.tabs-underlined {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.tabs-underlined .tab-underlined {
+  color: rgb(255, 255, 255);
+  padding: 8px;
+  margin: 8px;
+  opacity: .4;
+  cursor: pointer;
+  text-decoration: none;
+  border-bottom: 4px solid transparent;
+}
+
+.tabs-underlined .tab-underlined.active {
+  opacity: 1;
+  border-bottom: 3px solid #555555;
+}
+
+.my-dashboard-card {
+  border-radius: 15px;
+  margin: 20px;
+}
+
+#audio-tab {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.my-dashboard-card audio {
+  border-radius: 15px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 350px;
+}
+
+#video-tab {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.my-dashboard-card video {
+  border-radius: 15px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  width: 350px;
+}
+
+#image-tab {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.my-dashboard-card img {
+  border-radius: 15px;
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.modal.active {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal img {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 15px;
+}
+
+.modal button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  border-radius: 15px;
+  background-color: transparent;
+  border: 1px solid $purple-primary;
+  padding: 10px;
+  color: $purple-primary;
+}
+
+.dashboard-action-btn {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.dashboard-action-btn a, .dashboard-action-btn button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+.dashboard-action-btn a.edit {
+  background-color: $purple-primary;
+}
+
+.dashboard-action-btn button.delete {
+  border: 1px solid red;
+  background-color: transparent;
+  color: red;
+}
+
+.dashboard-action-btn a.message {
+  background-color: $purple-primary;
+}
+
+.upload-button {
+  background-color: $purple-primary;
+  color: white;
+  padding: 15px 32px;
+}
+
+.modal .modal-dialog {
+  max-width: 500px;
+}
+
+.modal .modal-content {
+  padding: 20px;
+}
+
+.modal .modal-header {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.modal .modal-title {
+  font-weight: bold;
+}
+
+.modal .close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 1.5rem;
+  color: #000;
+}
+
+.modal .modal-body {
+  padding-top: 20px;
+}
+
+.modal .modal-footer {
+  border-top: none;
+  padding-top: 20px;
+}
+
+.modal .upload {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+.modal .upload:hover {
+  background-color: #0069d9;
+}
+
+@media (max-width: 576px) {
+  .artist-dashboard-banner {
+      height: 200px;
+  }
+  .dashboard-banner-logo {
+      width: 100px;
+      height: 100px;
+  }
+}
+
+@media (max-width: 576px) {
+  .dashboard-banner-logo {
+      bottom: 640px;
+  }
+}

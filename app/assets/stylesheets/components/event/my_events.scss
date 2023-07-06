@@ -1,0 +1,75 @@
+.my-events-container {
+  margin: 40px;
+}
+
+.my-events-container h1, h3 {
+  color : white;
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.my-events-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.my-events-card {
+  margin: 15px;
+  background-color: $blue-80;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  border-radius: 20px;
+  width: 330px;
+  box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.483)
+}
+
+.my-events-card img {
+  border-radius: 20px 20px 0px 0px;
+  width: 100%;
+}
+
+.the-event-title {
+  padding: 10px;
+  margin: 5px;
+  color: $neutral-100;
+  font-weight: bold;
+}
+
+.the-event-info {
+  padding: 10px;
+  margin: 5px;
+  color: $neutral-20;
+}
+
+.create-event-btn {
+  color: white;
+  background-color: $purple-primary;
+  border-radius: 15px;
+  padding: 10px 20px;
+}
+
+@media (min-width: 768px) {
+  .my-events-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 20px;
+  }
+
+  .my-events-row > * {
+    flex: 0 0 auto;
+    width: calc(50% - 20px); /* Adjust the width as needed */
+  }
+}
+
+@media (min-width: 992px) {
+  .my-events-row > * {
+    flex: 0 0 auto;
+    width: calc(33.33% - 20px); /* Adjust the width as needed */
+  }
+}

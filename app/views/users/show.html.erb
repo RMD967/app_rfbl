@@ -1,0 +1,27 @@
+<div class="show-user-container">
+  <h1>Hello <%= @user.first_name %> <%= @user.last_name %>!</h1>
+    <div class="view-profile-picture">
+      <div class='user-profile-picture'>
+        <% if @user.profile_picture.present? %>
+          <%= cl_image_tag @user.profile_picture.key, alt: "Profile Picture" %>
+        <% else %>
+          <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", alt: "Alt Profile Picture" %>
+        <% end %>
+        <%= form_for @user, url: update_profile_picture_user_path(@user), method: :patch, html: { data: { controller: "upload", target: "upload.form" } } do |f| %>
+          <label for="my-pencil-icon" id="my-label" class="fa fa-pencil"></label>
+          <%= f.file_field :profile_picture, id: 'my-pencil-icon', style: 'display: none;', data: { target: "upload.fileField" } %>
+        <% end %>
+      </div>
+      <% if @user.profile_picture.present? %>
+        <%= form_for @user, url: delete_profile_picture_user_path(@user), method: :delete do |f| %>
+          <%= f.submit "Delete Image", class: 'delete-img-btn' %>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="user-profile-buttons">
+      <%= link_to "Edit Profile information", edit_user_registration_path %>
+      <%= link_to "Change Password", edit_password_user_path(@user) %>
+      <%= link_to "Log out", destroy_user_session_path, data: { turbo_method: :delete }, class: ""  %>
+    </div>
+</div>
+

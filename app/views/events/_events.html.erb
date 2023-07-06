@@ -1,0 +1,53 @@
+<div class="events-container">
+  <div class="event-card-row">
+    <% events.each do |event| %>
+      <% if event && event.persisted? %>
+        <div class="event-card">
+          <%= link_to event_path(event), class: "text-decoration-none" do %>
+            <div class="event-card-container">
+              <div class="event-card">
+                <%= cl_image_tag event.image.key, class: "event-card-image" %>
+                <div class="event-card-header">
+                  <h5 class="event-card-main-title"><%= event.title %></h5>
+                  <div class="event-card-user-details">
+                    <% if event.user.profile_picture.present? %>
+                      <%= cl_image_tag event.user.profile_picture.key, alt: "Profile Picture" %>
+                    <% else %>
+                      <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", alt: "Alt Profile Picture" %>
+                    <% end %>
+                    <p class="event-card-second-title"><%= event.user.first_name %></p>
+                    <!--
+                    <div class="event-card-genre">
+                      <p class="event-card-second-text">Genre</p>
+                      <p class="event-card-main-text", data-genre="<%= event.genre %>"><%= event.genre %></p>
+                    </div>
+                    -->
+                  </div>
+                  <div class="event-card-details">
+                    <div class="event-card-location">
+                      <p class="event-card-second-text">Location</p>
+                      <p class="event-card-main-text"><%= event.address %></p>
+                    </div>
+                    <div class="event-card-date">
+                      <p class="event-card-second-text">Date</p>
+                      <p class="event-card-main-text"><%= event.datetime %></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+  <div data-controller="hide-stuff">
+    <div style="width: 100%; height: 600px; border-radius: 15px;"
+    data-controller="map"
+    data-hide-stuff-target="map"
+    data-map-markers-value="<%= markers.to_json %>"
+    data-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
+    </div>
+    <button data-action="click->hide-stuff#toggleMap">Map</button>
+  </div>
+</div>
