@@ -1,7 +1,7 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-md-6 border border-light rounded p-4">
-      <h2 class="text-white text-center mb-5">Forgot your password?</h2>
+      <h2 class="text-white text-center mb-5"><%= t('password.forgot_title') %></h2>
 
       <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
         <%= f.error_notification %>
@@ -10,11 +10,12 @@
           <%= f.input :email,
                       required: true,
                       autofocus: true,
-                      input_html: { autocomplete: "email" } %>
+                      input_html: { autocomplete: "email" },
+                      label: t('password.email') %>
         </div>
 
         <div class="form-actions text-center">
-          <%= f.button :submit, "Send me reset password instructions", class: "btn btn-primary my-3" %>
+          <%= f.button :submit, t('password.send_instructions_button'), class: "btn btn-primary my-3" %>
         </div>
       <% end %>
 

@@ -1,9 +1,10 @@
 <%= link_to :back do %>
   <i class="fas fa-arrow-left"></i>
+  <%= t('links.back') %>
 <% end %>
 
 <div class="edit-profile-container">
-  <h2>Account Information</h2>
+  <h2><%= t('account_information') %></h2>
 
   <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
     <%= f.error_notification %>
@@ -13,20 +14,20 @@
       <%= f.input :last_name, required: true, input_html: { class: 'form-control' } %>
       <%= f.input :email, required: true, autofocus: true, label_html: { class: 'form-label' }, input_html: { class: 'form-control' } %>
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-        <p class="mb-3 text-white">Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
+        <p class="mb-3 text-white"><%= t('account.confirmation_pending', email: resource.unconfirmed_email) %></p>
       <% end %>
       <%= f.input :current_password,
-                  hint: "we need your current password to confirm your changes",
+                  hint: t('account.current_password_hint'),
                   required: true,
                   input_html: { class: 'form-control', autocomplete: 'current-password' },
                   hint_html: { class: 'text-white' } %>
-      <%= f.input :artist, as: :boolean, label: "Are you an artist? Click here", wrapper_html: { class: "artist-toggle-edit" } %>
+      <%= f.input :artist, as: :boolean, label: t('account.are_you_an_artist'), wrapper_html: { class: 'artist-toggle-edit' } %>
     </div>
     <div class="form-actions">
-      <%= f.button :submit, "Update", class: 'update-button-edit' %>
+      <%= f.button :submit, t('account.update'), class: 'update-button-edit' %>
     </div>
     <div>
-      <%= button_to "Delete my account", registration_path(resource_name), data: { confirm: "Are you sure?", turbo_confirm: "Are you sure?" }, method: :delete, class: 'delete-button-edit' %>
+      <%= button_to t('account.delete_my_account'), registration_path(resource_name), data: { confirm: t('account.confirm_delete') }, method: :delete, class: 'delete-button-edit' %>
     </div>
   <% end %>
 </div>

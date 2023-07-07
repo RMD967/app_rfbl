@@ -1,45 +1,47 @@
 <%= simple_form_for(@dashboard) do |f| %>
   <%= f.error_notification %>
   <%= f.error_notification message: f.object.errors[:base].to_sentence if f.object.errors[:base].present? %>
-
   <div class="form-inputs border border-light p-4 rounded mb-4">
-    <%= f.input :avatar, as: :file, label: "Upload avatar", input_html: { accept: 'image/*' } %>
-    <%= f.input :artist_genre, as: :select, collection: %w[Rock Pop Urban DJ Ballads Tropical Regional Country Instrumental Choir], label: "Band genre" %>
-    <%= f.input :artist_count, label: "Number of artist" %>
-    <%= f.input :artist_name, label: "Band Name" %>
+    <%= f.input :avatar, as: :file, label: t('dashboard.upload_avatar'), input_html: { accept: 'image/*' } %>
+    <%= f.input :artist_genre, as: :select, collection: %w[Rock Pop Urban DJ Ballads Tropical Regional Country Instrumental Choir], label: t('dashboard.band_genre') %>
+    <%= f.input :artist_count, label: t('dashboard.number_of_artist') %>
+    <%= f.input :artist_name, label: t('dashboard.band_name') %>
     <div data-controller="instruments" data-instruments-limit-value="10">
       <div data-instruments-target="container">
         <div data-instruments-target="field">
           <%= f.input :artist_instrument, name: "artist[instrument][]" %>
         </div>
       </div>
-      <button type="button" data-instruments-target="addButton" data-action="instruments#addInstrument">Add another instrument</button>
+      <button type="button" data-instruments-target="addButton" data-action="instruments#addInstrument">
+        <%= t('dashboard.add_another_instrument') %>
+      </button>
       <div data-instruments-target="template" style="display: none;">
         <div data-instruments-target="field">
-          <label data-target="instruments--label">Label text</label>
+          <label data-target="instruments--label"><%= t('dashboard.label_text') %></label>
           <%= f.input :artist_instrument, name: "artist[instrument][]" %>
-          <button type="button" data-action="instruments#removeInstrument">Remove instrument</button>
+          <button type="button" data-action="instruments#removeInstrument">
+            <%= t('dashboard.remove_instrument') %>
+          </button>
         </div>
       </div>
       <div data-instruments-target="limitMessage" style="display: none;">
-        You have reached the instrument limit.
+        <%= t('dashboard.instrument_limit_reached') %>
       </div>
     </div>
-    <%= f.input :artist_location, label: "Based in" %>
-    <%= f.input :artist_description, label: "Give us a breff description of the band" %>
-    <%= f.input :artist_price, label: "How much do you charge the hour?" %>
-    <%= f.input :artist_travel, label: "Are you a traveling artist?", input_html: { data: { controller: "toggle", "toggle-artist-travel-value": @dashboard.artist_travel.to_s, action: "change->toggle#toggle" } } %>
-    <div data-toggle-target="target" >
-      <%= f.input :artist_radius, label: "How far are you willing to travel?" %>
-      <%= f.input :artist_cities, label: "What cities would you travel to?" %>
+    <%= f.input :artist_location, label: t('dashboard.based_in') %>
+    <%= f.input :artist_description, label: t('dashboard.band_description') %>
+    <%= f.input :artist_price, label: t('dashboard.hourly_rate') %>
+    <%= f.input :artist_travel, label: t('dashboard.traveling_artist'), input_html: { data: { controller: "toggle", "toggle-artist-travel-value": @dashboard.artist_travel.to_s, action: "change->toggle#toggle" } } %>
+    <div data-toggle-target="target">
+      <%= f.input :artist_radius, label: t('dashboard.traveling_radius') %>
+      <%= f.input :artist_cities, label: t('dashboard.traveling_cities') %>
     </div>
     <% if @dashboard.new_record? %>
-      <%= f.input :audios, as: :file, input_html: { multiple: true, accept: 'audio/*' }, label: "Upload audios" %>
-      <%= f.input :videos, as: :file, input_html: { multiple: true, accept: 'video/*' }, label: "Upload videos" %>
-      <%= f.input :images, as: :file, input_html: { multiple: true, accept: 'image/*' }, label: "Upload images" %>
+      <%= f.input :audios, as: :file, input_html: { multiple: true, accept: 'audio/*' }, label: t('dashboard.upload_audios') %>
+      <%= f.input :videos, as: :file, input_html: { multiple: true, accept: 'video/*' }, label: t('dashboard.upload_videos') %>
+      <%= f.input :images, as: :file, input_html: { multiple: true, accept: 'image/*' }, label: t('dashboard.upload_images') %>
     <% end %>
   </div>
-
   <div class="form-actions btn btn-primary">
     <%= f.button :submit, style: "color: white;" %>
   </div>

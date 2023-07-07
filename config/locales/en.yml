@@ -30,4 +30,226 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
-  hello: "Hello world"
+  login:
+    welcome_back: "Welcome back"
+    log_in: "Log in"
+    sign_in_with_email: "Sign in with email"
+    email: "Email"
+    password: "Password"
+    log_in_button: "Log in"
+    remember_me: "Remember me"
+
+  devise:
+    log_in: "Log in"
+    no_account: "Don't have an account?"
+    sign_up_here: "Sign up here"
+    forgot_password: "Forgot your password?"
+    resend_confirmation: "Didn't receive confirmation instructions?"
+    resend_unlock: "Didn't receive unlock instructions?"
+    sign_in_with: "Sign in with %{provider}"
+
+  navbar:
+    discover: "Discover"
+    events: "Events"
+    activity: "Activity"
+    profile: "Profile"
+
+  footer:
+    own_music: "Own your music and be hired as an independent artist."
+    explore_title: "Explore"
+    see_content: "See content"
+    upload_music: "Upload music"
+    be_artist: "Be an artist"
+    create_event: "Create an event"
+    newsletter_title: "Join Our Weekly Digest"
+    exclusive_promotions: "Get exclusive promotions & updates straight to your inbox."
+    enter_email: "Enter your email"
+    subscribe: "Subscribe"
+    change_to_es: "Haz clic aquí para cambiar a Español"
+    change_to_en: "Click here to change to English"
+
+  user:
+    greeting: "Hello %{first_name} %{last_name}!"
+    profile_picture: "Profile Picture"
+    alt_profile_picture: "Alt Profile Picture"
+    delete_image: "Delete Image"
+    edit_profile_info: "Edit Profile information"
+    change_password: "Change Password"
+    log_out: "Log out"
+
+  signup:
+    title: "Sign up"
+    first_name: "First Name"
+    last_name: "Last Name"
+    email: "Email"
+    password: "Password"
+    password_confirmation: "Password Confirmation"
+    characters_minimum: "characters minimum"
+    artist_label: "Are you an artist? Click here"
+    sign_up_button: "Sign up"
+    minimum_password_length: "%{count} characters minimum"
+
+  password:
+    change_password: "Change your password"
+    leave_blank: "Leave it blank if you don't want to change it"
+    current_password_hint: "We need your current password to confirm your changes"
+    update_password: "Update Password"
+    forgot_title: "Forgot your password?"
+    email: "Email"
+    send_instructions_button: "Send me reset password instructions"
+
+  links:
+    back: Back
+
+  account_information: Account Information
+
+  account:
+    confirmation_pending: "Currently waiting confirmation for: %{email}"
+    current_password_hint: "We need your current password to confirm your changes"
+    are_you_an_artist: "Are you an artist? Click here"
+    update: Update
+    delete_my_account: Delete my account
+    confirm_delete: "Are you sure?"
+
+  booking:
+    no_pending_events: "Looks like you have no pending events"
+    please_look_at_events: "Please look at all events to find one that suits you"
+    all_events: "All Events"
+    applied_events: "Events I Applied To:"
+    event_from: "Event from: %{first_name} %{last_name}"
+    details: "Details"
+    delete_position: "Delete Position"
+
+  dashboard:
+    cover_photo: "Cover photo"
+    profile_picture: "Profile Picture"
+    alt_profile_picture: "Alt Profile Picture"
+    new_dashboard: "New Dashboard"
+    tell_us_about_dashboard: "Tell us about your dashboard"
+    tell_us_about_you: "Tell us about you. Are you a solo artist or a group? If you are a band, let us know the number
+    of artists, name, instruments, location, travel preferences and cities, brief description, and hourly rate."
+    editing_dashboard: "Editing Dashboard"
+    show_dashboard: "Show this dashboard"
+    no_dashboards: "It looks like you don't have any dashboards"
+    create_new_dashboard: "Create a new one to upload your content"
+    create_new_button: "Create new dashboard"
+    you_are: "You are %{artist_name}"
+    from_location: "From %{artist_location}"
+    currently_members: "You are currently %{artist_count} members"
+    artist_genre: "Artist Genre"
+    artist_count: "Artist Count"
+    artist_name: "Artist Name"
+    artist_instrument: "Artist Instrument"
+    artist_location: "Artist Location"
+    artist_travel: "Artist Travel"
+    artist_radius: "Artist Radius"
+    artist_cities: "Artist Cities"
+    artist_description: "Artist Description"
+    artist_price: "Artist Price"
+    traveling_artist: "Traveling Artist"
+    yes: "Yes"
+    no: "No"
+    traveling_radius: "Traveling Radius"
+    miles: "miles"
+    traveling_cities: "Traveling Cities"
+    edit_dashboard: "Edit dashboard"
+    delete_dashboard: "Delete dashboard"
+    delete_confirmation: "Are you sure?"
+    upload_avatar: "Upload avatar"
+    band_genre: "Band genre"
+    number_of_artist: "Number of artist"
+    band_name: "Band Name"
+    add_another_instrument: "Add another instrument"
+    label_text: "Label text"
+    remove_instrument: "Remove instrument"
+    instrument_limit_reached: "You have reached the instrument limit."
+    based_in: "Based in"
+    band_description: "Give us a brief description of the band"
+    hourly_rate: "How much do you charge per hour?"
+    traveling_artist: "Are you a traveling artist?"
+    traveling_radius: "How far are you willing to travel?"
+    traveling_cities: "What cities would you travel to?"
+    upload_audios: "Upload audios"
+    upload_videos: "Upload videos"
+    upload_images: "Upload images"
+    upload_content: "Upload content"
+    upload_modal_title: "Upload Content"
+    upload_audios_label: "Upload audios"
+    upload_videos_label: "Upload videos"
+    upload_images_label: "Upload images"
+    upload_submit_button: "Upload"
+    send_message: "Send message to artist"
+
+  tabs:
+    audio: "Audio"
+    video: "Video"
+    images: "Images"
+
+  audio:
+    not_supported: "Your browser does not support the audio element."
+
+  video:
+    not_supported: "Your browser does not support HTML5 video tags."
+
+  image:
+    close: "Close"
+
+  discover:
+    title: "Discover Music Gems For Your Next Events"
+    subtitle: "Connect with your favorite artists, get inspiration from the latest trends and discover your sound."
+    create_event: "Create Event"
+    upload_music: "Upload Music"
+    tracks: "Tracks"
+    events: "Events"
+    artists: "Artists"
+    next_hit: "Your Next Hit"
+    by_you: "by You"
+    views: "%{count}M"
+    likes: "%{count}M"
+    trending_videos: "Trending videos"
+
+  events:
+    title: "Title:"
+    description: "Description:"
+    date: "Date:"
+    duration: "Duration:"
+    genre: "Genre:"
+    address: "Address:"
+    new_event_title: "New event"
+    new_event_subtitle: "Tell us about your event"
+    new_event_description: "Let us know about the type of music you want for your event. We'll ask for information such as time, duration, and address for the show."
+    browse_events: "Browse Events"
+    events_near_you: "There are %{count} event events near you."
+    my_events: "Look at your current events."
+    my_events_link: "My events"
+    my_bookings: "Look at the events you've applied to."
+    my_bookings_link: "My bookings"
+    location: "Location"
+    map: "Map"
+    send_message: "Send message"
+    postulate_position: "Postulate position"
+    edit_this_event: "Edit this event"
+    delete_this_event: "Delete this event"
+    confirm_delete: "Are you sure?"
+    event_title: "Event title"
+    music_genre: "Music genre"
+    event_description: "Description of the event"
+    event_address: "Event address"
+    add_image: "Add image"
+    event_details: "Event details"
+    date_and_time: "Date and time"
+    show_duration: "Show duration"
+    create_event_button: "Create event"
+
+  edit_event:
+    title: "Editing event"
+    show_event: "Show this event"
+
+  my_events:
+    no_events_title: "It looks like you haven't created an event yet."
+    no_events_description: "Click on the button below to help you find musicians for your event."
+    create_event_button: "Create new event"
+    created_events_title: "Events I Created:"
+    duration: "Duration"
+    duration_unit: "min"
+    description: "Description"

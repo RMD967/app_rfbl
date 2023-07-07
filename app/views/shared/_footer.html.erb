@@ -2,13 +2,22 @@
   <footer>
     <div class="footer-container">
       <div class="footer-brand-container">
-        <%= link_to root_path do %>
-          <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687805358/mELL0W_d_zmk58k" alt="MellowD">
-          <% if current_user.artist? %>
-            <p>Artist</p>
+        <% if current_user.artist? %>
+          <% if I18n.locale == :en %>
+            <%= link_to root_path do %>
+              <img src="https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" alt="Artist FBL">
+            <% end %>
+          <% elsif I18n.locale == :es %>
+            <%= link_to root_path do %>
+              <img src="https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" alt="Artista FBL">
+            <% end %>
+          <% else %>
+            <%= link_to root_path do %>
+              <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
+            <% end %>
           <% end %>
         <% end %>
-        <p class="footer-info-text">Own your music and be hired as an independent artist.</p>
+        <p class="footer-info-text"><%= t('footer.own_music') %></p>
 
         <div class="footer-links">
           <a href="https://github.com/"><i class="fs-3 text-white text-decoration-none fab fa-github"></i></a>
@@ -17,34 +26,42 @@
         </div>
       </div>
 
-
-
       <div class="footer-explore-container">
-        <h4 class="footer-explore-title">Explore</h4>
-        <%= link_to "See content", discovers_path, class: "footer-info-text" %>
+        <h4 class="footer-explore-title"><%= t('footer.explore_title') %></h4>
+        <%= link_to t('footer.see_content'), discovers_path, class: "footer-info-text" %>
         <% if current_user.artist? %>
-          <%= link_to "Upload music", dashboards_path, class: "footer-info-text" %>
+          <%= link_to t('footer.upload_music'), dashboards_path, class: "footer-info-text" %>
         <% else %>
-            <%= link_to "Be an artist", user_id_path(id: @user.id), class: "footer-info-text" %>
-          <% end %>
-        <%= link_to "Create an event", new_event_path, class: "footer-info-text" %>
+          <%= link_to t('footer.be_artist'), user_id_path(id: @user.id), class: "footer-info-text" %>
+        <% end %>
+        <%= link_to t('footer.create_event'), new_event_path, class: "footer-info-text" %>
       </div>
 
-      <div class="footer-nesletter-container input-container">
-        <h4 class="footer-newsletter-title"> Join Our Weekly Digest</h4>
-        <p class="footer-info-text">Get exclusive promotions & updates straight to your inbox.</p>
-        <!-- Add your input fields for the newsletter subscription here -->
+      <div id="footer-nesletter-container">
+        <div class="input-container">
+          <h4 class="footer-newsletter-title"><%= t('footer.newsletter_title') %></h4>
+          <p class="footer-info-text"><%= t('footer.exclusive_promotions') %></p>
+          <!-- Add your input fields for the newsletter subscription here -->
 
-        <form action="/subscribe" method="POST">
-          <div class="footer-input-container">
-            <input type="hidden" name="user_id" value="<%= current_user.id %>">
-            <input id="email" name="email" type="email" class="email-input" placeholder="Enter your email" required>
-            <button class="footer-btn-primary" type="submit">Subscribe</button>
-          </div>
-        </form>
+          <form action="/subscribe" method="POST">
+            <div class="footer-input-container">
+              <input type="hidden" name="user_id" value="<%= current_user.id %>">
+              <input id="email" name="email" type="email" class="email-input" placeholder="<%= t('footer.enter_email') %>" required>
+              <button class="footer-btn-primary" type="submit"><%= t('footer.subscribe') %></button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
-
-    <p class="footer-mellow">© Mellow 2023</p>
+    <div class="lang-switcher">
+      <%= I18n.locale.upcase %>
+      <br>
+      <% if I18n.locale == :en %>
+        <%= link_to t('footer.change_to_es'), set_language_path(locale: :es), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token }, onclick: "alert('Listo pa rokear?')" %>
+      <% else %>
+        <%= link_to t('footer.change_to_en'), set_language_path(locale: :en), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token }, onclick: "alert('Ready to rock?')" %>
+      <% end %>
+    </div>
+    <p class="footer-mellow">© Radios FBL <%= Time.now.year %></p>
   </footer>
 <% end %>

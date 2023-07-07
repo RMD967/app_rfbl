@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :set_locale
   before_action :authenticate_user!
   include Pundit::Authorization
 
@@ -23,6 +24,31 @@ class ApplicationController < ActionController::Base
     # For additional in app/views/devise/registrations/edit.html.erb
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :artist, :admin, :profile_picture])
   end
+
+  def set_language
+    puts "Set language action called!" # Add this line
+
+    if I18n.locale == :en
+      locale = :es
+    else
+      locale = :en
+    end
+
+    if I18n.available_locales.include?(locale)
+      session[:locale] = locale
+      cookies.permanent[:locale] = { value: locale, expires: 1.year.from_now }
+    end
+
+    I18n.locale = locale # Set the current locale immediately
+
+    redirect_back(fallback_location: root_path)
+  end
+
+  def set_locale
+    I18n.locale = session[:locale] || cookies[:locale] || I18n.default_locale
+  end
+
+  skip_after_action :verify_authorized, only: :set_language
 
   private
 

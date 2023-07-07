@@ -4,11 +4,24 @@ footer {
   padding-bottom: 60px;
 }
 
+.footer-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 30px;
+}
+
 .footer-brand-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+  width: 33%;
+}
+
+.footer-brand-container img {
+  width: 150px;
 }
 
 .footer-info-text {
@@ -35,6 +48,7 @@ footer {
   align-items: center;
   padding: 30px;
   gap: 10px;
+  width: 33%;
 }
 
 .footer-explore-title {
@@ -59,11 +73,12 @@ footer {
   color: $neutral-100;
 }
 
-.footer-newsletter-container {
+#footer-newsletter-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
+  width: 33%;
 }
 
 .footer-input-container {

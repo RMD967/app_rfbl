@@ -1,33 +1,32 @@
-
-<%= link_to :back do %>
+<%= link_to :back, title: t('back') do %>
   <i class="fas fa-arrow-left"></i>
 <% end %>
 
 <div class="my-events-container">
   <% if @created_events.empty? %>
-    <h1>It looks like you haven't created an event yet.</h1>
-    <p>Click on the button bellow to help you find musicians for your event.</p>
-    <%= link_to "Create new event", new_event_path, class: "create-event-btn" %>
+    <h1><%= t('my_events.no_events_title') %></h1>
+    <p><%= t('my_events.no_events_description') %></p>
+    <%= link_to t('my_events.create_event_button'), new_event_path, class: "create-event-btn" %>
   <% else %>
-    <h1>Events I Created:</h1>
+    <h1><%= t('my_events.created_events_title') %></h1>
       <div class="my-events-row" data-event-target="events">
         <% @created_events.each do |event| %>
           <div>
             <%= link_to event do %>
               <div class="my-events-card">
-                  <% if event.image.attached?%>
-                    <%= image_tag url_for(event.image)%>
+                  <% if event.image.attached? %>
+                    <%= image_tag url_for(event.image) %>
                   <% else %>
                     <%= image_tag "https://picsum.photos/seed/picsum/200/200" %>
                   <% end %>
                 <h3 class="the-event-title"><%= event.title %></h3>
-                <p class="the-event-info">Duration: <%= event.duration %> min</p>
-                <p class="the-event-info">Description:: <%= event.description %></p>
+                <p class="the-event-info"><%= t('my_events.duration') %>: <%= event.duration %> <%= t('my_events.duration_unit') %></p>
+                <p class="the-event-info"><%= t('my_events.description') %>: <%= event.description %></p>
               </div>
             <% end %>
           </div>
         <% end %>
       </div>
-    <%= link_to "Create new event", new_event_path, class: "create-event-btn" if policy(Event).new? %>
+    <%= link_to t('my_events.create_event_button'), new_event_path, class: "create-event-btn" if policy(Event).new? %>
   <% end %>
 </div>

@@ -3,18 +3,18 @@
     <div class="discover-container-headline">
       <div>
         <h1 class="discover-title">
-          Discover Music Gems For Your Next Events
+          <%= t('discover.title') %>
         </h1>
         <p class="discover-subtitle">
-          Connect with your favorite artists, get inspiration from the latest trends and discover your sound.
+          <%= t('discover.subtitle') %>
         </p>
       </div>
       <div class="discovery-container-buttons">
         <% if current_user.artist? %>
-          <%= link_to "Create Event", new_event_path, class: "discover-btn-primary" %>
-          <%= link_to "Upload music", dashboards_path, class: "discover-btn-secondary" %>
+          <%= link_to t('discover.create_event'), new_event_path, class: "discover-btn-primary" %>
+          <%= link_to t('discover.upload_music'), dashboards_path, class: "discover-btn-secondary" %>
         <% else %>
-          <%= link_to "Create Event", new_event_path, class: "discover-btn-primary" %>
+          <%= link_to t('discover.create_event'), new_event_path, class: "discover-btn-primary" %>
         <% end %>
       </div>
       <div class="discover-info">
@@ -23,7 +23,7 @@
             240k+
           </h2>
           <p class="discover-info-text">
-            Tracks
+            <%= t('discover.tracks') %>
           </p>
         </div>
         <div>
@@ -31,7 +31,7 @@
             <%= @event.count %>
           </h2>
           <p class="discover-info-text">
-            Events
+            <%= t('discover.events') %>
           </p>
         </div>
         <div>
@@ -39,7 +39,7 @@
           <%= @artist_count %>
           </h2>
           <p class="discover-info-text">
-            Artists
+            <%= t('discover.artists') %>
           </p>
         </div>
       </div>
@@ -51,10 +51,10 @@
             <%= image_tag("https://res.cloudinary.com/djuhjudsb/image/upload/v1687812787/2_jv2rnx.jpg", class: "imgCard avatar") %>
             <div>
               <p class="discover-card-main-text">
-                Your Next Hit
+                <%= t('discover.next_hit') %>
               </p>
               <p class="discover-card-second-text">
-                by You
+                <%= t('discover.by_you') %>
               </p>
             </div>
           </div>
@@ -66,13 +66,13 @@
             <div class="discover-card-footer-btn">
               <i class="ri-play-circle-fill ri-xl ri-neutral-20"></i>
               <p class="discover-card-second-text">
-                25M
+                <%= t('discover.views', count: 25_000_000) %>
               </p>
             </div>
             <div class="discover-card-footer-btn">
               <i class="ri-heart-fill ri-xl ri-neutral-20"></i>
               <p class="discover-card-second-text">
-                2M
+                <%= t('discover.likes', count: 2_000_000) %>
               </p>
             </div>
           </div>
@@ -83,7 +83,7 @@
   </div>
 
   <div class="discover-container-trend">
-      <h2>Trending videos</h2>
+      <h2><%= t('discover.trending_videos') %></h2>
 
       <div class="genre-filter-container" data-controller="genre">
         <% @genres.each do |genre| %>
