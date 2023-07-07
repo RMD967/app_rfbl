@@ -2,61 +2,56 @@
   <div class="row mt-4">
     <div class="col-sm-6">
       <p>
-        <strong>Artist Genre:</strong>
+        <strong><%= t('dashboard.artist_genre') %>:</strong>
         <%= dashboard.artist_genre %>
       </p>
 
       <p>
-        <strong>Artist Count:</strong>
+        <strong><%= t('dashboard.artist_count') %>:</strong>
         <%= dashboard.artist_count %>
       </p>
 
       <p>
-        <strong>Artist Name:</strong>
+        <strong><%= t('dashboard.artist_name') %>:</strong>
         <%= dashboard.artist_name %>
       </p>
 
       <p>
-        <strong>Artist Instrument:</strong>
+        <strong><%= t('dashboard.artist_instrument') %>:</strong>
         <%= dashboard.artist_instrument %>
       </p>
+    </div>
 
     <div class="col-sm-6">
-
       <p>
-        <strong>Artist Location:</strong>
+        <strong><%= t('dashboard.artist_location') %>:</strong>
         <%= dashboard.artist_location %>
       </p>
 
       <p>
-        <strong>Artist Travel:</strong>
+        <strong><%= t('dashboard.artist_travel') %>:</strong>
         <%= dashboard.artist_travel %>
       </p>
 
       <p>
-        <strong>Artist Radius:</strong>
+        <strong><%= t('dashboard.artist_radius') %>:</strong>
         <%= dashboard.artist_radius %>
       </p>
 
       <p>
-        <strong>Artist Cities:</strong>
+        <strong><%= t('dashboard.artist_cities') %>:</strong>
         <%= dashboard.artist_cities %>
       </p>
-
     </div>
 
-      <p>
-        <strong>Artist Description:</strong>
-        <%= dashboard.artist_description %>
-      </p>
+    <p>
+      <strong><%= t('dashboard.artist_description') %>:</strong>
+      <%= dashboard.artist_description %>
+    </p>
 
-      <p>
-        <strong>Artist Price:</strong>
-        <%= number_to_currency(dashboard.artist_price) %>
-      </p>
-
-    </div>
-
+    <p>
+      <strong><%= t('dashboard.artist_price') %>:</strong>
+      <%= number_to_currency(dashboard.artist_price) %>
+    </p>
   </div>
-
 </div>

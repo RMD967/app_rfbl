@@ -1,36 +1,44 @@
 <% if user_signed_in? %>
   <nav class="navbar">
     <div class="navbar-brand">
-      <%= link_to root_path do %>
-        <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687805358/mELL0W_d_zmk58k" alt="MellowD">
-        <% if current_user.artist? %>
-          <p>Artist</p>
+      <% if current_user.artist? %>
+        <% if I18n.locale == :en %>
+          <%= link_to root_path do %>
+            <img src="https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" alt="Artist FBL">
+          <% end %>
+        <% elsif I18n.locale == :es %>
+          <%= link_to root_path do %>
+            <img src="https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" alt="Artista FBL">
+          <% end %>
+        <% else %>
+          <%= link_to root_path do %>
+            <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
+          <% end %>
         <% end %>
       <% end %>
     </div>
-
     <ul class="navbar-nav">
       <li class="navbar-item">
         <%= link_to discovers_path, class: "nav-link" do %>
-          <i class="ri-music-line ri-xl"></i> Discover
+          <i class="ri-music-line ri-xl"></i> <%= t('navbar.discover') %>
         <% end %>
       </li>
 
       <li class="navbar-item">
         <%= link_to events_path, class: "nav-link" do %>
-          <i class="ri-ticket-2-line ri-xl"></i> Events
+          <i class="ri-ticket-2-line ri-xl"></i> <%= t('navbar.events') %>
         <% end %>
       </li>
 
       <li class="navbar-item">
         <%= link_to my_bookings_path, class: "nav-link" do %>
-          <i class="ri-calendar-check-line ri-xl"></i> Activity
+          <i class="ri-calendar-check-line ri-xl"></i> <%= t('navbar.activity') %>
         <% end %>
       </li>
 
       <li class="navbar-item">
         <%= link_to user_id_path(@user), class: "nav-link" do %>
-          <i class="ri-user-line ri-xl"></i> Profile
+          <i class="ri-user-line ri-xl"></i> <%= t('navbar.profile') %>
         <% end %>
       </li>
     </ul>

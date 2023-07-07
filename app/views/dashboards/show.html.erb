@@ -26,24 +26,25 @@
         <p><%= @dashboard.artist_genre %></p>
       </div>
     </div>
-    <p>Artist Instrument: <%= @dashboard.artist_instrument %></p>
-    <p>Traveling Artist: <%= @dashboard.artist_travel ? "Yes" : "No" %></p>
+    <p><%= t('dashboard.artist_instrument') %>: <%= @dashboard.artist_instrument %></p>
+    <p><%= t('dashboard.traveling_artist') %>: <%= @dashboard.artist_travel ? t('dashboard.yes') : t('dashboard.no') %></p>
     <% if @dashboard.artist_travel %>
-      <p>Traveling Radius: <%= @dashboard.artist_radius %> miles</p>
-      <p>Traveling Cities: <%= @dashboard.artist_cities %></p>
+      <p><%= t('dashboard.traveling_radius') %>: <%= @dashboard.artist_radius %> <%= t('dashboard.miles') %></p>
+      <p><%= t('dashboard.traveling_cities') %>: <%= @dashboard.artist_cities %></p>
     <% end %>
   </div>
+
 
   <div data-controller="tabs" data-id="<%= @dashboard.id %>">
     <ul class="list-inline tabs-underlined">
       <li>
-        <button data-action="click->tabs#shiftTab" id="audio" class="btn btn-outline-primary">Audio</button>
+        <button data-action="click->tabs#shiftTab" id="audio" class="btn btn-outline-primary"><%= t('tabs.audio') %></button>
       </li>
       <li>
-        <button data-action="click->tabs#shiftTab" id="video" class="btn btn-outline-primary">Video</button>
+        <button data-action="click->tabs#shiftTab" id="video" class="btn btn-outline-primary"><%= t('tabs.video') %></button>
       </li>
       <li>
-        <button data-action="click->tabs#shiftTab" id="image" class="btn btn-outline-primary">Images</button>
+        <button data-action="click->tabs#shiftTab" id="image" class="btn btn-outline-primary"><%= t('tabs.images') %></button>
       </li>
     </ul>
     <div id="audio-tab" data-tabs-target="tab">
@@ -52,7 +53,7 @@
           <div class="my-dashboard-card-body">
             <audio controls>
               <source src="<%= cl_video_path(audio.key, resource_type: :video, format: 'mp3') %>" type="audio/mpeg">
-              Your browser does not support the audio element.
+              <%= t('audio.not_supported') %>
             </audio>
           </div>
         </div>
@@ -66,7 +67,7 @@
               :loop => true, :controls => true,
               :transformation => [
                 :quality=>70, :duration=>"10"],
-              :fallback_content => "Your browser does not support HTML5 video tags." ) %>
+              :fallback_content => t('video.not_supported') ) %>
             </div>
         </div>
       <% end %>
@@ -79,22 +80,22 @@
       <% end %>
       <div data-image-gallery-target="modal" class="modal">
         <img data-image-gallery-target="modalImage">
-        <button data-action="click->image-gallery#close">Close</button>
+        <button data-action="click->image-gallery#close"><%= t('image.close') %></button>
       </div>
     </div>
   </div>
   <div class="dashboard-action-btn">
     <% if policy(@dashboard).edit? %>
-      <%= link_to "Edit dashboard", edit_dashboard_path(@dashboard), class: "edit" %>
+      <%= link_to t('dashboard.edit_dashboard'), edit_dashboard_path(@dashboard), class: "edit" %>
     <% end %>
 
     <% if policy(@dashboard).destroy? %>
-      <%= button_to "Delete dashboard", @dashboard, method: :delete, data: { confirm: "Are you sure?" }, class: "delete" %>
+      <%= button_to t('dashboard.delete_dashboard'), @dashboard, method: :delete, data: { confirm: t('dashboard.delete_confirmation') }, class: "delete" %>
     <% end %>
 
     <% if current_user == @dashboard.user %>
       <button type="button" data-toggle="modal" data-target="#uploadModal" class="upload-button">
-        Upload content
+        <%= t('dashboard.upload_content') %>
       </button>
       <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
         <!-- Modal content goes here -->
@@ -102,18 +103,18 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel">Upload Content</h5>
+                <h5 class="modal-title" id="uploadModalLabel"><%= t('dashboard.upload_modal_title') %></h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <div class="modal-body">
-                <%= f.file_field :audios, multiple: true, accept: 'audio/*', label: "Upload audios" %>
-                <%= f.file_field :videos, multiple: true, accept: 'video/*', label: "Upload videos" %>
-                <%= f.file_field :images, multiple: true, accept: 'image/*', label: "Upload images" %>
+                <%= f.file_field :audios, multiple: true, accept: 'audio/*', label: t('dashboard.upload_audios_label') %>
+                <%= f.file_field :videos, multiple: true, accept: 'video/*', label: t('dashboard.upload_videos_label') %>
+                <%= f.file_field :images, multiple: true, accept: 'image/*', label: t('dashboard.upload_images_label') %>
               </div>
               <div class="modal-footer">
-                <%= f.submit "Upload", class: "upload" %>
+                <%= f.submit t('dashboard.upload_submit_button'), class: "upload" %>
               </div>
             </div>
           </div>
@@ -122,7 +123,7 @@
     <% end %>
 
     <% if current_user.id != @dashboard.user.id && @dashboard.user.artist %>
-      <%= link_to "Send message to artist", chatrooms_path(user_id: @dashboard.user), class: "message", data: {turbo_method: :post} if policy(Event).new? %>
+      <%= link_to t('dashboard.send_message'), chatrooms_path(user_id: @dashboard.user), class: "message", data: { turbo_method: :post } if policy(Event).new? %>
     <% end %>
   </div>
 </div>

@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <h2 class="text-white text-center mb-5">Sign up</h2>
+    <h2 class="text-white text-center mb-5"><%= t('signup.title') %></h2>
       <div class="col-md-6 border border-light rounded p-4">
 
         <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name),
@@ -27,11 +27,11 @@
           <%= f.input :password_confirmation,
                       required: true,
                       input_html: { autocomplete: "new-password" } %>
-          <%= f.input :artist, as: :boolean, label: "Are you an artist? Click here", wrapper_html: { class: "fs-5 my-4" } %>
+          <%= f.input :artist, as: :boolean, label: t('signup.artist_label'), wrapper_html: { class: "fs-5 my-4" } %>
         </div>
 
         <div class="row form-actions text-center">
-          <%= f.button :submit, "Sign up", class: "btn btn-primary btn-lg btn-block mb-3" %>
+          <%= f.button :submit, t('signup.sign_up_button'), class: "btn btn-primary btn-lg btn-block mb-3" %>
           <%= render "devise/shared/links" %>
         </div>
       <% end %>

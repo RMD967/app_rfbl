@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  before_action :set_locale
   before_action :authenticate_user!
   include Pundit::Authorization
 
@@ -26,8 +27,12 @@ class ApplicationController < ActionController::Base
 
   def set_language
     puts "Set language action called!" # Add this line
-    referer = URI(request.referer || "").path
-    locale = referer.ends_with?("/es") ? :en : :es
+
+    if I18n.locale == :en
+      locale = :es
+    else
+      locale = :en
+    end
 
     if I18n.available_locales.include?(locale)
       session[:locale] = locale
