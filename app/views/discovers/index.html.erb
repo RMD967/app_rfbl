@@ -62,12 +62,12 @@
     </div>
     <div class="discovery-container-buttons">
       <% if current_user.artist? %>
-        <%= link_to t('discover.create_event'), new_event_path, class: "discover-btn-primary" %>
-        <%= link_to t('discover.upload_music'), dashboards_path, class: "discover-btn-secondary" %>
-        <%= link_to 'see more', dashboards_path, class: "discover-btn-primary" %>
+        <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
+        <%= link_to t('discover.upload_music'), dashboards_path, class: "main-app-btn-sec" %>
+        <%= link_to 'See More/Ver Mas', dashboards_path, class: "main-app-btn-pri" %>
       <% else %>
-        <%= link_to t('discover.create_event'), new_event_path, class: "discover-btn-primary" %>
-        <%= link_to 'see more', dashboards_path, class: "discover-btn-primary" %>
+        <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
+        <%= link_to 'See More/Ver Mas', dashboards_path, class: "main-app-btn-pri" %>
       <% end %>
     </div>
   </div>
