@@ -12,12 +12,10 @@
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js"></script>
   </head>
-
-  <body style="background-color:#191830;">
-    <%= render "shared/navbar" %>
+  <%= render "shared/navbar" %>
+  <body class="rfbl-main-page-scss">
     <%= render "shared/flashes" %>
-
     <%= yield %>
-    <%= render "shared/footer" %>
   </body>
+  <%= render "shared/footer" %>
 </html>

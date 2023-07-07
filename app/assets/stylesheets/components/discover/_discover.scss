@@ -1,11 +1,45 @@
-.discover-container-header{
+.index-discover-page {
   display: flex;
   flex-direction: column;
 }
 
-.discover {
+.index.discover-top-head {
+  margin: 40px;
+}
+
+.main-discover-container-header{
   display: flex;
   flex-direction: column;
+}
+
+.discover-container-headline {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 40px;
+  align-items: center;
+  width: 100%;
+  height: 50%;
+}
+
+.index-discover-title h1 {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 70px;
+  line-height: 140%;
+  text-transform: capitalize;
+  text-align: center;
+  color: $neutral-100;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.index-discover-subtitle p {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 26px;
+  text-align: center;
+  line-height: 160%;
+  color: $neutral-40;
 }
 
 .discover-container-trend{
@@ -14,41 +48,14 @@
   padding: 30px;
 }
 
-.discover-container-headline {
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
-  gap: 40px;
-  justify-content: center;
-  align-items: center;
-}
-
 .discover-container-card {
   display: flex;
   flex-direction: column;
   padding: 30px;
   gap: 40px;
-  justify-content: center;
   align-items: center;
-}
-
-.discover-title {
-  font-style: normal;
-  font-weight: 600;
-  font-size: 28px;
-  line-height: 140%;
-  text-transform: capitalize;
-  text-align: center;
-  color: $neutral-100;
-}
-
-.discover-subtitle {
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  text-align: center;
-  line-height: 160%;
-  color: $neutral-40;
+  width: 100%;
+  height: 50%;
 }
 
 .discover-info {
@@ -57,65 +64,21 @@
   justify-content: space-around;
 }
 
-.discovery-container-buttons {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  justify-content: center;
-  align-items: center;
-}
-
-.discover-btn-primary {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  width: 260px;
-  height: 52px;
-  gap: 10px;
-  background: $purple-primary;
-  border-radius: 20px;
-  color: $neutral-100;
-  font-weight: 500;
-  font-size: $font-size-m;
-  line-height: 140%;
-  border: none;
-}
-
-.discover-btn-secondary {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background: none;
-  width: 260px;
-  height: 52px;
-  gap: 10px;
-  border-radius: 20px;
-  color: $neutral-100;
-  font-weight: 500;
-  font-size: $font-size-m;
-  line-height: 140%;
-  border: 2px solid $purple-primary;
-}
-
-.discover-info-number {
+.discover-info-number h2 {
   color: $neutral-100;
   font-family: "Space Mono";
   font-style: normal;
   font-weight: 700;
-  font-size: $font-size-l;
-  line-height: 160%;
-  margin-bottom: 0;
+  font-size: $font-size-xxl;
+  text-align: center;
 }
 
-.discover-info-text {
+.discover-info-number p {
   color: $neutral-100;
   font-style: normal;
-  font-weight: 400;
+  font-weight: 700;
   font-size: $font-size-m;
-  line-height: 140%;
-  margin-bottom: 0;
+  text-align: center;
 }
 
 .discover-card-main-text {
@@ -137,7 +100,7 @@
 }
 
 .discover-card {
-  width: 320px;
+  width: 100%;
   height: auto;
   background-color: #2A2A3F;
   border-radius: 20px;
@@ -183,23 +146,89 @@
 }
 
 .discover-card-video {
-  width: 320px;
+  width: 100%;
   height: auto;
 }
 
-@media (min-width: 800px) {
-  .discover-container-header{
+.discovery-container-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  justify-content: center;
+  align-items: center;
+}
+
+.discover-btn-primary {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 260px;
+  height: 52px;
+  gap: 10px;
+  background: $purple-primary;
+  border-radius: 20px;
+  color: $neutral-100;
+  font-weight: 500;
+  font-size: $font-size-m;
+  line-height: 140%;
+  border: none;
+}
+
+.discover-btn-primary:hover {
+  background: none;
+  color: $purple-primary;
+  border: 2px solid $purple-primary;
+  text-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  box-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  transition: box-shadow .3s ease-in-out;
+  transition: text-shadow .3s ease-in-out;
+}
+
+.discover-btn-secondary {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  width: 260px;
+  height: 52px;
+  gap: 10px;
+  border-radius: 20px;
+  color: $neutral-100;
+  font-weight: 500;
+  font-size: $font-size-m;
+  line-height: 140%;
+  border: 2px solid $purple-primary;
+}
+
+.discover-btn-secondary:hover {
+  background: none;
+  color: $purple-primary;
+  text-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  box-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  border: 2px solid $purple-primary;
+  transition: box-shadow .3s ease-in-out;
+  transition: text-shadow .3s ease-in-out;
+}
+
+@media (min-width: 900px) {
+  .main-discover-container-header{
     display: flex;
     flex-direction: row;
   }
 
+  .discover-container-headline {
+    width: 100%;
+  }
+
   .discover-card {
-    width: 430px;
+    width: 100%;
     height: auto;
   }
 
   .discover-card-video {
-    width: 430px;
+    width: 100%;
     height: auto;
   }
 
@@ -208,21 +237,26 @@
     flex-direction: column;
   }
 
-  .discover-title {
+  .discover-container-card {
+    width: 100%;
+  }
+
+  .index-discover-title h1 {
+    font-size: 65px;
     font-style: normal;
     font-weight: 600;
-    font-size: $font-size-xl;
     line-height: 140%;
     text-transform: capitalize;
     text-align: center;
     color: $neutral-100;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 
-  .discover-subtitle {
+  .index-discover-subtitle p {
     font-style: normal;
     font-weight: 400;
     font-family: "Space Mono";
-    font-size: $font-size-m;
+    font-size: 20px;
     text-align: center;
     line-height: 160%;
     color: $neutral-40;
@@ -231,35 +265,39 @@
 }
 
 @media (min-width: 1200px) {
-  .discover-container-header{
-    display: flex;
-    flex-direction: row;
-  }
-
-  .discover {
+  .index-discover-page {
     display: flex;
     flex-direction: column;
   }
 
-  .discover-title {
-    font-size: 67px;
-    line-height: 110%;
-    text-align: left;
+  .main-discover-container-header{
+    display: flex;
+    flex-direction: row;
   }
 
-  .discover-subtitle {
-      font-size: $font-size-l;
-      text-align: left;
+  .index-discover-title h1 {
+    font-size: 110px;
+    line-height: 110%;
+    text-align: center;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .index-discover-subtitle p {
+      font-size: 30px;
+      text-align: center;
       font-family: "Space Mono";
   }
 
   .discover-container-headline {
-      align-items: flex-start;
-      width: 60%;
+      width: calc(2/3*100%);
+  }
+
+  .discover-container-card {
+    width: calc(1/3*100%);
   }
 
   .discover-info {
-      justify-content: start;
+      justify-content: center;
       gap: 100px;
       width: 40%;
   }
@@ -269,12 +307,12 @@
   }
 
   .discover-card {
-      width: 540px;
+      width: 100%;
       height: auto;
   }
 
   .discover-card-video {
-      width: 540px;
+      width: 100%;
       height: auto;
   }
 }

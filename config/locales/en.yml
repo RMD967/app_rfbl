@@ -195,8 +195,8 @@ en:
     close: "Close"
 
   discover:
-    title: "Discover Music Gems For Your Next Events"
-    subtitle: "Connect with your favorite artists, get inspiration from the latest trends and discover your sound."
+    title: "Discover Musicians Near You!"
+    subtitle: "Connect with artists and plug their sound in your event."
     create_event: "Create Event"
     upload_music: "Upload Music"
     tracks: "Tracks"
