@@ -1,0 +1,50 @@
+.dash-discover-container-card {
+  padding: 30px;
+  gap: 40px;
+}
+
+.dash-discover-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.dash-dashboard-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+@media (min-width: 900px) {
+  .dash-discover-container-card {
+    height: 40vh;
+  }
+
+  .dash-discover-card {
+    padding: 5px;
+  }
+
+  .dash-dashboard-details {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1200px) {
+  .dash-discover-container-card {
+    height: 80vh;
+  }
+  .dash-discover-card {
+    height: 80vh;
+  }
+
+  .dash-dashboard-details {flex-direction: row;
+    justify-content: space-between;}
+}

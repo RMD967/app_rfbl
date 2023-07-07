@@ -192,8 +192,8 @@ es:
     close: "Cerrar"
 
   discover:
-    title: "Descubre Joyas Musicales para tus Próximos Eventos"
-    subtitle: "Conecta con tus artistas favoritos, obtén inspiración de las últimas tendencias y descubre tu sonido."
+    title: "¡Descubre a Musicos Cerca De Ti!"
+    subtitle: "Descubre a artistas y conecta su sonido con tu evento."
     create_event: "Crear Evento"
     upload_music: "Subir Música"
     tracks: "Canciones"
