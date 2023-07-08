@@ -2,20 +2,13 @@
   margin: 40px;
 }
 
-.new-dashboard-button {
-  border-radius: 15px;
-  padding: 10px 20px;
-  color: white;
-  background-color: $purple-primary;
-}
-
 .new-dashboard-row {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
   margin: 20px 0;
 }
-  
+
   .new-dashboard-card {
     background-color: $blue-80;
     display: flex;

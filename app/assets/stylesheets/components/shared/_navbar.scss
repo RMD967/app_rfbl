@@ -45,6 +45,10 @@
   gap: 10px;
 }
 
+.nav-link:hover{
+  color: $white;
+}
+
 @media (min-width: 680px) {
   .navbar {
     position: static;

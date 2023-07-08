@@ -14,7 +14,7 @@
     </div>
     <% if @user.profile_picture.present? %>
       <%= form_for @user, url: delete_profile_picture_user_path(@user), method: :delete do |f| %>
-        <%= f.submit t('user.delete_image'), class: 'delete-img-btn' %>
+        <%= f.submit t('user.delete_image'), class: 'main-app-btn-del' %>
       <% end %>
     <% end %>
   </div>

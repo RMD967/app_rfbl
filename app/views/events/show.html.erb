@@ -15,10 +15,10 @@
     <% if current_user.applied_to?(@event) %>
       <%= form_with url: user_received_messages_path(@event.user), method: :post, id: "message-form" do |f| %>
         <%= f.hidden_field :content, value: "Your message here" %>
-        <%= f.submit t('events.send_message'), class: "event-show-postulate-button", id: "send-message-button" %>
+        <%= f.submit t('events.send_message'), class: "main-app-btn-pri", id: "send-message-button" %>
       <% end %>
     <% else %>
-      <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "discover-btn-primary", style: "align-items: flex-end; margin-top: 40px;" do %>
+      <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "main-app-btn-pri", style: "align-items: flex-end; margin-top: 40px;" do %>
         <p><%= t('events.postulate_position') %></p>
       <% end %>
     <% end %>
@@ -26,13 +26,13 @@
 
   <div class="event-show-edit">
     <% if policy(@event).edit? %>
-      <%= link_to edit_event_path(@event), class: "edit-this-event-btn" do %>
+      <%= link_to edit_event_path(@event), class: "main-app-btn-pri" do %>
         <p><%= t('events.edit_this_event') %></p>
       <% end %>
     <% end %>
 
     <% if policy(@event).destroy? %>
-      <%= button_to @event, method: :delete, data: { confirm: t('events.confirm_delete') }, class: "delete-this-event-btn" do %>
+      <%= button_to @event, method: :delete, data: { confirm: t('events.confirm_delete') }, class: "main-app-btn-del" do %>
         <p><%= t('events.delete_this_event') %></p>
       <% end %>
     <% end %>

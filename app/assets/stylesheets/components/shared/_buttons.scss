@@ -47,6 +47,23 @@
   transition: text-shadow .3s ease-in-out;
 }
 
-/*.main-app-btn-pri {
+.main-app-btn-del {
+  display: flex;
+  justify-content: center;
+  width: 260px;
+  height: 52px;
+  border: 1px solid red;
+  border-radius: 20px;
+  color: $neutral-100;
+  margin-top: 40px;
+  background: transparent;
 }
-*/
+
+.main-app-btn-del:hover {
+  color: red;
+  border: 1px solid red;
+  text-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff0000, 0px 0px 7px #ff0000, 0px 0px 8px #ff0000, 0px 0px 10px red;
+  box-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff0000, 0px 0px 7px #ff0000, 0px 0px 8px #ff0000, 0px 0px 10px red;
+  transition: box-shadow .3s ease-in-out;
+  transition: text-shadow .3s ease-in-out;
+}

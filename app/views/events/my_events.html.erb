@@ -6,7 +6,7 @@
   <% if @created_events.empty? %>
     <h1><%= t('my_events.no_events_title') %></h1>
     <p><%= t('my_events.no_events_description') %></p>
-    <%= link_to t('my_events.create_event_button'), new_event_path, class: "create-event-btn" %>
+    <%= link_to t('my_events.create_event_button'), new_event_path, class: "main-app-btn-pri" %>
   <% else %>
     <h1><%= t('my_events.created_events_title') %></h1>
       <div class="my-events-row" data-event-target="events">
@@ -27,6 +27,6 @@
           </div>
         <% end %>
       </div>
-    <%= link_to t('my_events.create_event_button'), new_event_path, class: "create-event-btn" if policy(Event).new? %>
+    <%= link_to t('my_events.create_event_button'), new_event_path, class: "main-app-btn-pri" if policy(Event).new? %>
   <% end %>
 </div>
