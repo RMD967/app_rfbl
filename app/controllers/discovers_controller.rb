@@ -6,6 +6,7 @@ class DiscoversController < ApplicationController
     @artist_count = User.where(artist: true).count
     @discovers = policy_scope(Discover)
     @discovers = Discover.all
+    @dashboards = Dashboard.all
     # @user = current_user
 
     @discovers = @discovers.where(genre: params[:genre]) if params[:genre].present? && params[:genre] != "All"

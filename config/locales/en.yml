@@ -206,7 +206,7 @@ en:
     by_you: "by You"
     views: "%{count}M"
     likes: "%{count}M"
-    trending_videos: "Trending videos"
+    search_content: "Search for artists or genres"
 
   events:
     title: "Title:"

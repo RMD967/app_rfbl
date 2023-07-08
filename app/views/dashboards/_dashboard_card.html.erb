@@ -1,0 +1,37 @@
+<!-- app/views/shared/_dashboard_card.html.erb -->
+<div class="dash-discover-card">
+  <div class="dash-discover-card-head">
+    <div class="dash-discover-card-header">
+      <%= link_to dashboard_path(dashboard) do %>
+        <%= image_tag("https://res.cloudinary.com/djuhjudsb/image/upload/v1687812787/2_jv2rnx.jpg", class: "imgCard avatar") %>
+      <% end %>
+      <div>
+        <p class="dash-discover-card-main-text">
+          <%= t('dash-discover.next_hit') %>
+        </p>
+        <p class="dash-discover-card-second-text">
+          <%= t('dash-discover.by_you') %>
+        </p>
+      </div>
+    </div>
+    <i class="ri-more-2-line ri-xl ri-neutral-20"></i>
+  </div>
+  <%= video_tag "/main.mp4", class: "dash-discover-card-video", controls: true %>
+  <div class="dash-discover-card-foot">
+    <div class="dash-discover-card-footer">
+      <div class="dash-discover-card-footer-btn">
+        <i class="ri-play-circle-fill ri-xl ri-neutral-20"></i>
+        <p class="dash-discover-card-second-text">
+          <%= t('dash-discover.views', count: 25_000_000) %>
+        </p>
+      </div>
+      <div class="dash-discover-card-footer-btn">
+        <i class="ri-heart-fill ri-xl ri-neutral-20"></i>
+        <p class="dash-discover-card-second-text">
+          <%= t('dash-discover.likes', count: 2_000_000) %>
+        </p>
+      </div>
+    </div>
+    <i class="ri-bookmark-line ri-xl ri-neutral-20"></i>
+  </div>
+</div>

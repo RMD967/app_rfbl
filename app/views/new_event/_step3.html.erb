@@ -1,0 +1,13 @@
+<%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form" }) do |f| %>
+  <!-- Step 3 form inputs -->
+  <div class="new-event-form-inputs">
+    <h3 class="my-3"><%= t('events.event_details') %></h3>
+    <label><%= t('events.date_and_time') %></label>
+    <div class="row">
+      <div class="col-12">
+        <%= f.input :datetime, as: :datetime, label: false, html5: true %>
+      </div>
+    </div>
+    <%= f.input :duration, label: t('events.show_duration') %>
+  </div>
+<% end %>

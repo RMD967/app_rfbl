@@ -3,18 +3,13 @@
     <div class="footer-container">
       <div class="footer-brand-container">
         <% if current_user.artist? %>
-          <% if I18n.locale == :en %>
-            <%= link_to root_path do %>
-              <img src="https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" alt="Artist FBL">
-            <% end %>
-          <% elsif I18n.locale == :es %>
-            <%= link_to root_path do %>
-              <img src="https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" alt="Artista FBL">
-            <% end %>
-          <% else %>
-            <%= link_to root_path do %>
-              <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
-            <% end %>
+          <% image_url = I18n.locale == :es ? "https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" : "https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" %>
+          <%= link_to root_path do %>
+            <img src="<%= image_url %>" alt="Artist FBL">
+          <% end %>
+        <% else %>
+          <%= link_to root_path do %>
+            <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
           <% end %>
         <% end %>
         <p class="footer-info-text"><%= t('footer.own_music') %></p>

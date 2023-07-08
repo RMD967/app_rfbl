@@ -7,6 +7,20 @@
   <h3 class="new-event-text-subtitle"><%= t("events.new_event_subtitle") %></h3>
   <p><%= t("events.new_event_description") %></p>
 
-  <%= render "form", event: @event %>
-  <br>
+  <div class="new-event-form-inputs" data-controller="new-event-screens">
+    <div class="step" data-target="new-event-screens.step" data-step="1">
+  <%= render 'new_event/step1', event: @event %>
+  <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
+</div>
+<div class="step d-none" data-target="new-event-screens.step" data-step="2">
+  <%= render 'new_event/step2', event: @event %>
+  <button class="prev-step" data-action="click->new-event-screens#previousStep">Previous Step</button>
+  <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
+</div>
+<div class="step d-none" data-target="new-event-screens.step" data-step="3">
+  <%= render 'new_event/step3', event: @event %>
+  <button class="prev-step" data-action="click->new-event-screens#previousStep">Previous Step</button>
+</div>
+
+  </div>
 </div>

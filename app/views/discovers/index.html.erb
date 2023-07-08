@@ -8,8 +8,6 @@
         <div class="index-discover-subtitle">
           <p> <%= t('discover.subtitle') %> </p>
         </div>
-      </div>
-      <div class="discover-container-card">
         <div class="discover-info">
           <div class="discover-info-number">
             <h2> 240k+ </h2>
@@ -24,94 +22,32 @@
             <p> <%= t('discover.artists') %> </p>
           </div>
         </div>
-        <div class="discover-card">
-          <div class="discover-card-head">
-            <div class="discover-card-header">
-              <%= image_tag("https://res.cloudinary.com/djuhjudsb/image/upload/v1687812787/2_jv2rnx.jpg", class: "imgCard avatar") %>
-              <div>
-                <p class="discover-card-main-text">
-                  <%= t('discover.next_hit') %>
-                </p>
-                <p class="discover-card-second-text">
-                  <%= t('discover.by_you') %>
-                </p>
-              </div>
-            </div>
-            <i class="ri-more-2-line ri-xl ri-neutral-20"></i>
-          </div>
-          <%= video_tag "/main.mp4", class: "discover-card-video", controls: true %>
-          <div class="discover-card-foot">
-            <div class="discover-card-footer">
-              <div class="discover-card-footer-btn">
-                <i class="ri-play-circle-fill ri-xl ri-neutral-20"></i>
-                <p class="discover-card-second-text">
-                  <%= t('discover.views', count: 25_000_000) %>
-                </p>
-              </div>
-              <div class="discover-card-footer-btn">
-                <i class="ri-heart-fill ri-xl ri-neutral-20"></i>
-                <p class="discover-card-second-text">
-                  <%= t('discover.likes', count: 2_000_000) %>
-                </p>
-              </div>
-            </div>
-            <i class="ri-bookmark-line ri-xl ri-neutral-20"></i>
-          </div>
-        </div>
+      </div>
+      <div class="discover-container-card">
+        <% random_dashboard = @dashboards.sample %>
+        <%= render partial: 'dashboards/dashboard_card', locals: { dashboard: random_dashboard } %>
       </div>
     </div>
     <div class="discovery-container-buttons">
       <% if current_user.artist? %>
         <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
         <%= link_to t('discover.upload_music'), dashboards_path, class: "main-app-btn-sec" %>
-        <%= link_to 'See More/Ver Mas', dashboards_path, class: "main-app-btn-pri" %>
+        <%= link_to 'See More/Ver Mas', '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
       <% else %>
         <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
-        <%= link_to 'See More/Ver Mas', dashboards_path, class: "main-app-btn-pri" %>
+        <%= link_to 'See More/Ver Mas', '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
       <% end %>
     </div>
   </div>
 
-  <div class="discover-container-trend">
-      <h2><%= t('discover.trending_videos') %></h2>
-    <div class="genre-filter-container" data-controller="genre">
-      <% @genres.each do |genre| %>
-        <%= link_to events_path(genre: genre), class: "genre-icon-link", data: {"genre-target": "genreButton", action: "click->genre#toggleColor" } do %>
-          <i data-genre="<%= genre %>" class="<%= @genre_icon_classes[genre] %>"></i>
-          <p data-genre="<%= genre %>"><%= genre %></p>
-        <% end %>
-      <% end %>
+  <div id="discover-section" class="discover-container-trend">
+      <h2><%= t('discover.search_content') %></h2>
+    <div class="search-for-discover">
+      <h1> LOOK FOR ARTIST OR GENRE</h1>
     </div>
-    <% @discovers.each do |discover| %>
-      <div class="dash-discover-container-card">
-        <a href="<%= dashboard_path(discover.dashboard) %>">
-          <div class="dash-discover-card">
-            <div class="dash-dashboard-details">
-              <p>Avatar</p>
-              <p>
-                <strong><%= t('dashboard.artist_name') %>:</strong>
-                <%= discover.dashboard.artist_name %>
-              </p>
-              <p>
-                <strong>content title</strong>
-              </p>
-              <p>
-                <strong>content description</strong>
-              </p>
-              <p>
-              <p> options </p>
-                views
-              </p>
-              <p>
-                likes
-              </p>
-              <p>
-                save
-              </p>
-            </div>
-          </div>
-        </a>
-      </div>
+    <% @dashboards.each do |dashboard| %>
+      <%= render partial: 'dashboards/dashboard_card', locals: { dashboard: dashboard } %>
     <% end %>
+
   </div>
 </div>
