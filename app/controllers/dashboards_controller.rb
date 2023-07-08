@@ -7,9 +7,19 @@ class DashboardsController < ApplicationController
   end
 
   def show
-    skip_authorization
-    @dashboard = Dashboard.find(params[:id])
     @users = @dashboard.users
+    @dashboard = Dashboard.find(params[:id])
+    authorize @dashboard
+    if current_user.admin_of_dashboard?(@dashboard)
+      @invitation = Invitation.new(dashboard: @dashboard)
+      @invited_users = @dashboard.users - [@dashboard.admin]
+      flash.now[:success] = "User successfully invited!" if params[:invitation_success]
+      # Additional logic specific to admin access
+    else
+      # User does not have admin access to the dashboard
+      # Handle the case accordingly
+      flash.now[:error] = "Invalid input. Please try again." if params[:invitation_error]
+    end
   end
 
   def new
@@ -97,6 +107,22 @@ class DashboardsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def dashboard_params
-    params.require(:dashboard).permit(:avatar, :artist_genre, :artist_count, :artist_name, :artist_instrument, :artist_location, :artist_travel, :artist_radius, :artist_cities, :artist_description, :artist_price, :avatar, images: [], videos: [], audios: [])
+    params.require(:dashboard).permit(:avatar, :artist_genre, :artist_count, :artist_name, :artist_instrument, :artist_location, :artist_travel, :artist_radius, :artist_cities, :artist_description, :artist_price, images: [], videos: [], audios: [])
+  end
+
+  def invite_user(email, dashboard)
+    user = User.find_by(email: email)
+
+    if user.nil?
+      flash[:error] = "User with the provided email does not exist. Please ask them to register first."
+    elsif dashboard.users.include?(user)
+      flash[:error] = "User is already a member of the dashboard."
+    else
+      dashboard.users << user
+      flash[:success] = "User successfully invited!"
+      # Handle any additional logic, such as sending a notification email or updating dashboard statistics
+    end
+
+    redirect_to dashboard_path(dashboard, invitation_success: flash[:success], invitation_error: flash[:error])
   end
 end

@@ -13,25 +13,25 @@
       <% end %>
     </div>
     <ul class="navbar-nav">
-      <li class="navbar-item">
+      <li class="navbar-item <%= 'active' if current_page?(discovers_path) %>">
         <%= link_to discovers_path, class: "nav-link" do %>
           <i class="ri-music-line ri-xl"></i> <%= t('navbar.discover') %>
         <% end %>
       </li>
 
-      <li class="navbar-item">
+      <li class="navbar-item <%= 'active' if current_page?(events_path) %>">
         <%= link_to events_path, class: "nav-link" do %>
           <i class="ri-ticket-2-line ri-xl"></i> <%= t('navbar.events') %>
         <% end %>
       </li>
 
-      <li class="navbar-item">
+      <li class="navbar-item <%= 'active' if current_page?(my_bookings_path) %>">
         <%= link_to my_bookings_path, class: "nav-link" do %>
           <i class="ri-calendar-check-line ri-xl"></i> <%= t('navbar.activity') %>
         <% end %>
       </li>
 
-      <li class="navbar-item">
+      <li class="navbar-item <%= 'active' if current_page?(user_id_path(@user)) %>">
         <%= link_to user_id_path(@user), class: "nav-link" do %>
           <i class="ri-user-line ri-xl"></i> <%= t('navbar.profile') %>
         <% end %>

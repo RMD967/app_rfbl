@@ -147,7 +147,6 @@ AVATAR = [
 User.destroy_all
 Event.destroy_all
 Discover.destroy_all
-Dashboard.destroy_all
 
 5.times do |i|
   artist = i % 2 == 0 ? true : false
@@ -158,12 +157,6 @@ Dashboard.destroy_all
     last_name: LAST_NAME.sample,
     artist: artist
   )
-
-  image_path = Rails.root.join("app", "assets", "images", "users", "#{i + 1}.jpg")
-  # Attach the image file if it exists, otherwise use a default image
-  if File.exist?(image_path)
-    user.profile_picture.attach(io: File.open(image_path), filename: "#{i + 1}.jpg", content_type: "image/jpeg")
-  end
 
   user.save!
   puts 'User created'
@@ -182,20 +175,12 @@ all_users = User.all
     address: ADDRESSES.sample
   )
 
-  image_path = Rails.root.join("app", "assets", "images", "events", "#{i + 1}.jpg")
-
-  # Attach the image file if it exists, otherwise use a default image
-  if File.exist?(image_path)
-    event.image.attach(io: File.open(image_path), filename: "#{i + 1}.jpg", content_type: "image/jpeg")
-  end
-
   event.save!
   puts 'Event created'
 end
 
 5.times do |i|
   dashboard = Dashboard.new(
-    # avatar: AVATAR.sample,
     artist_genre: GENRE.sample,
     artist_count: rand(1..10),
     artist_name: ARTIST_NAMES.sample,
@@ -209,39 +194,6 @@ end
     user_id: all_users.sample.id
   )
 
-  image_path = Rails.root.join("app", "assets", "images", "dashboards", "#{i + 1}.jpg")
-
-  # Attach the image file if it exists, otherwise use a default image
-  if File.exist?(image_path)
-    dashboard.images.attach(io: File.open(image_path), filename: "#{i + 1}.jpg", content_type: "image/jpeg")
-  end
-
   dashboard.save!
   puts 'Dashboard created'
-end
-
-all_dashboards = Dashboard.all
-
-5.times do |i|
-  discover = Discover.new(
-    title: DISCOVER_TITLES.sample,
-    content: DISCOVER_CONTENTS.sample,
-    likes: rand(0..100),
-    plays: rand(0..100),
-    genre: GENRE.sample,
-    saved: [true, false].sample,
-    start_time: rand(1.0..10.0).round(2),
-    end_time: rand(10.0..20.0).round(2),
-    dashboard_id: all_dashboards.sample.id
-  )
-
-  video_url = DISCOVER_VIDEOS[i]
-
-  # Attach the remote video file if the URL is present
-  if video_url.present?
-    discover.video.attach(io: URI.open(video_url), filename: "#{i + 1}.mp4", content_type: 'video/mp4')
-  end
-
-  discover.save!
-  puts 'Discover created'
 end
