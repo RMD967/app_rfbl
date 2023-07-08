@@ -1,0 +1,6 @@
+<%= form_with(model: @invitation, url: invitations_path, method: :post) do |form| %>
+  <%= form.hidden_field :dashboard_id, value: @dashboard.id %>
+  <%= form.label :email, "Artist Email" %>
+  <%= form.email_field :email %>
+  <%= form.submit "Invite", class: "btn btn-primary" %>
+<% end %>

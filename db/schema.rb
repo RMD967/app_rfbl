@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_22_021847) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_08_152629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,6 +115,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_22_021847) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
+  create_table "invitations", force: :cascade do |t|
+    t.bigint "dashboard_id", null: false
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["dashboard_id"], name: "index_invitations_on_dashboard_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.string "content"
     t.bigint "chatroom_id", null: false
@@ -176,6 +184,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_22_021847) do
   add_foreign_key "dashboards", "users"
   add_foreign_key "discovers", "dashboards"
   add_foreign_key "events", "users", on_delete: :cascade
+  add_foreign_key "invitations", "dashboards"
   add_foreign_key "messages", "chatrooms"
   add_foreign_key "messages", "users"
   add_foreign_key "subscriptions", "users"

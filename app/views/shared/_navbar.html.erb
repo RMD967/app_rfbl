@@ -1,39 +1,41 @@
-<nav class="navbar">
-  <div class="navbar-brand">
-    <% if current_user.artist? %>
-      <% image_url = I18n.locale == :es ? "https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" : "https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" %>
-      <%= link_to root_path do %>
-        <img src="<%= image_url %>" alt="Artist FBL">
+<% if user_signed_in? %>
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <% if current_user.artist? %>
+        <% image_url = I18n.locale == :es ? "https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" : "https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" %>
+        <%= link_to root_path do %>
+          <img src="<%= image_url %>" alt="Artist FBL">
+        <% end %>
+      <% else %>
+        <%= link_to root_path do %>
+          <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
+        <% end %>
       <% end %>
-    <% else %>
-      <%= link_to root_path do %>
-        <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
-      <% end %>
-    <% end %>
-  </div>
-  <ul class="navbar-nav">
-    <li class="navbar-item <%= 'active' if current_page?(discovers_path) %>">
-      <%= link_to discovers_path, class: "nav-link" do %>
-        <i class="ri-music-line ri-xl"></i> <%= t('navbar.discover') %>
-      <% end %>
-    </li>
+    </div>
+    <ul class="navbar-nav">
+      <li class="navbar-item <%= 'active' if current_page?(discovers_path) %>">
+        <%= link_to discovers_path, class: "nav-link" do %>
+          <i class="ri-music-line ri-xl"></i> <%= t('navbar.discover') %>
+        <% end %>
+      </li>
 
-    <li class="navbar-item <%= 'active' if current_page?(events_path) %>">
-      <%= link_to events_path, class: "nav-link" do %>
-        <i class="ri-ticket-2-line ri-xl"></i> <%= t('navbar.events') %>
-      <% end %>
-    </li>
+      <li class="navbar-item <%= 'active' if current_page?(events_path) %>">
+        <%= link_to events_path, class: "nav-link" do %>
+          <i class="ri-ticket-2-line ri-xl"></i> <%= t('navbar.events') %>
+        <% end %>
+      </li>
 
-    <li class="navbar-item <%= 'active' if current_page?(my_bookings_path) %>">
-      <%= link_to my_bookings_path, class: "nav-link" do %>
-        <i class="ri-calendar-check-line ri-xl"></i> <%= t('navbar.activity') %>
-      <% end %>
-    </li>
+      <li class="navbar-item <%= 'active' if current_page?(my_bookings_path) %>">
+        <%= link_to my_bookings_path, class: "nav-link" do %>
+          <i class="ri-calendar-check-line ri-xl"></i> <%= t('navbar.activity') %>
+        <% end %>
+      </li>
 
-    <li class="navbar-item <%= 'active' if current_page?(user_id_path(@user)) %>">
-      <%= link_to user_id_path(@user), class: "nav-link" do %>
-        <i class="ri-user-line ri-xl"></i> <%= t('navbar.profile') %>
-      <% end %>
-    </li>
-  </ul>
-</nav>
+      <li class="navbar-item <%= 'active' if current_page?(user_id_path(@user)) %>">
+        <%= link_to user_id_path(@user), class: "nav-link" do %>
+          <i class="ri-user-line ri-xl"></i> <%= t('navbar.profile') %>
+        <% end %>
+      </li>
+    </ul>
+  </nav>
+<% end %>

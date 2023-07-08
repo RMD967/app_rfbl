@@ -1,5 +1,6 @@
 <div class="show-user-container">
   <h1><%= t('user.greeting', first_name: @user.first_name, last_name: @user.last_name) %></h1>
+  <h1><%= @user.email %></h1>
   <div class="view-profile-picture">
     <div class='user-profile-picture'>
       <% if @user.profile_picture.present? %>

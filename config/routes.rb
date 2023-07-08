@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'invitations/new'
+  get 'invitations/create'
   get 'newsletter_messages/edit'
   get 'newsletter_messages/update'
   get 'subscriptions/create'
@@ -20,6 +22,8 @@ Rails.application.routes.draw do
       patch :update_profile_picture
     end
   end
+
+  resources :invitations, only: [:new, :create]
 
   resources :users do
     member do
