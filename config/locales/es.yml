@@ -203,7 +203,7 @@ es:
     by_you: "por ti"
     views: "%{count}M"
     likes: "%{count}M"
-    trending_videos: "Videos populares"
+    search_content: "Busca por artista o por genero"
 
   events:
     title: "Título:"

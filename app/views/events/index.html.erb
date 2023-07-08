@@ -10,12 +10,12 @@
     <div class="index-event-buttons-row">
       <div class="my-events-button-index">
         <h5><%= t('events.my_events') %></h5>
-        <%= link_to t('events.my_events_link'), my_events_path, class: "text-white btn btn-primary" if policy(Event).new? %>
+        <%= link_to t('events.my_events_link'), my_events_path, class: "main-app-btn-pri" if policy(Event).new? %>
       </div>
       <div class="my-bookings-button-index">
         <% if current_user.artist? %>
           <h5><%= t('events.my_bookings') %></h5>
-          <%= link_to t('events.my_bookings_link'), my_bookings_path, class: "text-white btn btn-primary" %>
+          <%= link_to t('events.my_bookings_link'), my_bookings_path, class: "main-app-btn-pri" %>
         <% end %>
       </div>
     </div>

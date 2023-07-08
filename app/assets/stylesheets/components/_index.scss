@@ -9,6 +9,7 @@
 @import "shared/footer";
 @import "shared/form";
 @import "shared/genre-filter";
+@import "shared/buttons";
 @import "event/event-card";
 @import "event/map";
 @import "event/show";
@@ -16,7 +17,7 @@
 @import "event/my_events";
 @import "event/info_window";
 @import "dashboard/dashboard";
-@import "dashboard/dashboards_discover";
+@import "dashboard/dashboard_card";
 @import "dashboard/index";
 @import "discover/discover";
 @import "devise/new";

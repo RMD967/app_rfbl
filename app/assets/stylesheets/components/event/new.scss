@@ -1,3 +1,12 @@
+.new-event-step:not(.d-none) {
+  display: block;
+}
+
+/* Hidden new-event-step */
+.new-event-step.d-none {
+  display: none;
+}
+
 .new-event-container {
   width: 100%;
   padding-right: 15px;

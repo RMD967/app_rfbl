@@ -1,0 +1,52 @@
+.main-app-btn-pri {
+  background-image: linear-gradient(90deg, $purple-primary, #6942ef, #6554c0, #008cff, #0065ff, #6942ef);
+  background-size: 400%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 260px;
+  height: 52px;
+  border-radius: 20px;
+  color: $neutral-100;
+  font-weight: 700;
+}
+
+.main-app-btn-pri:hover {
+  background: none;
+  color: $purple-primary;
+  border: 2px solid $purple-primary;
+  text-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  box-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  transition: box-shadow .3s ease-in-out;
+  transition: text-shadow .3s ease-in-out;
+}
+
+.main-app-btn-sec {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: none;
+  width: 260px;
+  height: 52px;
+  gap: 10px;
+  border-radius: 20px;
+  color: $neutral-100;
+  font-weight: 500;
+  font-size: $font-size-m;
+  line-height: 140%;
+  border: 2px solid $purple-primary;
+}
+
+.main-app-btn-sec:hover {
+  background: none;
+  color: $purple-primary;
+  text-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  box-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff00de, 0px 0px 7px #ff00de, 0px 0px 8px #ff00de, 0px 0px 10px $purple-primary;
+  border: 2px solid $purple-primary;
+  transition: box-shadow .3s ease-in-out;
+  transition: text-shadow .3s ease-in-out;
+}
+
+/*.main-app-btn-pri {
+}
+*/

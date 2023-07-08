@@ -1,0 +1,8 @@
+<%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form" }) do |f| %>
+  <!-- Step 1 form inputs -->
+  <div class="new-event-form-inputs">
+    <%= f.input :title, label: t('events.event_title') %>
+    <%= f.input :genre, as: :select, collection: %w[Rock Pop Urban DJ Ballads Tropical Regional Country Instrumental Choir], label: t('events.music_genre') %>
+    <%= f.input :description, label: t('events.event_description') %>
+  </div>
+<% end %>

@@ -34,6 +34,12 @@ application.register("instruments", InstrumentsController)
 import MapController from "./map_controller"
 application.register("map", MapController)
 
+import NewEventScreensController from "./new_event_screens_controller"
+application.register("new-event-screens", NewEventScreensController)
+
+import ScrollToSectionController from "./scroll_to_section_controller"
+application.register("scroll-to-section", ScrollToSectionController)
+
 import TabsController from "./tabs_controller"
 application.register("tabs", TabsController)
 
