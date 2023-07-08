@@ -1,35 +1,41 @@
 import { Controller } from "@hotwired/stimulus";
 
-export default class extends Controller {
-  get stepTargets() {
-    return Array.from(this.element.querySelectorAll("[data-target='new-event-screens.step']"));
-  }
 
+export default class extends Controller {
   static targets = ["step"];
 
-  connect() {
-    this.stepTargets = Array.from(this.element.querySelectorAll("[data-target='new-event-screens.step']"));
-    this.currentStep = 0;
-  }
-
-
   nextStep() {
-    const currentStep = this.stepTargets[this.currentStep];
+    const currentStep = this.getCurrentStep();
+    const nextStep = currentStep.nextElementSibling;
+
     currentStep.classList.add("d-none");
-    this.currentStep++;
-    if (this.currentStep > this.stepTargets.length - 1) {
-      this.currentStep = 0;
-    }
-    this.stepTargets[this.currentStep].classList.remove("d-none");
+    nextStep.classList.remove("d-none");
   }
 
   previousStep() {
-    const currentStep = this.stepTargets[this.currentStep];
+    const currentStep = this.getCurrentStep();
+    const previousStep = currentStep.previousElementSibling;
+
     currentStep.classList.add("d-none");
-    this.currentStep--;
-    if (this.currentStep < 0) {
-      this.currentStep = this.stepTargets.length - 1;
+    previousStep.classList.remove("d-none");
+  }
+
+  createEvent(event) {
+    event.preventDefault();
+
+    // Save the event information here
+    // You can use an AJAX request or any other method to save the data
+
+    console.log("Event created!"); // Example: Logging a message to the console
+
+    // Optionally, you can submit the form manually
+    const form = event.target.closest("form");
+    if (form) {
+      form.submit();
     }
-    this.stepTargets[this.currentStep].classList.remove("d-none");
+  }
+
+  getCurrentStep() {
+    return this.stepTargets.find((step) => !step.classList.contains("d-none"));
   }
 }
