@@ -195,7 +195,7 @@ end
 
 5.times do |i|
   dashboard = Dashboard.new(
-    # avatar: AVATAR.sample,
+    avatar: AVATAR.sample,
     artist_genre: GENRE.sample,
     artist_count: rand(1..10),
     artist_name: ARTIST_NAMES.sample,
@@ -208,13 +208,6 @@ end
     artist_price: rand(50..500),
     user_id: all_users.sample.id
   )
-
-  image_path = Rails.root.join("app", "assets", "images", "dashboards", "#{i + 1}.jpg")
-
-  # Attach the image file if it exists, otherwise use a default image
-  if File.exist?(image_path)
-    dashboard.images.attach(io: File.open(image_path), filename: "#{i + 1}.jpg", content_type: "image/jpeg")
-  end
 
   dashboard.save!
   puts 'Dashboard created'

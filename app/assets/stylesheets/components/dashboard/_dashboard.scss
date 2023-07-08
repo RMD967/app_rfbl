@@ -151,35 +151,6 @@
   margin-top: 20px;
 }
 
-.dashboard-action-btn a, .dashboard-action-btn button {
-  display: inline-block;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 15px;
-  color: white;
-  text-decoration: none;
-}
-
-.dashboard-action-btn a.edit {
-  background-color: $purple-primary;
-}
-
-.dashboard-action-btn button.delete {
-  border: 1px solid red;
-  background-color: transparent;
-  color: red;
-}
-
-.dashboard-action-btn a.message {
-  background-color: $purple-primary;
-}
-
-.upload-button {
-  background-color: $purple-primary;
-  color: white;
-  padding: 15px 32px;
-}
-
 .modal .modal-dialog {
   max-width: 500px;
 }
