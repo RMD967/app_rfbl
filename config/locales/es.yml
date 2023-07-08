@@ -30,6 +30,7 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 es:
+
   login:
     welcome_back: "Bienvenido de nuevo"
     log_in: "Iniciar sesión"
@@ -88,6 +89,7 @@ es:
     edit_profile_info: "Editar Información del Perfil"
     change_password: "Cambiar Contraseña"
     log_out: "Cerrar Sesión"
+    signed_in: "Usuario conectado"
 
   password:
     change_password: "Cambiar tu contraseña"

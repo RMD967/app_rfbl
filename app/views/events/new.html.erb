@@ -8,19 +8,19 @@
   <p><%= t("events.new_event_description") %></p>
 
   <div class="new-event-form-inputs" data-controller="new-event-screens">
-    <div class="step" data-target="new-event-screens.step" data-step="1">
-  <%= render 'new_event/step1', event: @event %>
-  <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
-</div>
-<div class="step d-none" data-target="new-event-screens.step" data-step="2">
-  <%= render 'new_event/step2', event: @event %>
-  <button class="prev-step" data-action="click->new-event-screens#previousStep">Previous Step</button>
-  <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
-</div>
-<div class="step d-none" data-target="new-event-screens.step" data-step="3">
-  <%= render 'new_event/step3', event: @event %>
-  <button class="prev-step" data-action="click->new-event-screens#previousStep">Previous Step</button>
-</div>
-
+    <div class="step" data-new-event-screens-target="step" data-step="1">
+      <%= render 'new_event/step1', event: @event %>
+      <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
+    </div>
+    <div class="step d-none" data-new-event-screens-target="step" data-step="2">
+      <%= render 'new_event/step2', event: @event %>
+      <button class="prev-step" data-action="click->new-event-screens#previousStep">Previous Step</button>
+      <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
+    </div>
+    <div class="step d-none" data-new-event-screens-target="step" data-step="3">
+      <%= render 'new_event/step3', event: @event %>
+      <%= button_tag "Previous Step", class: "prev-step", data: { action: "click->new-event-screens#previousStep" } %>
+      <button class="create-event" data-action="click->new-event-screens#createEvent">Create Event</button>
+    </div>
   </div>
 </div>
