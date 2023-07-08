@@ -7,7 +7,7 @@
   <% if @dashboards.empty? %>
     <h1><%= t('dashboard.no_dashboards') %></h1>
     <p><%= t('dashboard.create_new_dashboard') %></p>
-    <%= link_to t('dashboard.create_new_button'), new_dashboard_path, class: "new-dashboard-button" %>
+    <%= link_to t('dashboard.create_new_button'), new_dashboard_path, class: "main-app-btn-pri" %>
   <% else %>
     <div class="new-dashboard-row">
       <% @dashboards.each do |dashboard| %>
@@ -25,6 +25,6 @@
         <% end %>
       <% end %>
     </div>
-    <%= link_to t('dashboard.create_new_button'), new_dashboard_path, class: "new-dashboard-button" %>
+    <%= link_to t('dashboard.create_new_button'), new_dashboard_path, class: "main-app-btn-pri" %>
   <% end %>
 </div>

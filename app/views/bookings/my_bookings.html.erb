@@ -7,7 +7,7 @@
   <% if @my_bookings.empty? %>
     <h1><%= t('booking.no_pending_events') %></h1>
     <p><%= t('booking.please_look_at_events') %></p>
-    <%= link_to t('booking.all_events'), events_path, class: "all-events-button" %>
+    <%= link_to t('booking.all_events'), events_path, class: "main-app-btn-pri" %>
   <% else %>
     <h1><%= t('booking.applied_events') %></h1>
     <div class="my-booking-row">
@@ -18,8 +18,8 @@
             <h5 class="card-title"><%= booking.event.title %></h5>
             <p class="card-subtitle"><%= t('booking.event_from', first_name: booking.event.user.first_name, last_name: booking.event.user.last_name) %></p>
             <div class="my-booking-button-group">
-              <%= link_to t('booking.details'), event_path(booking.event), class: "my-event-details-button" %>
-              <%= link_to event_booking_path(booking.event, booking), data: { turbo_method: :delete }, class: "delete-event-button", method: :delete do %>
+              <%= link_to t('booking.details'), event_path(booking.event), class: "main-app-btn-pri" %>
+              <%= link_to event_booking_path(booking.event, booking), data: { turbo_method: :delete }, class: "main-app-btn-del", method: :delete do %>
                 <p><%= t('booking.delete_position') %></p>
               <% end %>
             </div>

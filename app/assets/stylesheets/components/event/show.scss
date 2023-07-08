@@ -16,21 +16,6 @@
   box-shadow: 0px 0px 10px 0px rgb(0, 0, 0);
 }
 
-.event-show-postulate-button{
-  display: flex;
-  justify-content: center;
-  width: 260px;
-  height: 52px;
-  background: $purple-primary;
-  border-radius: 20px;
-  color: white;
-  margin-top: 40px;
-}
-
-.event-show-postulate-button:hover{
-  background: rgb(103, 0, 182);
-}
-
 .event-show-edit{
   display: flex;
   justify-content: start;
@@ -40,29 +25,6 @@
 
 .event-show-edit p {
   color: white;
-}
-
-.edit-this-event-btn {
-  display: flex;
-  justify-content: center;
-  width: 260px;
-  height: 52px;
-  background: $purple-primary;
-  border-radius: 20px;
-  color: white;
-  margin-top: 40px;
-}
-
-.delete-this-event-btn {
-  display: flex;
-  justify-content: center;
-  width: 260px;
-  height: 52px;
-  border: 1px solid red;
-  border-radius: 20px;
-  color: red;
-  margin-top: 40px;
-  background: transparent;
 }
 
 .event-show-edit input[type="submit"] {
