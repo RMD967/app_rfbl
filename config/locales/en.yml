@@ -66,8 +66,9 @@ en:
     exclusive_promotions: "Get exclusive promotions & updates straight to your inbox."
     enter_email: "Enter your email"
     subscribe: "Subscribe"
-    change_to_es: "Haz clic aquí para cambiar a Español"
-    change_to_en: "Click here to change to English"
+    change_to_es: "Cambia a Español"
+    change_to_en: "Change to English"
+    you_are_in: "You are in English"
 
   user:
     greeting: "Hello %{first_name} %{last_name}!"
@@ -208,6 +209,7 @@ en:
     views: "%{count}M"
     likes: "%{count}M"
     search_content: "Search for artists or genres"
+    see_more: "See more"
 
   events:
     title: "Title:"

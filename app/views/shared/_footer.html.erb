@@ -15,9 +15,9 @@
         <p class="footer-info-text"><%= t('footer.own_music') %></p>
 
         <div class="footer-links">
-          <a href="https://github.com/"><i class="fs-3 text-white text-decoration-none fab fa-github"></i></a>
-          <a href="https://facebook.com/"><i class="fs-3 text-white text-decoration-none fab fa-facebook"></i></a>
-          <a href="https://www.instagram.com/"><i class="fs-3 text-white text-decoration-none fab fa-instagram"></i></a>
+          <a href="https://github.com/RMD96/app_rfbl"><i class="fs-3 text-white text-decoration-none fab fa-github"></i></a>
+          <a href="https://www.facebook.com/radios.f.b.l"><i class="fs-3 text-white text-decoration-none fab fa-facebook"></i></a>
+          <a href="https://www.instagram.com/estudio.fbl/"><i class="fs-3 text-white text-decoration-none fab fa-instagram"></i></a>
         </div>
       </div>
 
@@ -32,7 +32,7 @@
         <%= link_to t('footer.create_event'), new_event_path, class: "footer-info-text" %>
       </div>
 
-      <div id="footer-nesletter-container">
+      <div id="footer-newsletter-container">
         <div class="input-container">
           <h4 class="footer-newsletter-title"><%= t('footer.newsletter_title') %></h4>
           <p class="footer-info-text"><%= t('footer.exclusive_promotions') %></p>
@@ -41,16 +41,15 @@
           <form action="/subscribe" method="POST">
             <div class="footer-input-container">
               <input type="hidden" name="user_id" value="<%= current_user.id %>">
-              <input id="email" name="email" type="email" class="email-input" placeholder="<%= t('footer.enter_email') %>" required>
-              <button class="footer-btn-primary" type="submit"><%= t('footer.subscribe') %></button>
+              <input id="email" name="email" type="email" class="newsletter-email-input" placeholder="<%= t('footer.enter_email') %>" required>
+              <button class="main-app-btn-pri" type="submit"><%= t('footer.subscribe') %></button>
             </div>
           </form>
         </div>
       </div>
     </div>
-    <div class="lang-switcher">
-      <%= I18n.locale.upcase %>
-      <br>
+    <div class="lang-switcher-container">
+      <p><%= t('footer.you_are_in') %></p>
       <% if I18n.locale == :en %>
         <%= link_to t('footer.change_to_es'), set_language_path(locale: :es), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token }, onclick: "alert('Listo pa rokear?')" %>
       <% else %>

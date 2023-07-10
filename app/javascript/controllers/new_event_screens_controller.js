@@ -21,19 +21,17 @@ export default class extends Controller {
 
   createEvent(event) {
     event.preventDefault();
-
-    console.log("Create Event button clicked!"); // Check if the button click event is detected
+    console.log("Create Event button clicked!");
 
     const form = event.target.closest("form");
     if (form) {
       const formData = new FormData(form);
-      console.log("Form data:", formData); // Check if the form data is captured correctly
+      console.log("Form data:", formData);
 
       const url = form.getAttribute("action");
-      console.log("Form action URL:", url); // Check if the form action URL is correct
+      console.log("Form action URL:", url);
 
-      // Comment out the fetch request for now to isolate the issue
-      /*
+      // Perform the AJAX request to create the event
       fetch(url, {
         method: "POST",
         body: formData,
@@ -47,9 +45,9 @@ export default class extends Controller {
           console.error("Error creating event:", error);
           // Optionally, you can handle the error or display an error message
         });
-      */
     }
   }
+}
 
 
   getCurrentStep() {

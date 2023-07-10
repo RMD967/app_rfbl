@@ -10,7 +10,7 @@
         </div>
         <div class="discover-info">
           <div class="discover-info-number">
-            <h2> 240k+ </h2>
+            <h2> <%= @dashboards.count %> </h2>
             <p> <%= t('discover.tracks') %> </p>
           </div>
           <div class="discover-info-number">
@@ -32,10 +32,10 @@
       <% if current_user.artist? %>
         <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
         <%= link_to t('discover.upload_music'), dashboards_path, class: "main-app-btn-sec" %>
-        <%= link_to 'See More/Ver Mas', '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
+        <%= link_to t('discover.see_more'), '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
       <% else %>
         <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
-        <%= link_to 'See More/Ver Mas', '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
+        <%= link_to t('discover.see_more'), '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
       <% end %>
     </div>
   </div>

@@ -3,4 +3,15 @@
   bottom: 16px;
   right: 16px;
   z-index: 1000;
+  animation: cssAnimation 0s ease-in 10s forwards;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cssAnimation {
+  to {
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+  }
 }

@@ -10,4 +10,7 @@
     </div>
     <%= f.input :duration, label: t('events.show_duration') %>
   </div>
+
+  <!-- Create Event button -->
+  <%= f.button :submit, "Create Event", class: "create-event", 'data-action': 'click->new-event-screens#createEvent' %>
 <% end %>
