@@ -8,24 +8,6 @@ class DiscoversController < ApplicationController
     @discovers = Discover.all
     @dashboards = Dashboard.all
     # @user = current_user
-
-    @discovers = @discovers.where(genre: params[:genre]) if params[:genre].present? && params[:genre] != "All"
-
-    @genres = %w[Rock Pop Urban DJ Ballads Tropical Regional Country Instrumental Choir All]
-
-    @genre_icon_classes = {
-      "Rock" => "fa-solid fa-guitar",
-      "Pop" => "fa-solid fa-headset",
-      "Urban" => "fa-solid fa-building",
-      "DJ" => "fa-solid fa-compact-disc",
-      "Ballads" => "fa-solid fa-keyboard",
-      "Tropical" => "fa-solid fa-umbrella-beach",
-      "Regional" => "fa-solid fa-hat-cowboy",
-      "Country" => "fa-solid fa-cow",
-      "Instrumental" => "fa-solid fa-person-chalkboard",
-      "Choir" => "fa-solid fa-people-group",
-      "All" => "fa-solid fa-music"
-    }
   end
 
   def show

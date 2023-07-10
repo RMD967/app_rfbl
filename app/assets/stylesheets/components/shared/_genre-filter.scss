@@ -40,6 +40,7 @@
 
 .outer-container {
   position: relative;
+  margin: 0 40px 0 40px;
 }
 
 .outer-container:before {
@@ -49,7 +50,7 @@
   left: 0;
   bottom: 0;
   width: 50px;
-  background-image: linear-gradient(to left, rgba(255, 255, 255, 0), $blue-80);
+  background-image: linear-gradient(to left, rgba(255, 255, 255, 0), #191830);
 }
 
 .outer-container:after {
@@ -59,8 +60,14 @@
   right: 0;
   bottom: 0;
   width: 50px;
-  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), $blue-80);
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0), #191830);
 }
+
+.outer-container:before,
+.outer-container:after {
+  pointer-events: none;
+}
+
 
 .genre-filter-container {
   display: flex;
@@ -70,6 +77,12 @@
   overflow-x: auto;
   max-width: 100%;
   margin: 20px 10px 20px 10px;
+  scrollbar-width: none; /* hide the main scrollbar in Firefox */
+  -ms-overflow-style: none; /* hide the main scrollbar in Internet Explorer and Edge */
+}
+
+.genre-filter-container::-webkit-scrollbar {
+  display: none; /* hide the main scrollbar in Chrome, Safari, and Opera */
 }
 
 .genre-icon-link {
@@ -79,6 +92,7 @@
   flex-direction: column;
   align-items: center;
   font-size: $font-size-m;
+  flex: 0 0 auto; /* ensure the links don't expand to fill the container */
 }
 
 .event-cards-render{

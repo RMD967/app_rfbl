@@ -10,27 +10,26 @@
   <div class="new-event-form-inputs" data-controller="new-event-screens">
     <!-- Step 1 form inputs -->
     <div class="step" data-new-event-screens-target="step" data-step="1">
-      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form" }) do |f| %>
+      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form-step-1" }) do |f| %>
         <%= render 'new_event/step1', event: f.object %>
-        <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
+        <%= button_tag "Next Step", class: "next-step", data: { action: "click->new-event-screens#nextStep" } %>
       <% end %>
     </div>
 
     <!-- Step 2 form inputs -->
     <div class="step d-none" data-new-event-screens-target="step" data-step="2">
-      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form" }) do |f| %>
+      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form-step-2" }) do |f| %>
         <%= render 'new_event/step2', event: f.object %>
-        <button class="prev-step" data-action="click->new-event-screens#previousStep">Previous Step</button>
-        <button class="next-step" data-action="click->new-event-screens#nextStep">Next Step</button>
+        <%= button_tag "Previous Step", class: "prev-step", data: { action: "click->new-event-screens#previousStep" } %>
+        <%= button_tag "Next Step", class: "next-step", data: { action: "click->new-event-screens#nextStep" } %>
       <% end %>
     </div>
 
     <!-- Step 3 form inputs -->
     <div class="step d-none" data-new-event-screens-target="step" data-step="3">
-      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form" }) do |f| %>
+      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form-step-3" }) do |f| %>
         <%= render 'new_event/step3', event: f.object %>
         <%= button_tag "Previous Step", class: "prev-step", data: { action: "click->new-event-screens#previousStep" } %>
-        <%= f.submit "Create Event", class: "create-event" %>
       <% end %>
     </div>
   </div>
