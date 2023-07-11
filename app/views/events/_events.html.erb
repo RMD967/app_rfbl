@@ -48,6 +48,6 @@
       data-map-markers-value="<%= markers.to_json %>"
       data-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>">
     </div>
-    <button data-action="click->hide-stuff#toggleMap"><%= t('events.map') %></button>
+    <button data-action="click->hide-stuff#toggleMap" class="show-map-container-btn"><%= t('events.map') %></button>
   </div>
 </div>
