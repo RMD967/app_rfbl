@@ -1,0 +1,10 @@
+.event-render-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 40px;
+}
+
+.event-render-col {
+  display: flex;
+  flex-direction: column;
+}

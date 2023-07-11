@@ -1,37 +1,20 @@
-<div id="<%= dom_id event %>" class="container">
-  <div class="row mt-4">
-    <div class="col-sm-6">
-      <p>
-        <strong><%= t('events.title') %></strong>
-        <%= event.title %>
-      </p>
-
-      <p>
-        <strong><%= t('events.description') %></strong>
-        <%= event.description %>
-      </p>
-
-      <p>
-        <strong><%= t('events.date') %></strong>
-        <%= event.datetime %>
-      </p>
+<div id="<%= dom_id event %>">
+  <div class="event-render-row">
+    <div class="event-render-col">
+      <h3><%= t('events.title') %></h3>
+      <p> <%= event.title %> </p>
+      <h3><%= t('events.description') %></h3>
+      <p> <%= event.description %> </p>
+      <h3><%= t('events.date') %></h3>
+      <p> <%= event.datetime %> </p>
     </div>
-
-    <div class="col-sm-6">
-      <p>
-        <strong><%= t('events.duration') %></strong>
-        <%= event.duration %>
-      </p>
-
-      <p>
-        <strong><%= t('events.genre') %></strong>
-        <%= event.genre %>
-      </p>
-
-      <p>
-        <strong><%= t('events.address') %></strong>
-        <%= event.address %>
-      </p>
+    <div class="event-render-col">
+      <h3><%= t('events.duration') %></h3>
+      <p> <%= event.duration %> </p>
+      <h3><%= t('events.genre') %></h3>
+      <p> <%= event.genre %> </p>
+      <h3><%= t('events.address') %></h3>
+      <p> <%= event.address %> </p>
     </div>
   </div>
 </div>
