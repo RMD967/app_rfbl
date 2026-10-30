@@ -3,7 +3,7 @@
   <h1><%= @user.email %></h1>
   <div class="view-profile-picture">
     <div class='user-profile-picture'>
-      <% if @user.profile_picture.present? %>
+      <% if @user.profile_picture.attached? %>
         <%= cl_image_tag @user.profile_picture.key, alt: t('user.profile_picture') %>
       <% else %>
         <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", alt: t('user.alt_profile_picture') %>
@@ -13,7 +13,7 @@
         <%= f.file_field :profile_picture, id: 'my-pencil-icon', style: 'display: none;', data: { target: "upload.fileField" } %>
       <% end %>
     </div>
-    <% if @user.profile_picture.present? %>
+    <% if @user.profile_picture.attached? %>
       <%= form_for @user, url: delete_profile_picture_user_path(@user), method: :delete do |f| %>
         <%= f.submit t('user.delete_image'), class: 'main-app-btn-del' %>
       <% end %>

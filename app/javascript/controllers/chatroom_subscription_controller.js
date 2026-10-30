@@ -1,56 +1,53 @@
 import { Controller } from "@hotwired/stimulus"
 import { createConsumer } from "@rails/actioncable"
-import * as Turbo from "@hotwired/turbo"
 
-/* export default class extends Controller {
-  static values = { chatroomId: Number }
-  static targets = ["messages"]
+export default class extends Controller {
+  static values = { chatroomId: Number, currentUserId: Number }
+  static targets = ["messages", "form", "input"]
 
   connect() {
     this.channel = createConsumer().subscriptions.create(
       { channel: "ChatroomChannel", id: this.chatroomIdValue },
       { received: data => this.#insertMessageAndScrollDown(data) }
     )
-    console.log(`Subscribed to the chatroom with the id ${this.chatroomIdValue}.`)
+    this.#scrollToBottom()
   }
+
   #insertMessageAndScrollDown(data) {
-    this.messagesTarget.insertAdjacentHTML("beforeend", data)
-    this.messagesTarget.scrollTo(0, this.messagesTarget.scrollHeight)
+    const isCurrentUser = this.currentUserIdValue === data.sender_id
+    const tempDiv = document.createElement("div")
+    tempDiv.innerHTML = data.message_html.trim()
+    const messageWrapper = tempDiv.firstElementChild
+
+    if (messageWrapper) {
+      if (isCurrentUser) {
+        messageWrapper.classList.remove("other-user-message")
+        messageWrapper.classList.add("current-user-message")
+      } else {
+        messageWrapper.classList.remove("current-user-message")
+        messageWrapper.classList.add("other-user-message")
+      }
+      this.messagesTarget.appendChild(messageWrapper)
+      this.#scrollToBottom()
+    }
+  }
+
+  #scrollToBottom() {
+    this.messagesTarget.scrollTop = this.messagesTarget.scrollHeight
   }
 
   resetForm(event) {
-    event.target.reset()
+    if (this.hasInputTarget) {
+      this.inputTarget.value = ""
+    }
+    if (event && event.target) {
+      event.target.reset()
+    }
   }
 
   disconnect() {
-    console.log("Unsubscribed from the chatroom")
-    this.channel.unsubscribe()
-  }
-} */
-export default class extends Controller {
-  static values = { chatroomId: Number }
-  static targets = ["messages"]
-
-  connect() {
-    this.channel = createConsumer().subscriptions.create(
-      { channel: "ChatroomChannel", id: this.chatroomIdValue },
-      { received: data => this.messagesTarget.insertAdjacentHTML("beforeend", data) }
-    )
-    console.log(`Subscribed to the chatroom with the id ${this.chatroomIdValue}.`)
-
-    // Get the form and send message button elements
-    const form = document.getElementById("message-form");
-    const sendButton = document.getElementById("send-message-button");
-
-    // Add an event listener to the send message button
-    sendButton.addEventListener("click", (event) => {
-      event.preventDefault(); // Prevent the default form submission
-
-      // Submit the form using Turbo Streams
-      Turbo.startStream("message-form", {
-        action: "submit",
-        target: "messages",
-      });
-    });
+    if (this.channel) {
+      this.channel.unsubscribe()
+    }
   }
 }

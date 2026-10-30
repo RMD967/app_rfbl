@@ -4,7 +4,7 @@
 
 <div class="dashboard-container-main">
   <img src="https://th.bing.com/th/id/OIG.HYuQ2tVozTi_krzbh3Td?pid=ImgGn" alt="Cover photo" class="artist-dashboard-banner">
-  <% if @dashboard.avatar.present? %>
+  <% if @dashboard.avatar.attached? %>
     <%= cl_image_tag @dashboard.avatar.key, alt: "Profile Picture", class: "dashboard-banner-logo" %>
   <% else %>
     <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", class: "dashboard-banner-logo", alt: "Alt Profile Picture" %>
@@ -150,8 +150,10 @@
       </div>
     <% end %>
 
-    <% if current_user.id != @dashboard.user.id && @dashboard.user.artist %>
-      <%= link_to t('dashboard.send_message'), chatrooms_path(user_id: @dashboard.user), class: "main-app-btn-pri", data: { turbo_method: :post } if policy(Event).new? %>
+    <% if current_user.id != @dashboard.user.id %>
+      <%= button_to chatrooms_path(user_id: @dashboard.user_id), method: :post, class: "main-app-btn-pri my-3" do %>
+        <i class="ri-chat-3-line"></i> <%= t('dashboard.send_message', default: 'Chat with Musician') %>
+      <% end %>
     <% end %>
   </div>
 </div>

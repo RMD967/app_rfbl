@@ -1,8 +1,7 @@
 class ChatroomPolicy < ApplicationPolicy
   class Scope < Scope
-    # NOTE: Be explicit about which records you allow access to!
     def resolve
-      @user.chatrooms
+      user.chatrooms
     end
   end
 
@@ -11,8 +10,7 @@ class ChatroomPolicy < ApplicationPolicy
   end
 
   def show?
-    # Define the authorization rules for the show action here
-    true
+    record.users.include?(user)
   end
 
   def create?
@@ -20,6 +18,6 @@ class ChatroomPolicy < ApplicationPolicy
   end
 
   def destroy?
-    record.user == user
+    record.users.include?(user)
   end
 end

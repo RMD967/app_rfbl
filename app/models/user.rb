@@ -27,4 +27,8 @@ class User < ApplicationRecord
   def admin_of_dashboard?(dashboard)
     self.admin && self.admin_dashboards.include?(dashboard)
   end
+
+  def full_name
+    "#{first_name} #{last_name}".strip.presence || email.split('@').first.capitalize
+  end
 end

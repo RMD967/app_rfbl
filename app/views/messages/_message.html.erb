@@ -1,7 +1,15 @@
-<div id="message-<%= message.id %>">
-  <small>
-    <strong><%= message.user.first_name %></strong>
-    <i><%= message.created_at.strftime("%a %b %e at %l:%M %p") %></i>
-  </small>
-  <p><%= message.content %></p>
+<% 
+  is_mine = (local_assigns[:current_user] && message.user == current_user)
+  msg_class = is_mine ? "current-user-message" : "other-user-message"
+%>
+<div class="message-wrapper <%= msg_class %>" id="message-<%= message.id %>" data-sender-id="<%= message.user_id %>">
+  <div class="message-bubble">
+    <div class="message-header">
+      <span class="message-sender"><%= message.user.full_name %></span>
+      <span class="message-time"><%= message.created_at.strftime("%l:%M %p") %></span>
+    </div>
+    <div class="message-content">
+      <%= message.content %>
+    </div>
+  </div>
 </div>

@@ -6,11 +6,15 @@
           <%= link_to event_path(event), class: "text-decoration-none" do %>
             <div class="event-card-container">
               <div class="event-card">
-                <%= cl_image_tag event.image.key, class: "event-card-image" %>
+                <% if event.image.attached? %>
+                  <%= cl_image_tag event.image.key, class: "event-card-image" %>
+                <% else %>
+                  <%= image_tag "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80", class: "event-card-image" %>
+                <% end %>
                 <div class="event-card-header">
                   <h5 class="event-card-main-title"><%= event.title %></h5>
                   <div class="event-card-user-details">
-                    <% if event.user.profile_picture.present? %>
+                    <% if event.user.profile_picture.attached? %>
                       <%= cl_image_tag event.user.profile_picture.key, alt: "Profile Picture" %>
                     <% else %>
                       <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", alt: "Alt Profile Picture" %>

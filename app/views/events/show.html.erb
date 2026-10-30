@@ -11,16 +11,46 @@
     <% end %>
   </div>
 
-  <% if current_user.artist && current_user != @event.user %>
-    <% if current_user.applied_to?(@event) %>
-      <%= form_with url: user_received_messages_path(@event.user), method: :post, id: "message-form" do |f| %>
-        <%= f.hidden_field :content, value: "Your message here" %>
-        <%= f.submit t('events.send_message'), class: "main-app-btn-pri", id: "send-message-button" %>
+  <% if current_user != @event.user %>
+    <div class="event-chat-action my-3 d-flex align-items-center gap-2">
+      <%= button_to chatrooms_path(user_id: @event.user_id, event_id: @event.id), method: :post, class: "main-app-btn-pri" do %>
+        <i class="ri-chat-3-line"></i> <%= t('events.chat_with_organizer', default: 'Chat with Organizer') %>
       <% end %>
-    <% else %>
-      <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "main-app-btn-pri", style: "align-items: flex-end; margin-top: 40px;" do %>
-        <p><%= t('events.postulate_position') %></p>
+
+      <% if current_user.artist? %>
+        <% if current_user.applied_to?(@event) %>
+          <span class="badge bg-success d-flex align-items-center px-3 py-2">
+            <i class="ri-check-line me-1"></i> <%= t('events.applied', default: 'Applied') %>
+          </span>
+        <% else %>
+          <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "main-app-btn-pri" do %>
+            <p class="m-0"><%= t('events.postulate_position') %></p>
+          <% end %>
+        <% end %>
       <% end %>
+    </div>
+  <% else %>
+    <% if @event.bookings.any? %>
+      <div class="event-applicants my-4 p-3 rounded" style="background: #2A2A3F;">
+        <h5 class="mb-3 text-white"><i class="ri-user-star-line text-primary"></i> Interested Musicians (<%= @event.bookings.count %>)</h5>
+        <div class="d-flex flex-column gap-2">
+          <% @event.bookings.each do |booking| %>
+            <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background: #1F1F2C;">
+              <div class="d-flex align-items-center gap-2">
+                <% if booking.user.profile_picture.attached? %>
+                  <%= cl_image_tag booking.user.profile_picture.key, class: "chat-avatar", style: "width:36px;height:36px;" %>
+                <% else %>
+                  <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png" class="chat-avatar" style="width:36px;height:36px;">
+                <% end %>
+                <span class="text-white"><strong><%= booking.user.full_name %></strong></span>
+              </div>
+              <%= button_to chatrooms_path(user_id: booking.user_id, event_id: @event.id), method: :post, class: "btn btn-sm btn-outline-primary" do %>
+                <i class="ri-chat-3-line"></i> Chat
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </div>
     <% end %>
   <% end %>
 
