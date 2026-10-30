@@ -1,0 +1,92 @@
+<div class="favorites-container">
+  <div class="favorites-header">
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+      <div>
+        <h2 class="m-0"><i class="ri-bookmark-3-line text-warning"></i> <%= t('favorites.title', default: 'Saved Favorites') %></h2>
+        <p class="favorites-subtitle"><%= t('favorites.subtitle', default: 'Events and musicians you bookmarked for easy booking.') %></p>
+      </div>
+      <span class="favorites-total-pill"><%= @favorites.count %> <%= t('favorites.saved_items', default: 'saved') %></span>
+    </div>
+  </div>
+
+  <% if @favorites.empty? %>
+    <div class="favorites-empty text-center">
+      <div class="fav-empty-icon">
+        <i class="ri-bookmark-line ri-4x text-muted"></i>
+      </div>
+      <h3><%= t('favorites.no_favorites_yet', default: 'No favorites yet') %></h3>
+      <p class="text-muted"><%= t('favorites.empty_desc', default: 'Click the bookmark icon on any event or musician to save them here for quick access.') %></p>
+      <div class="d-flex justify-content-center gap-3 mt-3">
+        <%= link_to events_path, class: "main-app-btn-pri" do %>
+          <i class="ri-ticket-2-line"></i> <%= t('navbar.events') %>
+        <% end %>
+        <%= link_to discovers_path, class: "main-app-btn-sec" do %>
+          <i class="ri-music-line"></i> <%= t('navbar.discover') %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <!-- Tabs -->
+    <ul class="nav nav-pills fav-tabs mb-4 justify-content-center" id="favTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="all-fav-tab" data-bs-toggle="pill" data-bs-target="#all-fav" type="button" role="tab">
+          <%= t('favorites.all', default: 'All') %> (<%= @favorites.count %>)
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="events-fav-tab" data-bs-toggle="pill" data-bs-target="#events-fav" type="button" role="tab">
+          <i class="ri-ticket-2-line"></i> <%= t('navbar.events') %> (<%= @favorite_events.count %>)
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="artists-fav-tab" data-bs-toggle="pill" data-bs-target="#artists-fav" type="button" role="tab">
+          <i class="ri-music-2-line"></i> <%= t('discover.artists', default: 'Musicians') %> (<%= @favorite_dashboards.count %>)
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Contents -->
+    <div class="tab-content" id="favTabContent">
+      <!-- ALL -->
+      <div class="tab-pane fade show active" id="all-fav" role="tabpanel">
+        <div class="fav-grid">
+          <% @favorites.each do |fav| %>
+            <% item = fav.favoritable %>
+            <% next unless item.present? %>
+            <% if item.is_a?(Event) %>
+              <%= render partial: "favorites/event_fav_card", locals: { event: item } %>
+            <% elsif item.is_a?(Dashboard) %>
+              <%= render partial: "favorites/artist_fav_card", locals: { dashboard: item } %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- EVENTS ONLY -->
+      <div class="tab-pane fade" id="events-fav" role="tabpanel">
+        <% if @favorite_events.empty? %>
+          <p class="text-center text-muted py-4"><%= t('favorites.no_events', default: 'No events saved yet.') %></p>
+        <% else %>
+          <div class="fav-grid">
+            <% @favorite_events.each do |event| %>
+              <%= render partial: "favorites/event_fav_card", locals: { event: event } %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- ARTISTS ONLY -->
+      <div class="tab-pane fade" id="artists-fav" role="tabpanel">
+        <% if @favorite_dashboards.empty? %>
+          <p class="text-center text-muted py-4"><%= t('favorites.no_artists', default: 'No musicians saved yet.') %></p>
+        <% else %>
+          <div class="fav-grid">
+            <% @favorite_dashboards.each do |dashboard| %>
+              <%= render partial: "favorites/artist_fav_card", locals: { dashboard: dashboard } %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

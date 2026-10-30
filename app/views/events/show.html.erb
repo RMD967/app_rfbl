@@ -11,8 +11,10 @@
     <% end %>
   </div>
 
-  <% if current_user != @event.user %>
-    <div class="event-chat-action my-3 d-flex align-items-center gap-2">
+  <div class="event-actions-bar my-3 d-flex flex-wrap align-items-center gap-2">
+    <%= render partial: "favorites/favorite_button", locals: { favoritable: @event, show_label: true } %>
+
+    <% if current_user != @event.user %>
       <%= button_to chatrooms_path(user_id: @event.user_id, event_id: @event.id), method: :post, class: "main-app-btn-pri" do %>
         <i class="ri-chat-3-line"></i> <%= t('events.chat_with_organizer', default: 'Chat with Organizer') %>
       <% end %>

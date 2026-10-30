@@ -2,7 +2,7 @@
   <h1><%= t('user.greeting', first_name: @user.first_name, last_name: @user.last_name) %></h1>
   <p class="user-email-text"><%= @user.email %></p>
 
-  <!-- Follow Stats Bar -->
+  <!-- Follow & Favorite Stats Bar -->
   <div class="user-follow-stats my-3 d-flex justify-content-center gap-4">
     <div class="stat-box text-center">
       <h3 class="m-0 text-white font-weight-bold"><%= @user.following.count %></h3>
@@ -14,6 +14,12 @@
         <span class="text-muted small"><%= t('user.followers', default: 'Followers') %></span>
       </div>
     <% end %>
+    <div class="stat-box text-center">
+      <%= link_to favorites_path, class: "text-decoration-none" do %>
+        <h3 class="m-0 text-warning font-weight-bold"><%= @user.favorites.count %></h3>
+        <span class="text-muted small"><%= t('favorites.title', default: 'Favorites') %></span>
+      <% end %>
+    </div>
   </div>
 
   <div class="view-profile-picture">
@@ -69,6 +75,9 @@
   <% end %>
 
   <div class="user-profile-buttons">
+    <%= link_to favorites_path, class: "btn btn-outline-warning w-100 mb-2 d-flex align-items-center justify-content-center gap-2" do %>
+      <i class="ri-bookmark-3-line"></i> <%= t('favorites.view_saved', default: 'View Saved Favorites') %> (<%= @user.favorites.count %>)
+    <% end %>
     <%= link_to t('user.edit_profile_info'), edit_user_registration_path %>
     <%= link_to t('user.change_password'), edit_password_user_path(@user) %>
     <%= link_to t('user.log_out'), destroy_user_session_path, data: { turbo_method: :delete }, class: ""  %>

@@ -3,6 +3,7 @@ class Event < ApplicationRecord
   has_one_attached :image
   has_many :bookings
   has_many :users, through: :bookings, source: :user
+  has_many :favorites, as: :favoritable, dependent: :destroy
   belongs_to :user
   geocoded_by :address
   after_validation :geocode, if: :will_save_change_to_address?

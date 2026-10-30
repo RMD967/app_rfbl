@@ -1,0 +1,26 @@
+<%= turbo_frame_tag dom_id(favoritable, :favorite_button) do %>
+  <% is_fav = current_user&.favorited?(favoritable) %>
+  <% if is_fav %>
+    <%= button_to favorite_path(id: 0, favoritable_type: favoritable.class.name, favoritable_id: favoritable.id),
+                  method: :delete,
+                  class: "btn-favorite is-favorited #{local_assigns[:extra_class]}",
+                  title: t('favorites.remove', default: 'Remove from Favorites'),
+                  form: { data: { turbo: true } } do %>
+      <i class="ri-bookmark-fill"></i>
+      <% if local_assigns[:show_label] %>
+        <span class="btn-fav-text"><%= t('favorites.saved', default: 'Saved') %></span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= button_to favorites_path(favoritable_type: favoritable.class.name, favoritable_id: favoritable.id),
+                  method: :post,
+                  class: "btn-favorite not-favorited #{local_assigns[:extra_class]}",
+                  title: t('favorites.add', default: 'Save to Favorites'),
+                  form: { data: { turbo: true } } do %>
+      <i class="ri-bookmark-line"></i>
+      <% if local_assigns[:show_label] %>
+        <span class="btn-fav-text"><%= t('favorites.save', default: 'Save') %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

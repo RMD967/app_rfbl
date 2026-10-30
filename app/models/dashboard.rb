@@ -9,6 +9,7 @@ class Dashboard < ApplicationRecord
 
   has_many :user_dashboards, dependent: :destroy
   has_many :users, through: :user_dashboards
+  has_many :favorites, as: :favoritable, dependent: :destroy
 
   validates :artist_genre, presence: true
   validates :artist_count, presence: true

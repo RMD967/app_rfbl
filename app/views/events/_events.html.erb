@@ -4,7 +4,10 @@
       <% if event && event.persisted? %>
         <div class="event-card">
           <%= link_to event_path(event), class: "text-decoration-none" do %>
-            <div class="event-card-container">
+            <div class="event-card-container position-relative">
+              <div class="event-card-fav-btn" style="position: absolute; top: 12px; right: 12px; z-index: 5;">
+                <%= render partial: "favorites/favorite_button", locals: { favoritable: event } %>
+              </div>
               <div class="event-card">
                 <% if event.image.attached? %>
                   <%= cl_image_tag event.image.key, class: "event-card-image" %>

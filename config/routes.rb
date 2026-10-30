@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   root to: "discovers#index"
   get '/my_events', to: 'events#my_events', as: :my_events
   get "my_bookings", to: "bookings#my_bookings", as: :my_bookings
+  resources :favorites, only: [:index, :create, :destroy]
   resources :discovers, except: [:update]
   resources :events do
     resources :bookings, only: %i[index show create destroy]

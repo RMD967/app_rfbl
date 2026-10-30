@@ -21,8 +21,25 @@ class User < ApplicationRecord
   has_many :passive_follows, class_name: "Follow", foreign_key: "followed_id", dependent: :destroy
   has_many :followers, through: :passive_follows, source: :follower
 
+  # Favorites
+  has_many :favorites, dependent: :destroy
+  has_many :favorite_events, through: :favorites, source: :favoritable, source_type: 'Event'
+  has_many :favorite_dashboards, through: :favorites, source: :favoritable, source_type: 'Dashboard'
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  def favorited?(favoritable)
+    favorites.exists?(favoritable: favoritable)
+  end
+
+  def favorite(favoritable)
+    favorites.find_or_create_by(favoritable: favoritable)
+  end
+
+  def unfavorite(favoritable)
+    favorites.find_by(favoritable: favoritable)&.destroy
+  end
 
   def follow(other_user)
     following << other_user unless following?(other_user) || other_user == self

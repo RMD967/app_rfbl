@@ -1,0 +1,28 @@
+<div class="fav-card" id="<%= dom_id(event, :fav_card) %>">
+  <div class="fav-card-img-wrapper">
+    <% if event.image.attached? %>
+      <%= cl_image_tag event.image.key, class: "fav-card-img" %>
+    <% else %>
+      <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80" class="fav-card-img" alt="<%= event.title %>">
+    <% end %>
+    <div class="fav-card-badge event-badge">
+      <i class="ri-ticket-2-line"></i> Event
+    </div>
+    <div class="fav-card-action">
+      <%= render partial: "favorites/favorite_button", locals: { favoritable: event } %>
+    </div>
+  </div>
+
+  <div class="fav-card-body">
+    <h5 class="fav-card-title"><%= link_to event.title, event_path(event), class: "text-white text-decoration-none" %></h5>
+    <p class="fav-card-date"><i class="ri-calendar-line text-primary"></i> <%= event.datetime ? event.datetime.strftime("%a %b %e, %l:%M %p") : "Upcoming" %></p>
+    <p class="fav-card-location"><i class="ri-map-pin-line text-danger"></i> <%= event.address %></p>
+    
+    <div class="fav-card-footer mt-2 d-flex justify-content-between align-items-center">
+      <span class="badge bg-secondary"><%= event.genre %></span>
+      <%= link_to event_path(event), class: "btn btn-sm btn-outline-primary" do %>
+        View Details <i class="ri-arrow-right-line"></i>
+      <% end %>
+    </div>
+  </div>
+</div>
