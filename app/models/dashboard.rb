@@ -20,4 +20,8 @@ class Dashboard < ApplicationRecord
   validates :artist_description, presence: true
   validates :artist_price, presence: true
   validates :artist_count, numericality: { only_integer: true }
+
+  def followers_count
+    user&.followers&.count || 0
+  end
 end

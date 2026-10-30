@@ -16,7 +16,10 @@
     <% end %>
   </ul>
   <div class="artist-dashboard-info">
-    <h1><%= @dashboard.artist_name %></h1>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 my-2">
+      <h1 class="m-0"><%= @dashboard.artist_name %></h1>
+      <%= render partial: "follows/follow_button", locals: { artist: @dashboard.user } %>
+    </div>
     <h4><%= @dashboard.artist_description %></h4>
     <div class="dashboard-info-icons">
       <div class="dashboard-info-icon">

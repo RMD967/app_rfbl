@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@artist, :follow_section) do %>
+  <%= render partial: "follows/follow_button", locals: { artist: @artist } %>
+<% end %>

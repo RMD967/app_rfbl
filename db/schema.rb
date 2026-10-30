@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_08_152629) do
+ActiveRecord::Schema[7.0].define(version: 2026_10_30_222321) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -115,6 +115,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_152629) do
     t.index ["user_id"], name: "index_events_on_user_id"
   end
 
+  create_table "follows", force: :cascade do |t|
+    t.bigint "follower_id", null: false
+    t.bigint "followed_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["followed_id"], name: "index_follows_on_followed_id"
+    t.index ["follower_id", "followed_id"], name: "index_follows_on_follower_id_and_followed_id", unique: true
+    t.index ["follower_id"], name: "index_follows_on_follower_id"
+  end
+
   create_table "invitations", force: :cascade do |t|
     t.bigint "dashboard_id", null: false
     t.string "email"
@@ -184,6 +194,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_08_152629) do
   add_foreign_key "dashboards", "users"
   add_foreign_key "discovers", "dashboards"
   add_foreign_key "events", "users", on_delete: :cascade
+  add_foreign_key "follows", "users", column: "followed_id"
+  add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "invitations", "dashboards"
   add_foreign_key "messages", "chatrooms"
   add_foreign_key "messages", "users"

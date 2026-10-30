@@ -390,3 +390,74 @@
     }
   }
 }
+
+// ==============================
+// 4. FOLLOW ARTIST BUTTON & PILL
+// ==============================
+.follow-action-wrapper {
+  .btn-follow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 16px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: none;
+
+    &.not-following {
+      background: $purple-primary;
+      color: white;
+      box-shadow: 0 4px 12px rgba(162, 89, 255, 0.3);
+
+      &:hover {
+        background: darken(#A259FF, 8%);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(162, 89, 255, 0.45);
+      }
+    }
+
+    &.following {
+      background: $blue-60;
+      color: $neutral-80;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      i {
+        color: #1EDD88;
+      }
+
+      &:hover {
+        background: rgba(253, 16, 21, 0.15);
+        color: #ff6b6e;
+        border-color: rgba(253, 16, 21, 0.4);
+
+        i {
+          color: #ff6b6e;
+        }
+      }
+    }
+  }
+
+  .followers-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: $blue-80;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.85rem;
+    color: $neutral-80;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    i {
+      color: #FD1015;
+    }
+
+    strong {
+      color: white;
+    }
+  }
+}

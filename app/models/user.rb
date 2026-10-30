@@ -13,8 +13,28 @@ class User < ApplicationRecord
   has_many :dashboards, through: :user_dashboards
   has_many :admin_dashboards, class_name: "Dashboard", foreign_key: "admin_id"
   has_many :created_events, class_name: 'Event', foreign_key: 'user_id'
+
+  # Follow associations
+  has_many :active_follows, class_name: "Follow", foreign_key: "follower_id", dependent: :destroy
+  has_many :following, through: :active_follows, source: :followed
+
+  has_many :passive_follows, class_name: "Follow", foreign_key: "followed_id", dependent: :destroy
+  has_many :followers, through: :passive_follows, source: :follower
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
+
+  def follow(other_user)
+    following << other_user unless following?(other_user) || other_user == self
+  end
+
+  def unfollow(other_user)
+    following.delete(other_user)
+  end
+
+  def following?(other_user)
+    following.include?(other_user)
+  end
 
   def likes
     self.discover.likes
@@ -30,5 +50,9 @@ class User < ApplicationRecord
 
   def full_name
     "#{first_name} #{last_name}".strip.presence || email.split('@').first.capitalize
+  end
+
+  def artist_dashboard
+    dashboards.first || Dashboard.find_by(user_id: id)
   end
 end

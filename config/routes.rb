@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   end
 
   resources :users do
+    resource :follow, only: [:create, :destroy]
     member do
       patch :update_profile_picture
     end

@@ -1,0 +1,29 @@
+<%= turbo_frame_tag dom_id(artist, :follow_section) do %>
+  <div class="follow-action-wrapper d-inline-flex align-items-center gap-3">
+    <% if current_user.present? && current_user != artist %>
+      <% if current_user.following?(artist) %>
+        <%= button_to user_follow_path(artist),
+                      method: :delete,
+                      class: "btn-follow following",
+                      form: { data: { turbo: true } } do %>
+          <i class="ri-check-line"></i>
+          <span class="btn-follow-text"><%= t('follow.following', default: 'Following') %></span>
+        <% end %>
+      <% else %>
+        <%= button_to user_follow_path(artist),
+                      method: :post,
+                      class: "btn-follow not-following",
+                      form: { data: { turbo: true } } do %>
+          <i class="ri-user-add-line"></i>
+          <span class="btn-follow-text"><%= t('follow.follow_artist', default: 'Follow') %></span>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <div class="followers-pill">
+      <i class="ri-heart-3-fill"></i>
+      <strong><%= artist.followers.count %></strong>
+      <span><%= t('follow.followers_label', default: 'followers') %></span>
+    </div>
+  </div>
+<% end %>
