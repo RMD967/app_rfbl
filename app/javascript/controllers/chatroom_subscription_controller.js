@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { createConsumer } from "@rails/actioncable"
-import Turbo from "@hotwired/turbo"
+import * as Turbo from "@hotwired/turbo"
 
 /* export default class extends Controller {
   static values = { chatroomId: Number }

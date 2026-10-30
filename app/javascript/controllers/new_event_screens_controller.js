@@ -47,8 +47,6 @@ export default class extends Controller {
         });
     }
   }
-}
-
 
   getCurrentStep() {
     return this.stepTargets.find((step) => !step.classList.contains("d-none"));
