@@ -78,7 +78,7 @@ export default class extends Controller {
   setupIntersectionObserver() {
     const options = {
       root: this.hasFeedViewportTarget ? this.feedViewportTarget : null,
-      threshold: 0.25
+      threshold: 0.6
     }
 
     this.observer = new IntersectionObserver((entries) => {
@@ -86,9 +86,9 @@ export default class extends Controller {
         const video = entry.target.querySelector("video")
         if (!video) return
 
-        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
           this.playVideo(video)
-        } else {
+        } else if (!entry.isIntersecting || entry.intersectionRatio < 0.25) {
           this.pauseVideo(video)
         }
       })
@@ -397,11 +397,13 @@ export default class extends Controller {
   onTimeUpdate(event) {
     if (!this.isAutoScroll) return
     const video = event.currentTarget
-    // Trigger when within 0.35s of video completion
-    if (video.duration && video.currentTime >= Math.max(0, video.duration - 0.35)) {
-      if (!video._autoScrolled) {
-        video._autoScrolled = true
-        this.triggerAutoScroll(video)
+    // Trigger when within 0.4s of video completion and video has valid duration
+    if (video.duration && Number.isFinite(video.duration) && video.duration > 0.5) {
+      if (video.currentTime >= video.duration - 0.4) {
+        if (!video._autoScrolled) {
+          video._autoScrolled = true
+          this.triggerAutoScroll(video)
+        }
       }
     }
   }
@@ -437,10 +439,15 @@ export default class extends Controller {
 
     if (!nextCard) return
 
-    // Smoothly scroll viewport directly to next card
-    if (this.hasFeedViewportTarget) {
+    // Immediately pause the finished video to avoid background decoder interference
+    video.pause()
+
+    // Smoothly scroll viewport directly to next card using exact relative coordinates
+    if (this.hasFeedViewportTarget && this.cardTargets.length > 0) {
+      const baseTop = this.cardTargets[0].offsetTop || 0
+      const targetTop = nextCard.offsetTop - baseTop
       this.feedViewportTarget.scrollTo({
-        top: nextCard.offsetTop,
+        top: Math.max(0, targetTop),
         behavior: "smooth"
       })
     } else {
@@ -451,9 +458,14 @@ export default class extends Controller {
     const nextVideo = nextCard.querySelector("video")
     if (nextVideo) {
       nextVideo._autoScrolled = false
+      nextVideo.currentTime = 0
+      if (this.isAutoScroll) {
+        nextVideo.loop = false
+        nextVideo.removeAttribute("loop")
+      }
       setTimeout(() => {
         this.playVideo(nextVideo)
-      }, 350)
+      }, 450)
     }
   }
 

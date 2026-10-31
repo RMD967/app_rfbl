@@ -32,10 +32,9 @@
   <!-- Video Player Element -->
   <div class="tiktok-video-wrapper">
     <video class="tiktok-video"
-           autoplay
            muted
            playsinline
-           preload="auto"
+           preload="metadata"
            data-tiktok-feed-target="video"
            data-action="click->tiktok-feed#togglePlay
                         timeupdate->tiktok-feed#onTimeUpdate
