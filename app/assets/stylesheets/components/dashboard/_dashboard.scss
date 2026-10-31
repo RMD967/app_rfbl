@@ -1,224 +1,501 @@
-.dashboard-container-main {
-  margin: 40px;
+// Artist Profile & Dashboard SCSS
+@import "config/colors";
+
+.artist-profile-page {
+  max-width: 1100px;
+  margin: 20px auto 60px auto;
+  padding: 0 16px;
 }
 
-.artist-dashboard-banner {
+.profile-top-bar {
+  margin-bottom: 16px;
+
+  .btn-back-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: white;
+      background: rgba(162, 89, 255, 0.2);
+      border-color: #A259FF;
+    }
+  }
+}
+
+// ----------------- Header Banner & Profile Info -----------------
+.artist-profile-header {
+  background: #1e1c38;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+}
+
+.artist-banner-wrapper {
+  position: relative;
   width: 100%;
-  height: 400px;
-  object-fit: cover;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
+  height: 240px;
+  background: #111;
 
-.dashboard-banner-logo {
-  border-radius: 15px;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
-  margin-top: 20px;
-  display: flex;
-  justify-content: center !important;
-}
-
-.artist-dashboard-info {
-  padding: 15px;
-  text-align: center;
-}
-
-.dashboard-info-icons {
-  display: flex;
-  justify-content: center;
-}
-
-.dashboard-info-icon {
-  display: flex;
-  flex-direction: column;
-  margin: 0 10px;
-}
-
-.tabs-underlined {
-  display: flex;
-  align-items: center;
-  justify-content: space-evenly;
-}
-
-.tabs-underlined .tab-underlined {
-  color: rgb(255, 255, 255);
-  padding: 8px;
-  margin: 8px;
-  opacity: .4;
-  cursor: pointer;
-  text-decoration: none;
-  border-bottom: 4px solid transparent;
-}
-
-.tabs-underlined .tab-underlined.active {
-  opacity: 1;
-  border-bottom: 3px solid #555555;
-}
-
-.my-dashboard-card {
-  border-radius: 15px;
-  margin: 20px;
-}
-
-#audio-tab {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.my-dashboard-card audio {
-  border-radius: 15px !important;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  width: 350px;
-}
-
-#video-tab {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.my-dashboard-card video {
-  border-radius: 15px !important;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-  width: 350px;
-}
-
-#image-tab {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-}
-
-.my-dashboard-card img {
-  border-radius: 15px;
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
-}
-
-.modal.active {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.modal img {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 15px;
-}
-
-.modal button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  border-radius: 15px;
-  background-color: transparent;
-  border: 1px solid $purple-primary;
-  padding: 10px;
-  color: $purple-primary;
-}
-
-.dashboard-action-btn {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.modal .modal-dialog {
-  max-width: 500px;
-}
-
-.modal .modal-content {
-  padding: 20px;
-}
-
-.modal .modal-header {
-  border-bottom: none;
-  padding-bottom: 0;
-}
-
-.modal .modal-title {
-  font-weight: bold;
-}
-
-.modal .close {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 1.5rem;
-  color: #000;
-}
-
-.modal .modal-body {
-  padding-top: 20px;
-}
-
-.modal .modal-footer {
-  border-top: none;
-  padding-top: 20px;
-}
-
-.modal .upload {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.modal .upload:hover {
-  background-color: #0069d9;
-}
-
-.no-content-avail {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: xx-large;
-  color: red;
-  text-shadow: 0px 0px 1px #fff, 0px 0px 2px #fff, 0px 0px 3px #fff, 0px 0px 4px #ff0000, 0px 0px 7px #ff0000, 0px 0px 8px #ff0000, 0px 0px 10px red;
-  margin: 40px 0 40px 0;
-}
-
-@media (max-width: 576px) {
   .artist-dashboard-banner {
-      height: 200px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
-  .dashboard-banner-logo {
-      width: 100px;
-      height: 100px;
+
+  .banner-gradient-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgba(30, 28, 56, 0.95) 100%);
   }
 }
 
-@media (max-width: 576px) {
-  .dashboard-banner-logo {
-      bottom: 640px;
+.artist-header-body {
+  position: relative;
+  padding: 0 28px 24px 28px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px 20px 16px;
+  }
+}
+
+.artist-avatar-wrapper {
+  position: relative;
+  margin-top: -65px;
+  margin-bottom: 14px;
+  display: inline-block;
+  z-index: 5;
+
+  .artist-profile-avatar {
+    width: 124px;
+    height: 124px;
+    border-radius: 50%;
+    border: 4px solid #1e1c38;
+    object-fit: cover;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  }
+
+  .artist-avatar-placeholder-lg {
+    width: 124px;
+    height: 124px;
+    border-radius: 50%;
+    border: 4px solid #1e1c38;
+    background: linear-gradient(135deg, #A259FF 0%, #6c35de 100%);
+    color: white;
+    font-size: 2.8rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  }
+}
+
+.artist-main-info {
+  .artist-profile-name {
+    font-size: 1.9rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+
+    i {
+      color: #A259FF;
+    }
+  }
+
+  .artist-tags-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .artist-genre-pill {
+    background: rgba(162, 89, 255, 0.25);
+    border: 1px solid rgba(162, 89, 255, 0.5);
+    color: #e3bcff;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .artist-instrument-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #eaeaea;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+  }
+
+  .artist-location-tag {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.82rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .artist-travel-badge {
+    background: rgba(46, 213, 115, 0.15);
+    border: 1px solid rgba(46, 213, 115, 0.4);
+    color: #2ed573;
+    padding: 3px 9px;
+    border-radius: 12px;
+    font-size: 0.76rem;
+    font-weight: 600;
+  }
+
+  .artist-bio-text {
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    max-width: 820px;
+  }
+}
+
+.artist-profile-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+// Stats bar
+.artist-stats-bar {
+  display: flex;
+  gap: 24px;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+
+  .artist-stat-item {
+    display: flex;
+    flex-direction: column;
+
+    .stat-number {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .stat-label {
+      font-size: 0.76rem;
+      color: rgba(255, 255, 255, 0.55);
+      font-weight: 500;
+    }
+  }
+}
+
+// ----------------- Profile Two Tabs -----------------
+.artist-profile-content-container {
+  margin-top: 32px;
+}
+
+.profile-tabs-header {
+  display: flex;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.profile-tab-btn {
+  padding: 10px 22px;
+  border-radius: 24px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+
+  .tab-badge {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #A259FF 0%, #6c35de 100%) !important;
+    border-color: #A259FF !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(162, 89, 255, 0.4);
+  }
+}
+
+// ----------------- Content Grid & Cards -----------------
+.artist-content-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
+
+  @media (max-width: 576px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.artist-post-card {
+  background: #1e1c38;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+    border-color: rgba(162, 89, 255, 0.5);
+  }
+
+  &.music-card {
+    border-top: 3px solid #A259FF;
+  }
+
+  &.general-card {
+    border-top: 3px solid #FFD166;
+  }
+}
+
+.post-media-container {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background: #000;
+  overflow: hidden;
+
+  video.post-card-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media-type-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    z-index: 5;
+    backdrop-filter: blur(4px);
+
+    &.music {
+      background: rgba(162, 89, 255, 0.9);
+      color: white;
+      box-shadow: 0 2px 8px rgba(162, 89, 255, 0.5);
+    }
+
+    &.general {
+      background: rgba(255, 209, 102, 0.9);
+      color: #191830;
+      box-shadow: 0 2px 8px rgba(255, 209, 102, 0.4);
+    }
+  }
+}
+
+.post-card-body {
+  padding: 14px 16px 16px 16px;
+
+  .post-title {
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.35;
+  }
+
+  .post-genre-badge {
+    font-size: 0.72rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #e5e5e5;
+    padding: 2px 8px;
+    border-radius: 8px;
+    font-weight: 600;
+  }
+
+  .post-date-text {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.45);
+  }
+}
+
+.post-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+  .post-stats-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .stat-pill {
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+  }
+
+  .post-manage-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .btn-view-discover {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: #A259FF;
+      text-decoration: none;
+      padding: 3px 9px;
+      border-radius: 12px;
+      background: rgba(162, 89, 255, 0.15);
+      border: 1px solid rgba(162, 89, 255, 0.3);
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: #A259FF;
+        color: white;
+      }
+    }
+
+    .btn-delete-post {
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 0.9rem;
+      cursor: pointer;
+      padding: 2px;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #ff4757;
+      }
+    }
+  }
+}
+
+// ----------------- Empty Tab State -----------------
+.profile-empty-tab {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 48px 24px;
+  text-align: center;
+  margin-top: 10px;
+
+  .empty-icon {
+    font-size: 2.8rem;
+    color: rgba(162, 89, 255, 0.6);
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 6px;
+  }
+
+  p {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.55);
+    max-width: 440px;
+    margin: 0 auto 20px auto;
+  }
+}
+
+// ----------------- Dark Modal Customization -----------------
+.custom-dark-modal {
+  background-color: #1e1c38 !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+
+  .modal-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+
+  .form-control, .form-select {
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.88rem;
+
+    &:focus {
+      border-color: #A259FF;
+      box-shadow: 0 0 0 0.25rem rgba(162, 89, 255, 0.25);
+    }
+  }
+
+  .post-type-selector-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .post-type-option {
+    cursor: pointer;
+    margin: 0;
+
+    .btn-check:checked + label {
+      border-width: 2px;
+      box-shadow: 0 0 12px rgba(162, 89, 255, 0.3);
+    }
+  }
+}
+
+.audio-track-item {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 16px;
+  border-radius: 14px;
+}
+
+.profile-gallery-item {
+  border-radius: 14px;
+  overflow: hidden;
+  height: 200px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  .gallery-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
   }
 }

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_10_31_000648) do
+ActiveRecord::Schema[7.0].define(version: 2026_10_31_010000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -109,7 +109,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_31_000648) do
     t.datetime "updated_at", null: false
     t.string "title"
     t.string "genre"
+    t.string "post_type", default: "music"
     t.index ["dashboard_id"], name: "index_discovers_on_dashboard_id"
+    t.index ["post_type"], name: "index_discovers_on_post_type"
   end
 
   create_table "events", force: :cascade do |t|

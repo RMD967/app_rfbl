@@ -7,17 +7,18 @@ class DashboardsController < ApplicationController
   end
 
   def show
-    @users = @dashboard.users
     @dashboard = Dashboard.find(params[:id])
     authorize @dashboard
+    @users = @dashboard.users
+    @music_posts = @dashboard.music_discovers.includes(:likes, comments: :user)
+    @general_posts = @dashboard.general_discovers.includes(:likes, comments: :user)
+    @new_discover = Discover.new(dashboard: @dashboard, genre: @dashboard.artist_genre)
+
     if current_user.admin_of_dashboard?(@dashboard)
       @invitation = Invitation.new(dashboard: @dashboard)
       @invited_users = @dashboard.users - [@dashboard.admin]
       flash.now[:success] = "User successfully invited!" if params[:invitation_success]
-      # Additional logic specific to admin access
     else
-      # User does not have admin access to the dashboard
-      # Handle the case accordingly
       flash.now[:error] = "Invalid input. Please try again." if params[:invitation_error]
     end
   end

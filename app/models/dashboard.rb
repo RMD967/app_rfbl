@@ -10,6 +10,8 @@ class Dashboard < ApplicationRecord
   has_many :user_dashboards, dependent: :destroy
   has_many :users, through: :user_dashboards
   has_many :discovers, dependent: :destroy
+  has_many :music_discovers, -> { where(post_type: ["music", nil]).order(created_at: :desc) }, class_name: "Discover"
+  has_many :general_discovers, -> { where(post_type: "general").order(created_at: :desc) }, class_name: "Discover"
   has_many :favorites, as: :favoritable, dependent: :destroy
 
   validates :artist_genre, presence: true

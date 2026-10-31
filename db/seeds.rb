@@ -230,12 +230,13 @@ artists_dataset.each do |data|
   dashboards << dashboard
   UserDashboard.create!(user: user, dashboard: dashboard)
 
-  # Create Discover song post for each artist
+  # Create Discover song post for each artist (MÚSICA)
   disc = Discover.new(
     dashboard: dashboard,
     title: data[:track],
     content: data[:video],
     genre: data[:genre],
+    post_type: "music",
     plays: rand(8000..950000),
     saved: [true, false].sample,
     start_time: 0.0,
@@ -243,6 +244,28 @@ artists_dataset.each do |data|
   )
   disc[:likes] = rand(1500..85000)
   disc.save!
+
+  # Create Discover general post for each artist (PUBLICACIONES GENERALES)
+  general_posts_samples = [
+    { title: "Detrás de cámaras ensayando para el festival de fin de semana 🎸🔥", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812797/6_jrd8xr.mp4" },
+    { title: "Probando nuevo equipo y arreglos en el estudio de grabación 🎛️🎧", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812793/2_bldgkm.mp4" },
+    { title: "¡Gracias a toda la banda por una noche inolvidable en vivo! Nos vemos pronto 🙌✨", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812827/7_s5cbyd.mp4" },
+    { title: "Calentando voces y cuerdas antes de subir al escenario 🎶 backstage vibe", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812802/8_se9d9t.mp4" }
+  ]
+  gen_sample = general_posts_samples.sample
+  gen_post = Discover.new(
+    dashboard: dashboard,
+    title: gen_sample[:title],
+    content: gen_sample[:video],
+    genre: data[:genre],
+    post_type: "general",
+    plays: rand(2000..120000),
+    saved: [true, false].sample,
+    start_time: 0.0,
+    end_time: 30.0
+  )
+  gen_post[:likes] = rand(500..32000)
+  gen_post.save!
 end
 
 puts "📅 Creating Live Events across major cities..."

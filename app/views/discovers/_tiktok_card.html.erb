@@ -51,9 +51,17 @@
 
     <div class="tiktok-title-row">
       <h3 class="tiktok-song-title">
-        <i class="ri-music-2-fill"></i> <%= discover.title %>
+        <% if discover.general? %>
+          <i class="ri-article-line text-warning"></i>
+        <% else %>
+          <i class="ri-music-2-fill"></i>
+        <% end %>
+        <%= discover.title %>
       </h3>
       <span class="tiktok-genre-tag"><%= discover.genre %></span>
+      <span class="tiktok-type-badge <%= discover.general? ? 'badge-general' : 'badge-music' %>">
+        <%= discover.general? ? '📱 Publicación' : '🎵 Música' %>
+      </span>
     </div>
 
     <% if discover.dashboard&.artist_description.present? %>

@@ -1,165 +1,442 @@
-<%= link_to :back do %>
-  <i class="fas fa-arrow-left"></i>
-<% end %>
-
-<div class="dashboard-container-main">
-  <img src="https://th.bing.com/th/id/OIG.HYuQ2tVozTi_krzbh3Td?pid=ImgGn" alt="Cover photo" class="artist-dashboard-banner">
-  <% if @dashboard.avatar.attached? %>
-    <%= cl_image_tag @dashboard.avatar.key, alt: "Profile Picture", class: "dashboard-banner-logo" %>
-  <% else %>
-    <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", class: "dashboard-banner-logo", alt: "Alt Profile Picture" %>
-  <% end %>
-  <h2>Dashboard Members:</h2>
-  <ul>
-    <% @dashboard.users.each do |user| %>
-      <li><%= user.email %></li>
-    <% end %>
-  </ul>
-  <div class="artist-dashboard-info">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 my-2">
-      <h1 class="m-0"><%= @dashboard.artist_name %></h1>
-      <div class="d-flex align-items-center gap-2">
-        <%= render partial: "favorites/favorite_button", locals: { favoritable: @dashboard, show_label: true } %>
-        <%= render partial: "follows/follow_button", locals: { artist: @dashboard.user } %>
-      </div>
-    </div>
-    <h4><%= @dashboard.artist_description %></h4>
-    <div class="dashboard-info-icons">
-      <div class="dashboard-info-icon">
-        <i class="fas fa-map-marker-alt"></i>
-        <p><%= @dashboard.artist_location %></p>
-      </div>
-      <div class="dashboard-info-icon">
-        <i class="fas fa-users"></i>
-        <p><%= @dashboard.artist_count %></p>
-      </div>
-      <div class="dashboard-info-icon">
-        <i class="fas fa-music"></i>
-        <p><%= @dashboard.artist_genre %></p>
-      </div>
-    </div>
-    <p><%= t('dashboard.artist_instrument') %>: <%= @dashboard.artist_instrument %></p>
-    <p><%= t('dashboard.traveling_artist') %>: <%= @dashboard.artist_travel ? t('dashboard.yes') : t('dashboard.no') %></p>
-    <% if @dashboard.artist_travel %>
-      <p><%= t('dashboard.traveling_radius') %>: <%= @dashboard.artist_radius %> <%= t('dashboard.miles') %></p>
-      <p><%= t('dashboard.traveling_cities') %>: <%= @dashboard.artist_cities %></p>
+<div class="artist-profile-page">
+  <!-- Top Navigation Back Button -->
+  <div class="profile-top-bar">
+    <%= link_to discovers_path, class: "btn-back-nav" do %>
+      <i class="ri-arrow-left-line"></i> <%= t('dashboard.back_to_discover', default: 'Descubrir') %>
     <% end %>
   </div>
 
+  <!-- Artist Profile Card Header -->
+  <div class="artist-profile-header">
+    <div class="artist-banner-wrapper">
+      <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1400&auto=format&fit=crop&q=80" alt="Cover photo" class="artist-dashboard-banner">
+      <div class="banner-gradient-overlay"></div>
+    </div>
 
-  <div data-controller="tabs" data-id="<%= @dashboard.id %>">
-    <ul class="list-inline tabs-underlined">
-      <li>
-        <button data-action="click->tabs#shiftTab" id="audio" class="btn btn-outline-primary"><%= t('tabs.audio') %></button>
-      </li>
-      <li>
-        <button data-action="click->tabs#shiftTab" id="video" class="btn btn-outline-primary"><%= t('tabs.video') %></button>
-      </li>
-      <li>
-        <button data-action="click->tabs#shiftTab" id="image" class="btn btn-outline-primary"><%= t('tabs.images') %></button>
-      </li>
-    </ul>
-    <div id="audio-tab" data-tabs-target="tab">
-      <% if @dashboard.audios.present? %>
-        <% @dashboard.audios.each do |audio| %>
-          <div class="my-dashboard-card">
-            <div class="my-dashboard-card-body">
-              <audio controls>
-                <source src="<%= cl_video_path(audio.key, resource_type: :video, format: 'mp3') %>" type="audio/mpeg">
-                <%= t('audio.not_supported') %>
-              </audio>
+    <div class="artist-header-body">
+      <!-- Avatar & Verified Badge -->
+      <div class="artist-avatar-wrapper">
+        <% if @dashboard.avatar.attached? %>
+          <%= cl_image_tag @dashboard.avatar.key, alt: @dashboard.artist_name, class: "artist-profile-avatar" %>
+        <% else %>
+          <div class="artist-avatar-placeholder-lg">
+            <%= @dashboard.artist_name.first&.upcase || "A" %>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Main Info & Actions Row -->
+      <div class="artist-main-info">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+          <div>
+            <h1 class="artist-profile-name">
+              <%= @dashboard.artist_name %>
+              <i class="ri-verified-badge-fill text-primary ms-1" title="Artista Verificado"></i>
+            </h1>
+            <div class="artist-tags-row">
+              <span class="artist-genre-pill">
+                <i class="ri-music-2-line"></i> <%= @dashboard.artist_genre %>
+              </span>
+              <% if @dashboard.artist_instrument.present? %>
+                <span class="artist-instrument-pill">
+                  <i class="ri-disc-line"></i> <%= @dashboard.artist_instrument %>
+                </span>
+              <% end %>
+              <span class="artist-location-tag">
+                <i class="ri-map-pin-2-fill text-danger"></i> <%= @dashboard.artist_location %>
+              </span>
+              <% if @dashboard.artist_travel %>
+                <span class="artist-travel-badge">
+                  <i class="ri-flight-takeoff-line"></i> <%= t('dashboard.travel_available', default: 'Disponible para viajar') %> (<%= @dashboard.artist_radius&.to_i %> mi)
+                </span>
+              <% end %>
             </div>
           </div>
-        <% end %>
-      <% else %>
-        <div class="no-content-avail">
-          No audio content available.
+
+          <!-- Social Action Buttons -->
+          <div class="artist-profile-actions">
+            <%= render partial: "favorites/favorite_button", locals: { favoritable: @dashboard, show_label: true } %>
+            <%= render partial: "follows/follow_button", locals: { artist: @dashboard.user } %>
+
+            <% if current_user.present? && current_user != @dashboard.user %>
+              <%= link_to chatrooms_path(artist_id: @dashboard.user_id), class: "main-app-btn-pri btn-sm" do %>
+                <i class="ri-chat-3-line"></i> <%= t('dashboard.chat', default: 'Contactar Artista') %>
+              <% end %>
+            <% end %>
+          </div>
         </div>
-      <% end %>
-    </div>
-    <div id="video-tab" data-tabs-target="tab" class="d-none">
-      <% if @dashboard.videos.present? %>
-        <%  @dashboard.videos.each do |video| %>
-          <div class="my-dashboard-card">
-            <div class="embed-responsive embed-responsive-16by9">
-              <%= cl_video_tag(video.key,
-                :loop => true, :controls => true,
-                :transformation => [
-                  :quality=>70, :duration=>"10"],
-                :fallback_content => t('video.not_supported') ) %>
-              </div>
+
+        <!-- Description / Bio -->
+        <% if @dashboard.artist_description.present? %>
+          <p class="artist-bio-text mt-3">
+            <%= @dashboard.artist_description %>
+          </p>
+        <% end %>
+
+        <!-- Stats Counter Row -->
+        <div class="artist-stats-bar">
+          <div class="artist-stat-item">
+            <span class="stat-number"><%= @dashboard.followers_count %></span>
+            <span class="stat-label"><%= t('dashboard.followers', default: 'Seguidores') %></span>
+          </div>
+          <div class="artist-stat-item">
+            <span class="stat-number"><%= @music_posts.count %></span>
+            <span class="stat-label">🎵 <%= t('dashboard.music_tracks', default: 'Canciones') %></span>
+          </div>
+          <div class="artist-stat-item">
+            <span class="stat-number"><%= @general_posts.count %></span>
+            <span class="stat-label">📱 <%= t('dashboard.general_posts', default: 'Publicaciones') %></span>
+          </div>
+          <% if @dashboard.artist_price.present? %>
+            <div class="artist-stat-item">
+              <span class="stat-number text-warning">$<%= number_with_delimiter(@dashboard.artist_price.to_i) %> MXN</span>
+              <span class="stat-label"><%= t('dashboard.rate', default: 'Tarifa / Evento') %></span>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Owner Administration Actions -->
+        <% if current_user == @dashboard.user %>
+          <div class="artist-admin-actions-bar mt-3 pt-3 border-top border-secondary">
+            <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#newPostModal">
+              <i class="ri-add-circle-line"></i> <%= t('dashboard.new_post', default: 'Nueva Publicación / Lanzamiento') %>
+            </button>
+            <%= link_to edit_dashboard_path(@dashboard), class: "btn btn-outline-light btn-sm me-2" do %>
+              <i class="ri-edit-line"></i> <%= t('dashboard.edit_profile', default: 'Editar Perfil') %>
+            <% end %>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadMediaModal">
+              <i class="ri-upload-cloud-line"></i> <%= t('dashboard.upload_media', default: 'Subir Archivos') %>
+            </button>
           </div>
         <% end %>
-      <% else %>
-        <div class="no-content-avail">
-          No video content available.
-        </div>
-      <% end %>
-    </div>
-    <div id="image-tab" data-tabs-target="tab" class="d-none" data-controller="image-gallery">
-      <% if @dashboard.images.present? %>
-        <% @dashboard.images.each do |image| %>
-          <div class="my-dashboard-card">
-            <%= cl_image_tag(image.key, :quality=>70, data: { image_gallery_target: "image", action: "click->image-gallery#open" }) %>
-          </div>
-        <% end %>
-      <% else %>
-        <div class="no-content-avail">
-          No image content available.
-        </div>
-      <% end %>
-      <div data-image-gallery-target="modal" class="modal">
-        <img data-image-gallery-target="modalImage">
-        <button data-action="click->image-gallery#close"><%= t('image.close') %></button>
       </div>
     </div>
   </div>
-  <div class="dashboard-action-btn">
-    <% if policy(@dashboard).edit? %>
-      <%= link_to t('dashboard.edit_dashboard'), edit_dashboard_path(@dashboard), class: "main-app-btn-sec" %>
-    <% end %>
 
-    <% if current_user == @dashboard.user %>
-      <%= link_to "Invite Members/Initar", new_invitation_path(dashboard_id: @dashboard.id), class: "main-app-btn-sec" %>
-    <% end %>
-
-    <% if policy(@dashboard).destroy? %>
-      <%= button_to t('dashboard.delete_dashboard'), @dashboard, method: :delete, class: "main-app-btn-del", onclick: "return confirm('Are you sure you want to delete this dashboard?');" %>
-    <% end %>
-
-    <% if current_user == @dashboard.user %>
-      <button type="button" data-toggle="modal" data-target="#uploadModal" class="main-app-btn-sec">
-        <%= t('dashboard.upload_content') %>
+  <!-- Profile Content Tabs Section -->
+  <div class="artist-profile-content-container" data-controller="tabs">
+    <!-- Two Main Profile Tabs: Música vs Publicaciones Generales -->
+    <div class="profile-tabs-header">
+      <button type="button"
+              class="profile-tab-btn active btn-primary"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="music"
+              data-tabs-target="button">
+        <i class="ri-music-2-fill"></i>
+        <span><%= t('dashboard.tab_music', default: 'Música') %></span>
+        <span class="tab-badge"><%= @music_posts.count %></span>
       </button>
-      <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="uploadModalLabel" aria-hidden="true">
-        <!-- Modal content goes here -->
-        <%= form_with(model: @dashboard) do |f| %>
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel"><%= t('dashboard.upload_modal_title') %></h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+
+      <button type="button"
+              class="profile-tab-btn btn-outline-primary"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="general"
+              data-tabs-target="button">
+        <i class="ri-article-line"></i>
+        <span><%= t('dashboard.tab_general', default: 'Publicaciones Generales') %></span>
+        <span class="tab-badge"><%= @general_posts.count %></span>
+      </button>
+    </div>
+
+    <!-- TAB 1: MÚSICA (Solo tracks, canciones y videos musicales) -->
+    <div id="music-tab" data-tabs-target="tab" class="profile-tab-pane">
+      <% if @music_posts.any? || @dashboard.audios.present? %>
+        <div class="artist-content-grid">
+          <% @music_posts.each do |post| %>
+            <div class="artist-post-card music-card">
+              <!-- Video / Preview -->
+              <div class="post-media-container">
+                <% video_src = post.content.presence || (post.video.attached? ? url_for(post.video) : "/main.mp4") %>
+                <video class="post-card-video" controls preload="metadata">
+                  <source src="<%= video_src %>" type="video/mp4">
+                </video>
+                <span class="media-type-tag music">
+                  <i class="ri-music-fill"></i> Canción Oficial
+                </span>
               </div>
-              <div class="modal-body">
-                <%= f.file_field :audios, multiple: true, accept: 'audio/*', label: t('dashboard.upload_audios_label') %>
-                <%= f.file_field :videos, multiple: true, accept: 'video/*', label: t('dashboard.upload_videos_label') %>
-                <%= f.file_field :images, multiple: true, accept: 'image/*', label: t('dashboard.upload_images_label') %>
+
+              <!-- Metadata & Title -->
+              <div class="post-card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h4 class="post-title m-0">
+                    <i class="ri-disc-fill text-primary me-1"></i> <%= post.title %>
+                  </h4>
+                  <span class="post-genre-badge"><%= post.genre %></span>
+                </div>
+
+                <!-- Stats & Actions -->
+                <div class="post-footer-actions">
+                  <div class="post-stats-group">
+                    <%= render partial: "likes/like_button", locals: { discover: post } %>
+
+                    <div class="stat-pill">
+                      <i class="ri-chat-3-line"></i>
+                      <span><%= post.comments.count %></span>
+                    </div>
+
+                    <% if post.plays.present? && post.plays > 0 %>
+                      <div class="stat-pill">
+                        <i class="ri-play-line"></i>
+                        <span><%= number_to_human(post.plays, units: { thousand: 'K', million: 'M' }, format: '%n%u') %></span>
+                      </div>
+                    <% end %>
+                  </div>
+
+                  <div class="post-manage-actions">
+                    <%= link_to discovers_path, class: "btn-view-discover", title: "Ver en Descubrir (TikTok feed)" do %>
+                      <i class="ri-fullscreen-line"></i> Feed
+                    <% end %>
+
+                    <% if current_user == @dashboard.user %>
+                      <%= button_to discover_path(post),
+                                    method: :delete,
+                                    data: { turbo_confirm: "¿Eliminar esta canción?" },
+                                    class: "btn-delete-post",
+                                    title: "Eliminar canción" do %>
+                        <i class="ri-delete-bin-line"></i>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
               </div>
-              <div class="modal-footer">
-                <%= f.submit t('dashboard.upload_submit_button'), class: "upload" %>
-              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Attached audio tracks if any -->
+        <% if @dashboard.audios.present? %>
+          <div class="mt-4 pt-3 border-top border-secondary">
+            <h4 class="text-white mb-3"><i class="ri-headphone-line text-primary"></i> Pistas de Audio Directas</h4>
+            <div class="row g-3">
+              <% @dashboard.audios.each do |audio| %>
+                <div class="col-md-6">
+                  <div class="audio-track-item">
+                    <i class="ri-volume-up-fill me-2 text-primary fs-4"></i>
+                    <audio controls class="w-100">
+                      <source src="<%= cl_video_path(audio.key, resource_type: :video, format: 'mp3') %>" type="audio/mpeg">
+                    </audio>
+                  </div>
+                </div>
+              <% end %>
             </div>
           </div>
         <% end %>
-      </div>
-    <% end %>
 
-    <% if current_user.id != @dashboard.user.id %>
-      <%= button_to chatrooms_path(user_id: @dashboard.user_id), method: :post, class: "main-app-btn-pri my-3" do %>
-        <i class="ri-chat-3-line"></i> <%= t('dashboard.send_message', default: 'Chat with Musician') %>
+      <% else %>
+        <div class="profile-empty-tab">
+          <div class="empty-icon">
+            <i class="ri-music-2-line"></i>
+          </div>
+          <h3>No hay canciones publicadas aún</h3>
+          <p>La música lanzada por <%= @dashboard.artist_name %> aparecerá aquí y en la sección Descubrir.</p>
+          <% if current_user == @dashboard.user %>
+            <button type="button" class="main-app-btn-pri" data-bs-toggle="modal" data-bs-target="#newPostModal">
+              <i class="ri-upload-2-line"></i> Lanzar mi primera canción
+            </button>
+          <% end %>
+        </div>
       <% end %>
-    <% end %>
+    </div>
+
+    <!-- TAB 2: PUBLICACIONES GENERALES (Detrás de cámaras, vlogs, fotos, día a día) -->
+    <div id="general-tab" data-tabs-target="tab" class="profile-tab-pane d-none">
+      <% if @general_posts.any? || @dashboard.images.present? %>
+        <div class="artist-content-grid">
+          <% @general_posts.each do |post| %>
+            <div class="artist-post-card general-card">
+              <!-- Video / Preview -->
+              <div class="post-media-container">
+                <% video_src = post.content.presence || (post.video.attached? ? url_for(post.video) : "/main.mp4") %>
+                <video class="post-card-video" controls preload="metadata">
+                  <source src="<%= video_src %>" type="video/mp4">
+                </video>
+                <span class="media-type-tag general">
+                  <i class="ri-article-line"></i> Publicación General
+                </span>
+              </div>
+
+              <!-- Metadata & Caption -->
+              <div class="post-card-body">
+                <div class="d-flex align-items-baseline justify-content-between mb-2">
+                  <h4 class="post-title m-0">
+                    <%= post.title %>
+                  </h4>
+                  <span class="post-date-text">
+                    <%= time_ago_in_words(post.created_at) %>
+                  </span>
+                </div>
+
+                <!-- Stats & Actions -->
+                <div class="post-footer-actions">
+                  <div class="post-stats-group">
+                    <%= render partial: "likes/like_button", locals: { discover: post } %>
+
+                    <div class="stat-pill">
+                      <i class="ri-chat-3-line"></i>
+                      <span><%= post.comments.count %></span>
+                    </div>
+                  </div>
+
+                  <div class="post-manage-actions">
+                    <%= link_to discovers_path, class: "btn-view-discover", title: "Ver en Descubrir (TikTok feed)" do %>
+                      <i class="ri-fullscreen-line"></i> Feed
+                    <% end %>
+
+                    <% if current_user == @dashboard.user %>
+                      <%= button_to discover_path(post),
+                                    method: :delete,
+                                    data: { turbo_confirm: "¿Eliminar esta publicación?" },
+                                    class: "btn-delete-post",
+                                    title: "Eliminar publicación" do %>
+                        <i class="ri-delete-bin-line"></i>
+                      <% end %>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Attached general photo gallery if any -->
+        <% if @dashboard.images.present? %>
+          <div class="mt-4 pt-3 border-top border-secondary">
+            <h4 class="text-white mb-3"><i class="ri-image-line text-warning"></i> Galería de Fotos & Momentos</h4>
+            <div class="row g-3">
+              <% @dashboard.images.each do |image| %>
+                <div class="col-md-4 col-sm-6">
+                  <div class="profile-gallery-item">
+                    <%= cl_image_tag image.key, class: "gallery-img", quality: 80 %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+
+      <% else %>
+        <div class="profile-empty-tab">
+          <div class="empty-icon">
+            <i class="ri-article-line text-warning"></i>
+          </div>
+          <h3>No hay publicaciones generales aún</h3>
+          <p>Detrás de cámaras, ensayos, vlogs y contenido del día a día compartidos por el artista aparecerán aquí.</p>
+          <% if current_user == @dashboard.user %>
+            <button type="button" class="main-app-btn-sec" data-bs-toggle="modal" data-bs-target="#newPostModal">
+              <i class="ri-edit-2-line"></i> Crear primera publicación
+            </button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- Modal: Nueva Publicación (Música vs Publicación General) -->
+<% if current_user == @dashboard.user %>
+  <div class="modal fade" id="newPostModal" tabindex="-1" aria-labelledby="newPostModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-dark-modal">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-white" id="newPostModalLabel">
+            <i class="ri-add-circle-fill text-primary me-2"></i> Crear Publicación en Perfil & Descubrir
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <%= form_with(model: @new_discover, url: discovers_path, method: :post, local: true) do |f| %>
+          <%= f.hidden_field :dashboard_id, value: @dashboard.id %>
+
+          <div class="modal-body">
+            <!-- Selector de Tipo de Publicación: Música vs Publicación General -->
+            <label class="form-label text-white fw-bold mb-2">¿Qué tipo de contenido deseas publicar?</label>
+            <div class="post-type-selector-group mb-3">
+              <label class="post-type-option">
+                <%= f.radio_button :post_type, "music", checked: true, class: "btn-check", id: "type_music" %>
+                <label class="btn btn-outline-primary w-100 text-start p-3" for="type_music">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fs-4">🎵</span>
+                    <div>
+                      <strong class="d-block text-white">Lanzamiento Musical</strong>
+                      <small class="text-muted">Aparece en pestaña <strong>Música</strong> de tu perfil y en Descubrir.</small>
+                    </div>
+                  </div>
+                </label>
+              </label>
+
+              <label class="post-type-option mt-2">
+                <%= f.radio_button :post_type, "general", class: "btn-check", id: "type_general" %>
+                <label class="btn btn-outline-warning w-100 text-start p-3" for="type_general">
+                  <div class="d-flex align-items-center gap-2">
+                    <span class="fs-4">📱</span>
+                    <div>
+                      <strong class="d-block text-white">Publicación General</strong>
+                      <small class="text-muted">Detrás de cámaras, vlogs, ensayos en la pestaña <strong>Publicaciones</strong>.</small>
+                    </div>
+                  </div>
+                </label>
+              </label>
+            </div>
+
+            <!-- Título de la pista / Publicación -->
+            <div class="mb-3">
+              <%= f.label :title, "Título de la canción o publicación", class: "form-label text-white" %>
+              <%= f.text_field :title, class: "form-control bg-dark text-white border-secondary", placeholder: "Ej. Noche en Cholula Beat / Ensayando para el festival", required: true %>
+            </div>
+
+            <!-- URL de Video o contenido -->
+            <div class="mb-3">
+              <%= f.label :content, "Enlace de video (MP4 o Cloudinary)", class: "form-label text-white" %>
+              <%= f.text_field :content, class: "form-control bg-dark text-white border-secondary", placeholder: "https://... o /main.mp4", required: true %>
+              <small class="text-muted">Puedes pegar un enlace directo o video en formato MP4.</small>
+            </div>
+
+            <!-- Género musical -->
+            <div class="mb-3">
+              <%= f.label :genre, "Género / Categoría", class: "form-label text-white" %>
+              <%= f.select :genre, Event::GENRE, { selected: @dashboard.artist_genre }, class: "form-select bg-dark text-white border-secondary" %>
+            </div>
+          </div>
+
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <%= f.submit "Publicar Ahora", class: "main-app-btn-pri" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Subir Archivos al Dashboard -->
+  <div class="modal fade" id="uploadMediaModal" tabindex="-1" aria-labelledby="uploadMediaModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content custom-dark-modal">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-white" id="uploadMediaModalLabel">
+            <i class="ri-upload-cloud-fill text-primary me-2"></i> Subir Archivos a tu Galería
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <%= form_with(model: @dashboard, local: true) do |f| %>
+          <div class="modal-body">
+            <div class="mb-3">
+              <%= f.label :audios, "Pistas de Audio (MP3, WAV)", class: "form-label text-white" %>
+              <%= f.file_field :audios, multiple: true, accept: 'audio/*', class: "form-control bg-dark text-white border-secondary" %>
+            </div>
+            <div class="mb-3">
+              <%= f.label :images, "Fotos y Galería (JPG, PNG)", class: "form-label text-white" %>
+              <%= f.file_field :images, multiple: true, accept: 'image/*', class: "form-control bg-dark text-white border-secondary" %>
+            </div>
+          </div>
+          <div class="modal-footer border-secondary">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <%= f.submit "Subir Archivos", class: "main-app-btn-sec" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

@@ -35,16 +35,17 @@ class DiscoversController < ApplicationController
     authorize @discover
 
     if @discover.save
-      redirect_to @discover, notice: "Contenido creado con éxito."
+      redirect_back fallback_location: dashboard_path(@discover.dashboard), notice: "Publicación creada con éxito (#{@discover.music? ? 'Música' : 'Publicación General'})."
     else
-      render :new, status: :unprocessable_entity
+      redirect_back fallback_location: discovers_path, alert: @discover.errors.full_messages.join(", ")
     end
   end
 
   def destroy
+    dashboard = @discover.dashboard
     @discover.destroy
     authorize @discover
-    redirect_to discovers_url, notice: "Contenido eliminado con éxito.", status: :see_other
+    redirect_back fallback_location: dashboard_path(dashboard), notice: "Contenido eliminado con éxito.", status: :see_other
   end
 
   private
@@ -54,6 +55,6 @@ class DiscoversController < ApplicationController
   end
 
   def discover_params
-    params.require(:discover).permit(:content, :likes, :plays, :saved, :start_time, :end_time, :dashboard_id, :title, :genre)
+    params.require(:discover).permit(:content, :likes, :plays, :saved, :start_time, :end_time, :dashboard_id, :title, :genre, :post_type, :video)
   end
 end

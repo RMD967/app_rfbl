@@ -332,6 +332,27 @@ body:has(.tiktok-experience) footer {
   font-weight: 500;
 }
 
+.tiktok-type-badge {
+  font-size: 0.68rem;
+  padding: 2px 7px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+
+  &.badge-music {
+    background: rgba(162, 89, 255, 0.35);
+    border: 1px solid rgba(162, 89, 255, 0.6);
+    color: #e5bfff;
+  }
+
+  &.badge-general {
+    background: rgba(255, 209, 102, 0.25);
+    border: 1px solid rgba(255, 209, 102, 0.6);
+    color: #FFD166;
+  }
+}
+
 .tiktok-caption {
   margin: 0;
   font-size: 0.84rem;

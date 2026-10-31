@@ -4,8 +4,22 @@ class Discover < ApplicationRecord
   has_many :comments, dependent: :destroy
   has_many :likes, as: :likeable, dependent: :destroy
 
+  POST_TYPES = %w[music general].freeze
+
   validates :content, :title, presence: true
   validates :genre, presence: true, inclusion: { in: Event::GENRE }
+  validates :post_type, inclusion: { in: POST_TYPES }
+
+  scope :music, -> { where(post_type: ["music", nil]) }
+  scope :general, -> { where(post_type: "general") }
+
+  def music?
+    post_type.nil? || post_type == "music"
+  end
+
+  def general?
+    post_type == "general"
+  end
 
   def liked_by?(user)
     return false unless user

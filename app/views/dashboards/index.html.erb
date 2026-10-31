@@ -15,7 +15,13 @@
           <div class="col mb-4">
             <%= link_to dashboard_path(dashboard) do %>
               <div class="new-dashboard-card">
-                <%= image_tag dashboard.avatar, class: "dashboard-avatar-img" %>
+                <% if dashboard.avatar.attached? %>
+                  <%= cl_image_tag dashboard.avatar.key, class: "dashboard-avatar-img" %>
+                <% else %>
+                  <div class="dashboard-avatar-img d-flex align-items-center justify-content-center bg-primary text-white fw-bold fs-3 rounded-circle" style="width:70px;height:70px;">
+                    <%= dashboard.artist_name.first&.upcase || "A" %>
+                  </div>
+                <% end %>
                 <h5><strong><%= t('dashboard.you_are', artist_name: dashboard.artist_name) %></strong></h5>
                 <h5><%= t('dashboard.from_location', artist_location: dashboard.artist_location) %></h5>
                 <p><strong><%= t('dashboard.currently_members', artist_count: dashboard.artist_count) %></strong></p>

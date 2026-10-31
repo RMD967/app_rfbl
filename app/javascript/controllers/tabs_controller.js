@@ -1,22 +1,41 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["tab"]
+  static targets = ["tab", "button"]
 
   shiftTab(event) {
-    const tabButton = event.currentTarget;
-    const tabTargets = document.querySelectorAll("[data-tabs-target='tab']");
+    const clickedButton = event.currentTarget
+    const tabName = clickedButton.dataset.tabName || clickedButton.id
 
-    tabTargets.forEach((tab) => {
-      if (`${tabButton.id}-tab` === tab.id) {
-        tab.classList.remove("d-none");
-        tabButton.classList.remove("btn-outline-primary");
-        tabButton.classList.add("btn-primary");
+    // Update tab buttons
+    const buttons = this.hasButtonTarget
+      ? this.buttonTargets
+      : this.element.querySelectorAll("[data-action*='shiftTab']")
+
+    buttons.forEach((btn) => {
+      if (btn === clickedButton) {
+        btn.classList.add("active")
+        btn.classList.add("btn-primary")
+        btn.classList.remove("btn-outline-primary")
       } else {
-        tab.classList.add("d-none");
-        tabButton.classList.remove("btn-primary");
-        tabButton.classList.add("btn-outline-primary");
+        btn.classList.remove("active")
+        btn.classList.remove("btn-primary")
+        btn.classList.add("btn-outline-primary")
       }
-    });
+    })
+
+    // Update tab panes
+    const tabs = this.hasTabTarget
+      ? this.tabTargets
+      : this.element.querySelectorAll("[data-tabs-target='tab']")
+
+    tabs.forEach((tab) => {
+      const match = tab.id === `${tabName}-tab` || tab.dataset.tabContent === tabName
+      if (match) {
+        tab.classList.remove("d-none")
+      } else {
+        tab.classList.add("d-none")
+      }
+    })
   }
 }
