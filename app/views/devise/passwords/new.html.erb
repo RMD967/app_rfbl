@@ -1,25 +1,29 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6 border border-light rounded p-4">
-      <h2 class="text-white text-center mb-5"><%= t('password.forgot_title') %></h2>
+<div class="signup-card-container">
+  <div class="signup-header text-center mb-4">
+    <h2 class="signup-title"><%= t('password.forgot_title', default: '¿Olvidaste tu contraseña?') %></h2>
+    <p class="signup-subtitle text-muted">Te enviaremos las instrucciones para restablecerla a tu correo</p>
+  </div>
 
-      <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
-        <%= f.error_notification %>
+  <div class="signup-flat-card">
+    <%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
+      <%= f.error_notification %>
 
-        <div class="form-inputs">
-          <%= f.input :email,
-                      required: true,
-                      autofocus: true,
-                      input_html: { autocomplete: "email" },
-                      label: t('password.email') %>
-        </div>
+      <div class="form-inputs mb-3">
+        <%= f.input :email,
+                    required: true,
+                    autofocus: true,
+                    input_html: { autocomplete: "email", class: "login-flat-input", placeholder: "tu@email.com" },
+                    label: t('password.email', default: 'Correo electrónico'),
+                    label_html: { class: "login-flat-label" } %>
+      </div>
 
-        <div class="form-actions text-center">
-          <%= f.button :submit, t('password.send_instructions_button'), class: "btn btn-primary my-3" %>
-        </div>
-      <% end %>
+      <div class="form-actions text-center mt-3">
+        <%= f.button :submit, t('password.send_instructions_button', default: 'Enviar instrucciones'), class: "btn login-flat-submit-btn" %>
+      </div>
+    <% end %>
+  </div>
 
-      <%= render "devise/shared/links" %>
-    </div>
+  <div class="text-center mt-4">
+    <%= link_to t('devise.log_in', default: 'Volver al inicio de sesión'), new_session_path(resource_name), class: "login-signup-link fw-semibold" %>
   </div>
 </div>

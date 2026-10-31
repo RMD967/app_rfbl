@@ -1,48 +1,76 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <h2 class="text-white text-center mb-5"><%= t('signup.title') %></h2>
-      <div class="col-md-6 border border-light rounded p-4">
+<div class="signup-card-container">
+  <div class="signup-header text-center mb-4">
+    <h2 class="signup-title"><%= t('signup.title') %></h2>
+    <p class="signup-subtitle text-muted">Únete a la comunidad de músicos y organizadores de Radios FBL</p>
+  </div>
 
-        <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name),
-        data: {turbo: false}) do |f| %>
-        <%= f.error_notification %>
+  <div class="signup-flat-card">
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), data: {turbo: false}) do |f| %>
+      <%= f.error_notification %>
 
-        <div class="form-inputs">
-          <%= f.input :first_name,
-                      required: true,
-                      autofocus: true %>
-          <%= f.input :last_name,
-                      required: true,
-                      autofocus: true %>
+      <div class="form-inputs">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <%= f.input :first_name,
+                        required: true,
+                        autofocus: true,
+                        input_html: { class: "login-flat-input" },
+                        label_html: { class: "login-flat-label" } %>
+          </div>
+          <div class="col-md-6 mb-3">
+            <%= f.input :last_name,
+                        required: true,
+                        input_html: { class: "login-flat-input" },
+                        label_html: { class: "login-flat-label" } %>
+          </div>
+        </div>
+
+        <div class="mb-3">
           <%= f.input :username,
                       required: false,
                       label: t('account.username', default: 'Username (@nombre_de_usuario)'),
-                      hint: 'Opcional (se generará uno automáticamente a partir de tu email si lo dejas en blanco)',
-                      input_html: { autocomplete: "username", placeholder: "ej. dj_cumbia" },
-                      label_html: { class: "text-white" },
-                      hint_html: { class: "text-white-50" } %>
+                      hint: 'Opcional (se generará uno automáticamente si lo dejas en blanco)',
+                      input_html: { autocomplete: "username", placeholder: "ej. dj_cumbia", class: "login-flat-input" },
+                      label_html: { class: "login-flat-label" },
+                      hint_html: { class: "text-muted small" } %>
+        </div>
+
+        <div class="mb-3">
           <%= f.input :email,
                       required: true,
-                      autofocus: true,
-                      input_html: { autocomplete: "email" } %>
+                      input_html: { autocomplete: "email", class: "login-flat-input", placeholder: "tu@email.com" },
+                      label_html: { class: "login-flat-label" } %>
+        </div>
+
+        <div class="mb-3">
           <%= f.input :password,
                       required: true,
                       hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                      input_html: { autocomplete: "new-password" },
-                      label_html: { class: "text-white" },
-                      hint_html: { class: "text-white" } %>
+                      input_html: { autocomplete: "new-password", class: "login-flat-input", placeholder: "••••••••" },
+                      label_html: { class: "login-flat-label" },
+                      hint_html: { class: "text-muted small" } %>
+        </div>
+
+        <div class="mb-3">
           <%= f.input :password_confirmation,
                       required: true,
-                      input_html: { autocomplete: "new-password" } %>
-          <%= f.input :artist, as: :boolean, label: t('signup.artist_label'), wrapper_html: { class: "fs-5 my-4" } %>
+                      input_html: { autocomplete: "new-password", class: "login-flat-input", placeholder: "••••••••" },
+                      label_html: { class: "login-flat-label" } %>
         </div>
 
-        <div class="row form-actions text-center">
-          <%= f.button :submit, t('signup.sign_up_button'), class: "btn btn-primary btn-lg btn-block mb-3" %>
-          <%= render "devise/shared/links" %>
+        <div class="mb-4">
+          <%= f.input :artist, as: :boolean, label: t('signup.artist_label'), wrapper_html: { class: "m-0" }, label_html: { class: "small text-muted" } %>
         </div>
-      <% end %>
-
       </div>
+
+      <div class="form-actions text-center mt-3">
+        <%= f.button :submit, t('signup.sign_up_button'), class: "btn login-flat-submit-btn" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="text-center mt-4">
+    <span class="text-muted">¿Ya tienes una cuenta?</span>
+    <%= link_to t('devise.log_in', default: 'Inicia sesión aquí'), new_session_path(resource_name), class: "login-signup-link fw-semibold ms-1" %>
   </div>
 </div>

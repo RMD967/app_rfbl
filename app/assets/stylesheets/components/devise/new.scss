@@ -1,63 +1,292 @@
-.new-devise-row {
+// Modern Flat Login & Devise Styles
+@import "config/colors";
+
+.login-page-wrapper {
+  min-height: calc(100vh - 72px);
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  background-color: #131224;
 }
 
-.new-image-container {
-  height: 100vh;
-  width: 33%;
-}
-
-.new-image-container img {
+.login-split-layout {
+  display: flex;
   width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
+  min-height: 100%;
 
-.welcome-back-container {
-  width: 100%;
-  min-height: 1px;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-top: 3rem;
-}
-
-.welcome-back-container h2, h4 {
-  font-weight: 700;
-  line-height: 2;
-  text-align: center;
-}
-
-.new-user-form-inputs {
-  margin-left: 20px;
-  margin-right: 20px;
-  line-height: 1.5;
-  color: white;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
-  // transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-  border-width: 1px;
-  border-color: #f8f9fa;
-  border-radius: 15px;
-  padding: 1.5rem;
-}
-
-@media (min-width: 768px) {
-  .welcome-back-container {
-    flex: 0 0 auto;
-    width: 66.66667%;
+  @media (max-width: 899px) {
+    flex-direction: column;
   }
 }
 
-@media (max-width: 768px) {
-  .new-image-container {
-    display: none;
-  }
-}
+// Left Visual Panel
+.login-visual-panel {
+  display: none;
+  position: relative;
+  width: 45%;
+  min-height: 100vh;
+  overflow: hidden;
+  background-color: #100f1d;
 
-@media (min-width: 768px) {
-  .new-image-container {
+  @media (min-width: 900px) {
     display: block;
   }
+
+  .login-visual-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .login-visual-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(19, 18, 36, 0.45);
+  }
+
+  .login-visual-caption {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    z-index: 2;
+
+    .login-brand-heading {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .login-brand-tagline {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+// Right Form Panel
+.login-form-panel {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background-color: #131224;
+}
+
+.login-card-container {
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+
+  .login-title {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+
+  .login-subtitle {
+    font-size: 0.95rem;
+    color: #9797A9;
+    margin: 0;
+  }
+}
+
+// Flat Card (Flat solid colors, NO gradients, subtle soft shadow)
+.login-flat-card {
+  background-color: #1E1D36;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+  @media (max-width: 480px) {
+    padding: 24px 20px;
+  }
+}
+
+// Flat Form Inputs
+.login-flat-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 6px;
+}
+
+.login-flat-input {
+  width: 100%;
+  height: 46px;
+  background-color: #272545 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    background-color: #272545 !important;
+    border-color: #8B5CF6 !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25) !important;
+    outline: none !important;
+    color: #ffffff !important;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.35) !important;
+  }
+}
+
+.login-forgot-link {
+  font-size: 12px;
+  color: #A259FF;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #C280FF;
+    text-decoration: underline;
+  }
+}
+
+.login-remember-row {
+  display: flex;
+  align-items: center;
+
+  .form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+
+    .form-check-input {
+      background-color: #272545;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:checked {
+        background-color: #8B5CF6;
+        border-color: #8B5CF6;
+      }
+    }
+
+    .form-check-label {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 13px;
+      cursor: pointer;
+    }
+  }
+}
+
+// Flat Normal-Width Submit Button (NO GRADIENTS, FLAT SOLID COLOR)
+.login-flat-submit-btn {
+  background-color: #8B5CF6 !important; // Flat solid color, NO gradient!
+  color: #ffffff !important;
+  font-weight: 600;
+  font-size: 15px;
+  border: none !important;
+  border-radius: 10px;
+  padding: 11px 36px;
+  width: auto !important; // Normal width, not full-width!
+  min-width: 170px;
+  box-shadow: 0 2px 6px rgba(139, 92, 246, 0.25); // Gentle soft shadow
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    background-color: #7C3AED !important; // Flat darker purple
+    color: #ffffff !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.35);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 3px rgba(139, 92, 246, 0.25);
+  }
+}
+
+// Bottom Links
+.login-signup-prompt {
+  font-size: 14px;
+
+  .login-signup-link {
+    color: #A259FF;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: #C280FF;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Signup Page Modern Flat Styles
+.signup-card-container {
+  width: 100%;
+  max-width: 520px;
+  margin: 40px auto 80px;
+  padding: 0 20px;
+
+  .signup-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+  }
+
+  .signup-subtitle {
+    font-size: 0.95rem;
+    color: #9797A9;
+    margin: 0;
+  }
+
+  .signup-flat-card {
+    background-color: #1E1D36;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 32px 28px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+
+    @media (max-width: 480px) {
+      padding: 24px 20px;
+    }
+
+    .form-control {
+      background-color: #272545 !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      border-radius: 10px !important;
+      color: #ffffff !important;
+      padding: 10px 14px !important;
+      font-size: 14px !important;
+
+      &:focus {
+        border-color: #8B5CF6 !important;
+        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.25) !important;
+        outline: none !important;
+      }
+    }
+
+    .form-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      margin-bottom: 6px;
+    }
+  }
+}
+
+// Legacy backward-compatibility selectors if referenced elsewhere
+.new-devise-row {
+  display: flex;
+  width: 100%;
 }

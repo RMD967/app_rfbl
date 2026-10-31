@@ -1,33 +1,74 @@
-<div class="new-devise-row">
-  <div class="new-image-container">
-    <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687826385/development/ev4a51rwos8rls8iqe4h5lgrar5z.jpg" alt="DJ playing">
-  </div>
-  <div class="welcome-back-container">
-    <h2><%= t('login.welcome_back') %></h2>
-    <h4><%= t('login.log_in') %></h4>
-
-    <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name),
-      data: { turbo: false }) do |f| %>
-      <div class="new-user-form-inputs">
-        <p><%= t('login.sign_in_with_email') %></p>
-        <%= f.input :email,
-                    required: false,
-                    autofocus: true,
-                    input_html: { autocomplete: "email", class: "form-control" },
-                    label: t('login.email') %>
-        <%= f.input :password,
-                    required: false,
-                    input_html: { autocomplete: "current-password", class: "form-control" },
-                    label: t('login.password') %>
-        <% if devise_mapping.rememberable? %>
-          <%= f.input :remember_me, as: :boolean, label: t('login.remember_me') %>
-        <% end %>
-        <div class="form-actions text-center">
-          <%= f.button :submit, t('login.log_in_button'), class: "btn btn-primary btn-block mb-3", style: "width: 100% !important;" %>
-        </div>
+<div class="login-page-wrapper">
+  <div class="login-split-layout">
+    <!-- Left Hero Image Showcase -->
+    <div class="login-visual-panel">
+      <img src="https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?auto=format&fit=crop&w=1200&q=80"
+           alt="Music DJ Console"
+           class="login-visual-img">
+      <div class="login-visual-overlay"></div>
+      <div class="login-visual-caption">
+        <h3 class="login-brand-heading">Radios FBL</h3>
+        <p class="login-brand-tagline"><%= t('footer.own_music', default: 'Posee tu música y sé contratado como artista independiente.') %></p>
       </div>
-    <% end %>
+    </div>
 
-    <%= render 'devise/shared/links' %>
+    <!-- Right Login Form Panel -->
+    <div class="login-form-panel">
+      <div class="login-card-container">
+        <!-- Header -->
+        <div class="login-header text-center mb-4">
+          <h2 class="login-title"><%= t('login.welcome_back', default: 'Bienvenido de nuevo') %></h2>
+          <p class="login-subtitle text-muted"><%= t('login.sign_in_with_email', default: 'Inicia sesión con tu cuenta de correo') %></p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="login-flat-card">
+          <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name), data: { turbo: false }) do |f| %>
+            <div class="login-form-inputs">
+              <div class="mb-3">
+                <%= f.input :email,
+                            required: false,
+                            autofocus: true,
+                            label: t('login.email', default: 'Correo electrónico'),
+                            input_html: { autocomplete: "email", class: "login-flat-input", placeholder: "tu@email.com" },
+                            label_html: { class: "login-flat-label" } %>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex align-items-center justify-content-between mb-1">
+                  <label class="login-flat-label mb-0" for="user_password"><%= t('login.password', default: 'Contraseña') %></label>
+                  <%- if devise_mapping.recoverable? %>
+                    <%= link_to t('devise.forgot_password', default: '¿Olvidaste tu contraseña?'), new_password_path(resource_name), class: "login-forgot-link" %>
+                  <% end %>
+                </div>
+                <%= f.input :password,
+                            required: false,
+                            label: false,
+                            input_html: { autocomplete: "current-password", class: "login-flat-input", placeholder: "••••••••" } %>
+              </div>
+
+              <% if devise_mapping.rememberable? %>
+                <div class="login-remember-row mb-4">
+                  <%= f.input :remember_me, as: :boolean, label: t('login.remember_me', default: 'Recordarme en este equipo'), wrapper_html: { class: "m-0" }, label_html: { class: "small text-muted" } %>
+                </div>
+              <% end %>
+
+              <!-- Normal Width Action Button -->
+              <div class="login-action-row text-center mt-3">
+                <%= f.button :submit, t('login.log_in_button', default: 'Iniciar sesión'), class: "btn login-flat-submit-btn" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Bottom Sign-up Redirect Link -->
+        <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+          <div class="login-signup-prompt text-center mt-4">
+            <span class="text-muted"><%= t('devise.no_account', default: '¿No tienes una cuenta?') %></span>
+            <%= link_to t('devise.sign_up_here', default: 'Regístrate aquí'), new_registration_path(resource_name), class: "login-signup-link fw-semibold ms-1" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
