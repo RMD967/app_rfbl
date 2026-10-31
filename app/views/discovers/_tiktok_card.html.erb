@@ -19,17 +19,26 @@
               end
 %>
 
-<div class="tiktok-card" id="<%= dom_id(discover) %>" data-tiktok-feed-target="card" data-video-id="<%= discover.id %>">
+<div class="tiktok-card"
+     id="<%= dom_id(discover) %>"
+     data-tiktok-feed-target="card"
+     data-video-id="<%= discover.id %>"
+     data-action="contextmenu->tiktok-feed#onContextMenu
+                  touchstart->tiktok-feed#onTouchStart
+                  touchmove->tiktok-feed#onTouchMove
+                  touchend->tiktok-feed#onTouchEnd
+                  touchcancel->tiktok-feed#onTouchCancel">
+
   <!-- Video Player Element -->
   <div class="tiktok-video-wrapper">
     <video class="tiktok-video"
            autoplay
            muted
-           loop
            playsinline
            preload="auto"
            data-tiktok-feed-target="video"
-           data-action="click->tiktok-feed#togglePlay">
+           data-action="click->tiktok-feed#togglePlay
+                        ended->tiktok-feed#onVideoEnded">
       <source src="<%= video_src %>" type="video/mp4">
     </video>
 
@@ -44,8 +53,9 @@
     </button>
   </div>
 
-  <!-- Bottom Metadata Gradient Overlay -->
+  <!-- Bottom Metadata Gradient Overlay (Contains card info + action icons under it) -->
   <div class="tiktok-info-overlay">
+    <!-- Artist Row -->
     <div class="tiktok-artist-row">
       <%= link_to dashboard_path(discover.dashboard), class: "tiktok-artist-name" do %>
         @<%= artist_name %>
@@ -56,6 +66,7 @@
       </span>
     </div>
 
+    <!-- Title Row -->
     <div class="tiktok-title-row">
       <h3 class="tiktok-song-title">
         <% if discover.general? %>
@@ -71,12 +82,14 @@
       </span>
     </div>
 
+    <!-- Caption / Description -->
     <% if discover.dashboard&.artist_description.present? %>
       <p class="tiktok-caption">
         <%= truncate(discover.dashboard.artist_description, length: 110) %>
       </p>
     <% end %>
 
+    <!-- CTA Booking Buttons -->
     <div class="tiktok-booking-cta">
       <% if artist_user.present? %>
         <%= button_to chatrooms_path(user_id: artist_user.id), method: :post, class: "tiktok-cta-btn primary" do %>
@@ -88,95 +101,101 @@
         <i class="ri-calendar-check-line"></i> Ver Perfil <%= "$#{artist_price.to_i} MXN" if artist_price %>
       <% end %>
     </div>
-  </div>
 
-  <!-- Right Floating Action Buttons Column -->
-  <div class="tiktok-actions-column">
-    <!-- Artist Avatar with Follow shortcut -->
-    <div class="tiktok-artist-avatar-container">
-      <%= link_to dashboard_path(discover.dashboard), class: "tiktok-avatar-link" do %>
-        <% if discover.dashboard&.avatar&.attached? %>
-          <%= cl_image_tag discover.dashboard.avatar.key, class: "tiktok-avatar-img" %>
-        <% else %>
-          <div class="tiktok-avatar-placeholder">
-            <%= artist_name.first.upcase %>
-          </div>
-        <% end %>
-      <% end %>
-
-      <% if user_signed_in? && artist_user.present? && current_user != artist_user && !current_user.following?(artist_user) %>
-        <div class="tiktok-avatar-follow-badge">
-          <%= button_to user_follow_path(artist_user),
-                        method: :post,
-                        form: { data: { turbo: true } },
-                        class: "avatar-follow-btn",
-                        title: "Seguir a #{artist_name}" do %>
-            <i class="ri-add-line"></i>
+    <!-- Action Icons Under Card Info: Pic, Like, Comment, Save, Disc -->
+    <div class="tiktok-card-bottom-actions">
+      <!-- 1. Pic: Artist Avatar with Follow Badge -->
+      <div class="bottom-action-item avatar-action-item">
+        <div class="tiktok-artist-avatar-container">
+          <%= link_to dashboard_path(discover.dashboard), class: "tiktok-avatar-link", title: "Ver perfil de #{artist_name}" do %>
+            <% if discover.dashboard&.avatar&.attached? %>
+              <%= cl_image_tag discover.dashboard.avatar.key, class: "tiktok-avatar-img", alt: artist_name %>
+            <% else %>
+              <div class="tiktok-avatar-placeholder">
+                <%= artist_name.first.upcase %>
+              </div>
+            <% end %>
           <% end %>
-        </div>
-      <% end %>
-    </div>
 
-    <!-- Like (Heart) Button -->
-    <%= render partial: "likes/like_button", locals: { discover: discover } %>
-
-    <!-- Comments Button -->
-    <div class="tiktok-action-btn-wrapper">
-      <button type="button"
-              class="tiktok-action-btn"
-              data-action="click->tiktok-feed#openComments"
-              data-discover-id="<%= discover.id %>"
-              title="Comentarios">
-        <div class="tiktok-action-icon">
-          <i class="ri-chat-3-fill"></i>
-        </div>
-        <span id="discover_<%= discover.id %>_card_comments_count" class="tiktok-action-count">
-          <%= number_to_human(discover.comments.count, units: { thousand: 'K', million: 'M' }, format: '%n%u') %>
-        </span>
-      </button>
-    </div>
-
-    <!-- Favorite / Bookmark Button -->
-    <div class="tiktok-action-btn-wrapper">
-      <%= turbo_frame_tag dom_id(discover.dashboard, :favorite_button) do %>
-        <% is_fav = current_user&.favorited?(discover.dashboard) %>
-        <% if is_fav %>
-          <%= button_to favorite_path(id: 0, favoritable_type: "Dashboard", favoritable_id: discover.dashboard.id),
-                        method: :delete,
-                        class: "tiktok-action-btn liked",
-                        title: "Guardado en favoritos",
-                        form: { data: { turbo: true } } do %>
-            <div class="tiktok-action-icon">
-              <i class="ri-bookmark-fill" style="color: #FFD166;"></i>
+          <% if user_signed_in? && artist_user.present? && current_user != artist_user && !current_user.following?(artist_user) %>
+            <div class="tiktok-avatar-follow-badge">
+              <%= button_to user_follow_path(artist_user),
+                            method: :post,
+                            form: { data: { turbo: true } },
+                            class: "avatar-follow-btn",
+                            title: "Seguir a #{artist_name}" do %>
+                <i class="ri-add-line"></i>
+              <% end %>
             </div>
-            <span class="tiktok-action-count">Guardado</span>
           <% end %>
-        <% else %>
-          <%= button_to favorites_path(favoritable_type: "Dashboard", favoritable_id: discover.dashboard.id),
-                        method: :post,
-                        class: "tiktok-action-btn",
-                        title: "Guardar en favoritos",
-                        form: { data: { turbo: true } } do %>
-            <div class="tiktok-action-icon">
-              <i class="ri-bookmark-line"></i>
-            </div>
-            <span class="tiktok-action-count">Favorito</span>
-          <% end %>
-        <% end %>
-      <% end %>
-    </div>
-
-    <!-- Vinyl Disc Graphic: Click to view video / music on artist profile -->
-    <% vinyl_url = discover.dashboard.present? ? dashboard_path(discover.dashboard, anchor: "discover-#{discover.id}") : (artist_user.present? ? user_id_path(artist_user) : "#") %>
-    <%= link_to vinyl_url, class: "tiktok-vinyl-disc-link text-decoration-none", title: "#{discover.title} - Ver en perfil" do %>
-      <div class="tiktok-vinyl-disc">
-        <div class="vinyl-outer">
-          <div class="vinyl-inner">
-            <i class="ri-music-fill"></i>
-          </div>
         </div>
       </div>
-    <% end %>
+
+      <!-- 2. Like (Heart) Button -->
+      <div class="bottom-action-item like-action-item">
+        <%= render partial: "likes/like_button", locals: { discover: discover } %>
+      </div>
+
+      <!-- 3. Comments Button -->
+      <div class="bottom-action-item comment-action-item">
+        <button type="button"
+                class="tiktok-action-btn"
+                data-action="click->tiktok-feed#openComments"
+                data-discover-id="<%= discover.id %>"
+                title="Comentarios">
+          <div class="tiktok-action-icon">
+            <i class="ri-chat-3-fill"></i>
+          </div>
+          <span id="discover_<%= discover.id %>_card_comments_count" class="tiktok-action-count">
+            <%= number_to_human(discover.comments.count, units: { thousand: 'K', million: 'M' }, format: '%n%u') %>
+          </span>
+        </button>
+      </div>
+
+      <!-- 4. Save / Favorite Button -->
+      <div class="bottom-action-item save-action-item">
+        <%= turbo_frame_tag dom_id(discover.dashboard, :favorite_button) do %>
+          <% is_fav = current_user&.favorited?(discover.dashboard) %>
+          <% if is_fav %>
+            <%= button_to favorite_path(id: 0, favoritable_type: "Dashboard", favoritable_id: discover.dashboard.id),
+                          method: :delete,
+                          class: "tiktok-action-btn liked",
+                          title: "Guardado en favoritos",
+                          form: { data: { turbo: true } } do %>
+              <div class="tiktok-action-icon">
+                <i class="ri-bookmark-fill" style="color: #FFD166;"></i>
+              </div>
+              <span class="tiktok-action-count">Guardado</span>
+            <% end %>
+          <% else %>
+            <%= button_to favorites_path(favoritable_type: "Dashboard", favoritable_id: discover.dashboard.id),
+                          method: :post,
+                          class: "tiktok-action-btn",
+                          title: "Guardar en favoritos",
+                          form: { data: { turbo: true } } do %>
+              <div class="tiktok-action-icon">
+                <i class="ri-bookmark-line"></i>
+              </div>
+              <span class="tiktok-action-count">Guardar</span>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <!-- 5. Disk Icon (Vinyl Disc): View on artist profile -->
+      <div class="bottom-action-item disc-action-item">
+        <% vinyl_url = discover.dashboard.present? ? dashboard_path(discover.dashboard, anchor: "discover-#{discover.id}") : (artist_user.present? ? user_id_path(artist_user) : "#") %>
+        <%= link_to vinyl_url, class: "tiktok-vinyl-disc-link text-decoration-none", title: "#{discover.title} - Ver en perfil" do %>
+          <div class="tiktok-vinyl-disc">
+            <div class="vinyl-outer">
+              <div class="vinyl-inner">
+                <i class="ri-music-fill"></i>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 
   <!-- Slide-up Comments Drawer -->

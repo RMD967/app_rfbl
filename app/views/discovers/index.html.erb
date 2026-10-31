@@ -2,6 +2,16 @@
   <!-- Toast feedback for sound/actions -->
   <div class="tiktok-toast-pill d-none" data-tiktok-feed-target="toast"></div>
 
+  <!-- Exit Clear Screen floating pill button (visible only when clear screen is active) -->
+  <button type="button"
+          class="exit-clear-screen-pill d-none"
+          data-tiktok-feed-target="exitClearScreenBtn"
+          data-action="click->tiktok-feed#exitClearScreen"
+          title="Salir de pantalla limpia">
+    <i class="ri-eye-line"></i>
+    <span>Salir de pantalla limpia</span>
+  </button>
+
   <!-- Top Navigation Header (Compact & non-overlapping) -->
   <header class="tiktok-nav-header">
     <div class="tiktok-tabs-container">
@@ -182,4 +192,90 @@
       </div>
     <% end %>
   </main>
+
+  <!-- Video Options Modal / Bottom Sheet (Triggered by Long-Press or Right-Click) -->
+  <div class="tiktok-options-backdrop d-none"
+       data-tiktok-feed-target="optionsBackdrop"
+       data-action="click->tiktok-feed#onBackdropClick">
+    <div class="tiktok-options-sheet"
+         data-tiktok-feed-target="optionsSheet"
+         data-action="click->tiktok-feed#stopPropagation">
+      <div class="sheet-drag-handle"></div>
+      <div class="sheet-header">
+        <div class="sheet-header-title">
+          <i class="ri-sound-module-fill sheet-title-icon"></i>
+          <span>Opciones de Reproducción</span>
+        </div>
+        <button type="button" class="sheet-close-btn" data-action="click->tiktok-feed#closeOptionsMenu" title="Cerrar">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <div class="sheet-content">
+        <!-- Option 1: Pantalla Limpia (Clear Screen) -->
+        <div class="sheet-option-item">
+          <div class="option-icon-box">
+            <i class="ri-fullscreen-line"></i>
+          </div>
+          <div class="option-info">
+            <span class="option-label">Pantalla limpia</span>
+            <span class="option-desc">Oculta controles y textos para ver solo el video</span>
+          </div>
+          <button type="button"
+                  class="option-toggle-btn"
+                  data-tiktok-feed-target="clearScreenSwitch"
+                  data-action="click->tiktok-feed#toggleClearScreen"
+                  title="Alternar pantalla limpia">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+        <!-- Option 2: Desplazamiento Automático (Auto-scroll) -->
+        <div class="sheet-option-item">
+          <div class="option-icon-box">
+            <i class="ri-skip-down-line"></i>
+          </div>
+          <div class="option-info">
+            <span class="option-label">Desplazamiento automático</span>
+            <span class="option-desc">Pasa al siguiente video al terminar el actual</span>
+          </div>
+          <button type="button"
+                  class="option-toggle-btn"
+                  data-tiktok-feed-target="autoScrollSwitch"
+                  data-action="click->tiktok-feed#toggleAutoScroll"
+                  title="Alternar auto-scroll">
+            <span class="toggle-track">
+              <span class="toggle-thumb"></span>
+            </span>
+          </button>
+        </div>
+
+        <!-- Option 3: Velocidad de Reproducción -->
+        <div class="sheet-option-group">
+          <div class="group-header">
+            <div class="option-icon-box">
+              <i class="ri-speed-line"></i>
+            </div>
+            <div class="option-info">
+              <span class="option-label">Velocidad de reproducción</span>
+              <span class="option-desc">Se guardará tu preferencia persistente para todos los videos</span>
+            </div>
+          </div>
+          <div class="speed-pills-row">
+            <% [0.5, 0.75, 1.0, 1.5, 2.0].each do |rate| %>
+              <button type="button"
+                      class="speed-pill-btn <%= 'active' if rate == 1.0 %>"
+                      data-tiktok-feed-target="speedPill"
+                      data-speed="<%= rate %>"
+                      data-action="click->tiktok-feed#selectSpeed">
+                <%= rate == 1.0 ? '1x Normal' : "#{rate}x" %>
+              </button>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

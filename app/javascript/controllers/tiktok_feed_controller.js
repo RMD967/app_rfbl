@@ -1,11 +1,42 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["card", "video", "playIndicator", "volumeIcon", "feedViewport", "toast"]
+  static targets = [
+    "card",
+    "video",
+    "playIndicator",
+    "volumeIcon",
+    "feedViewport",
+    "toast",
+    "optionsBackdrop",
+    "optionsSheet",
+    "clearScreenSwitch",
+    "autoScrollSwitch",
+    "speedPill",
+    "exitClearScreenBtn"
+  ]
 
   connect() {
     this.isMuted = false
     this.userMutedManually = false
+
+    // Load persisted video preferences
+    this.isClearScreen = localStorage.getItem("rfbl_clear_screen") === "true"
+    this.isAutoScroll = localStorage.getItem("rfbl_auto_scroll") === "true"
+    const savedSpeedStr = localStorage.getItem("rfbl_playback_speed")
+    this.savedSpeed = savedSpeedStr ? parseFloat(savedSpeedStr) : 1.0
+
+    // Touch & long-press tracking
+    this.longPressTimeout = null
+    this.touchStartX = 0
+    this.touchStartY = 0
+    this.isLongPressTriggered = false
+
+    // Apply persisted states
+    this.applyClearScreen(this.isClearScreen)
+    this.applyAutoScroll(this.isAutoScroll)
+    this.applySpeedUI(this.savedSpeed)
+
     this.setupIntersectionObserver()
 
     // Attempt to unmute active videos on user interaction if browser policy deferred audio
@@ -31,6 +62,10 @@ export default class extends Controller {
     if (this.observer) {
       this.observer.disconnect()
     }
+    if (this.longPressTimeout) {
+      clearTimeout(this.longPressTimeout)
+    }
+    document.body.classList.remove("clear-screen-active")
   }
 
   playFirstVideo() {
@@ -41,7 +76,6 @@ export default class extends Controller {
   }
 
   setupIntersectionObserver() {
-    // Low threshold (0.25) so videos reliably trigger autoplay on any screen size
     const options = {
       root: this.hasFeedViewportTarget ? this.feedViewportTarget : null,
       threshold: 0.25
@@ -77,13 +111,14 @@ export default class extends Controller {
     })
 
     video.muted = this.isMuted
+    video.playbackRate = this.savedSpeed || 1.0
+    video.loop = !this.isAutoScroll
+
     const playPromise = video.play()
     if (playPromise !== undefined) {
       playPromise.catch((err) => {
-        // Autoplay policy prevented playback, ensure muted and retry
         video.muted = true
         video.play().catch(() => {
-          // If still blocked by browser policy without gesture, show play indicator
           const card = video.closest(".tiktok-card")
           const indicator = card?.querySelector(".tiktok-play-indicator")
           if (indicator) indicator.classList.add("visible")
@@ -104,6 +139,14 @@ export default class extends Controller {
   }
 
   togglePlay(event) {
+    // If a long press just triggered, prevent the click from toggling play/pause
+    if (this.isLongPressTriggered) {
+      this.isLongPressTriggered = false
+      event.preventDefault()
+      event.stopPropagation()
+      return
+    }
+
     event.preventDefault()
     event.stopPropagation()
     const video = event.currentTarget
@@ -186,6 +229,214 @@ export default class extends Controller {
       setTimeout(() => this.toastTarget.classList.add("d-none"), 300)
     }, 1400)
   }
+
+  // ---------------- Long Press & Right-Click Options Menu ----------------
+
+  onContextMenu(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    this.openOptionsMenu(event.currentTarget)
+  }
+
+  onTouchStart(event) {
+    if (event.touches.length !== 1) return
+    // Don't trigger if touching inside comments drawer, interactive button or link
+    if (event.target.closest("button, a, input, .tiktok-comments-drawer, .tiktok-options-sheet")) return
+
+    this.touchStartX = event.touches[0].clientX
+    this.touchStartY = event.touches[0].clientY
+    this.isLongPressTriggered = false
+
+    clearTimeout(this.longPressTimeout)
+    this.longPressTimeout = setTimeout(() => {
+      this.isLongPressTriggered = true
+      if (navigator.vibrate) navigator.vibrate(40)
+      this.openOptionsMenu(event.currentTarget)
+    }, 450)
+  }
+
+  onTouchMove(event) {
+    if (!this.longPressTimeout) return
+    const touch = event.touches[0]
+    const deltaX = Math.abs(touch.clientX - this.touchStartX)
+    const deltaY = Math.abs(touch.clientY - this.touchStartY)
+    // If finger moves more than 10px, it's a scroll gesture, cancel long press
+    if (deltaX > 10 || deltaY > 10) {
+      clearTimeout(this.longPressTimeout)
+      this.longPressTimeout = null
+    }
+  }
+
+  onTouchEnd(event) {
+    clearTimeout(this.longPressTimeout)
+    this.longPressTimeout = null
+  }
+
+  onTouchCancel(event) {
+    clearTimeout(this.longPressTimeout)
+    this.longPressTimeout = null
+  }
+
+  openOptionsMenu(card = null) {
+    this.updateOptionsModalUI()
+
+    if (this.hasOptionsBackdropTarget) {
+      this.optionsBackdropTarget.classList.remove("d-none")
+      void this.optionsBackdropTarget.offsetWidth // force layout
+      this.optionsBackdropTarget.classList.add("visible")
+    }
+    if (this.hasOptionsSheetTarget) {
+      this.optionsSheetTarget.classList.add("open")
+    }
+  }
+
+  closeOptionsMenu() {
+    if (this.hasOptionsSheetTarget) {
+      this.optionsSheetTarget.classList.remove("open")
+    }
+    if (this.hasOptionsBackdropTarget) {
+      this.optionsBackdropTarget.classList.remove("visible")
+      setTimeout(() => {
+        if (!this.optionsBackdropTarget.classList.contains("visible")) {
+          this.optionsBackdropTarget.classList.add("d-none")
+        }
+      }, 250)
+    }
+  }
+
+  onBackdropClick(event) {
+    if (event.target === this.optionsBackdropTarget) {
+      this.closeOptionsMenu()
+    }
+  }
+
+  stopPropagation(event) {
+    event.stopPropagation()
+  }
+
+  // ---------------- Pantalla Limpia (Clear Screen) ----------------
+
+  toggleClearScreen(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    this.isClearScreen = !this.isClearScreen
+    localStorage.setItem("rfbl_clear_screen", this.isClearScreen.toString())
+    this.applyClearScreen(this.isClearScreen)
+    this.closeOptionsMenu()
+    this.showToast(this.isClearScreen ? "✨ Pantalla limpia activada" : "📱 Pantalla normal")
+  }
+
+  exitClearScreen(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    this.isClearScreen = false
+    localStorage.setItem("rfbl_clear_screen", "false")
+    this.applyClearScreen(false)
+    this.showToast("📱 Pantalla normal activada")
+  }
+
+  applyClearScreen(active) {
+    this.isClearScreen = active
+    if (active) {
+      document.body.classList.add("clear-screen-active")
+      this.element.classList.add("clear-screen-active")
+      if (this.hasExitClearScreenBtnTarget) {
+        this.exitClearScreenBtnTarget.classList.remove("d-none")
+      }
+    } else {
+      document.body.classList.remove("clear-screen-active")
+      this.element.classList.remove("clear-screen-active")
+      if (this.hasExitClearScreenBtnTarget) {
+        this.exitClearScreenBtnTarget.classList.add("d-none")
+      }
+    }
+    if (this.hasClearScreenSwitchTarget) {
+      this.clearScreenSwitchTarget.classList.toggle("active", active)
+    }
+  }
+
+  // ---------------- Desplazamiento Automático (Auto-scroll) ----------------
+
+  toggleAutoScroll(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    this.isAutoScroll = !this.isAutoScroll
+    localStorage.setItem("rfbl_auto_scroll", this.isAutoScroll.toString())
+    this.applyAutoScroll(this.isAutoScroll)
+    this.showToast(this.isAutoScroll ? "🔄 Auto-scroll activado" : "⏸️ Auto-scroll desactivado")
+  }
+
+  applyAutoScroll(active) {
+    this.isAutoScroll = active
+    if (this.hasAutoScrollSwitchTarget) {
+      this.autoScrollSwitchTarget.classList.toggle("active", active)
+    }
+    this.videoTargets.forEach((v) => {
+      v.loop = !active
+    })
+  }
+
+  onVideoEnded(event) {
+    if (!this.isAutoScroll) return
+    const currentCard = event.currentTarget.closest(".tiktok-card")
+    if (!currentCard) return
+
+    const currentIndex = this.cardTargets.indexOf(currentCard)
+    if (currentIndex !== -1 && currentIndex < this.cardTargets.length - 1) {
+      const nextCard = this.cardTargets[currentIndex + 1]
+      nextCard.scrollIntoView({ behavior: "smooth" })
+    } else if (this.cardTargets.length > 0) {
+      // Loop back to the very first card if we reached the end of the feed
+      this.cardTargets[0].scrollIntoView({ behavior: "smooth" })
+    }
+  }
+
+  // ---------------- Velocidad de Reproducción (Persistent Speed) ----------------
+
+  selectSpeed(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    const target = event.currentTarget
+    const speed = parseFloat(target.dataset.speed) || 1.0
+    this.savedSpeed = speed
+    localStorage.setItem("rfbl_playback_speed", speed.toString())
+    this.applySpeedUI(speed)
+
+    // Apply speed to all videos in feed
+    this.videoTargets.forEach((v) => {
+      v.playbackRate = speed
+    })
+
+    this.showToast(`⚡ Velocidad: ${speed}x`)
+    setTimeout(() => {
+      this.closeOptionsMenu()
+    }, 250)
+  }
+
+  applySpeedUI(speed) {
+    this.speedPillTargets.forEach((pill) => {
+      const pillSpeed = parseFloat(pill.dataset.speed)
+      pill.classList.toggle("active", Math.abs(pillSpeed - speed) < 0.01)
+    })
+  }
+
+  updateOptionsModalUI() {
+    if (this.hasClearScreenSwitchTarget) {
+      this.clearScreenSwitchTarget.classList.toggle("active", this.isClearScreen)
+    }
+    if (this.hasAutoScrollSwitchTarget) {
+      this.autoScrollSwitchTarget.classList.toggle("active", this.isAutoScroll)
+    }
+    this.applySpeedUI(this.savedSpeed)
+  }
+
+  // ---------------- Comments Drawer Handlers ----------------
 
   openComments(event) {
     event.preventDefault()
