@@ -9,6 +9,10 @@ class ChatroomPolicy < ApplicationPolicy
     true
   end
 
+  def search_users?
+    true
+  end
+
   def show?
     record.users.include?(user)
   end

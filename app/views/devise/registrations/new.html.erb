@@ -14,6 +14,13 @@
           <%= f.input :last_name,
                       required: true,
                       autofocus: true %>
+          <%= f.input :username,
+                      required: false,
+                      label: t('account.username', default: 'Username (@nombre_de_usuario)'),
+                      hint: 'Opcional (se generará uno automáticamente a partir de tu email si lo dejas en blanco)',
+                      input_html: { autocomplete: "username", placeholder: "ej. dj_cumbia" },
+                      label_html: { class: "text-white" },
+                      hint_html: { class: "text-white-50" } %>
           <%= f.input :email,
                       required: true,
                       autofocus: true,

@@ -49,6 +49,71 @@
     }
   }
 
+  .new-chat-btn {
+    background: linear-gradient(135deg, $purple-primary 0%, #FF62A5 100%);
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(162, 89, 255, 0.35);
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(162, 89, 255, 0.5);
+      color: white;
+    }
+  }
+
+  .inbox-search-bar {
+    .inbox-search-wrapper {
+      position: relative;
+
+      .inbox-search-icon {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: $neutral-40;
+        font-size: 18px;
+      }
+
+      .inbox-search-input {
+        width: 100%;
+        background: $blue-80;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 14px;
+        color: white;
+        padding: 10px 16px 10px 42px;
+        font-size: 14px;
+        transition: all 0.2s ease;
+
+        &:focus {
+          outline: none;
+          background: rgba(42, 42, 63, 0.95);
+          border-color: $purple-primary;
+          box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.25);
+        }
+
+        &::placeholder {
+          color: $neutral-40;
+        }
+      }
+    }
+  }
+
+  .inbox-filtered-empty {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.15);
+  }
+
+  .inbox-card-handle {
+    font-size: 12px;
+    color: $neutral-40;
+  }
+
   .inbox-list {
     display: flex;
     flex-direction: column;
@@ -672,6 +737,61 @@
     .fav-empty-icon {
       color: #FFC65A;
       margin-bottom: 1rem;
+    }
+  }
+}
+
+// New Chat Modal Styles
+.new-chat-modal-content {
+  background: #1B1A32 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+  color: white;
+
+  .modal-search-wrapper {
+    .modal-search-input {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: white;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+
+      &:focus {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: $purple-primary;
+        box-shadow: 0 0 0 3px rgba(162, 89, 255, 0.25);
+        color: white;
+      }
+
+      &::placeholder {
+        color: $neutral-40;
+      }
+    }
+  }
+
+  .modal-user-results-container {
+    max-height: 380px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+  }
+
+  .search-user-result-item {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(162, 89, 255, 0.35);
+      transform: translateY(-1px);
     }
   }
 }

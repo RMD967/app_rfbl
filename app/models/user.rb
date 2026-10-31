@@ -33,6 +33,43 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  validates :username, uniqueness: { case_sensitive: false },
+                       length: { in: 3..30 },
+                       format: { with: /\A[a-zA-Z0-9_.]+\z/, message: "solo puede contener letras, números, guiones bajos y puntos" },
+                       allow_blank: true
+
+  before_validation :set_default_username, on: :create
+  before_validation :sanitize_username
+
+  def set_default_username
+    return if username.present?
+
+    base = if first_name.present? && last_name.present?
+             "#{first_name}_#{last_name}".downcase.gsub(/[^a-z0-9_]/, '')
+           elsif email.present?
+             email.split('@').first.downcase.gsub(/[^a-z0-9_]/, '')
+           else
+             "user"
+           end
+    base = "user" if base.blank? || base.length < 3
+
+    candidate = base
+    counter = 1
+    while User.where(username: candidate).exists?
+      candidate = "#{base}#{counter}"
+      counter += 1
+    end
+    self.username = candidate
+  end
+
+  def sanitize_username
+    self.username = username.to_s.strip.downcase.gsub(/[^a-z0-9_.]/, '') if username.present?
+  end
+
+  def display_handle
+    username.presence || email.split('@').first
+  end
+
   def favorited?(favoritable)
     favorites.exists?(favoritable: favoritable)
   end

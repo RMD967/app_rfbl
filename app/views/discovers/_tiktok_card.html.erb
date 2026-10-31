@@ -79,7 +79,7 @@
 
     <div class="tiktok-booking-cta">
       <% if artist_user.present? %>
-        <%= link_to chatrooms_path(artist_id: artist_user.id), class: "tiktok-cta-btn primary" do %>
+        <%= button_to chatrooms_path(user_id: artist_user.id), method: :post, class: "tiktok-cta-btn primary" do %>
           <i class="ri-chat-1-fill"></i> Contactar Artista
         <% end %>
       <% end %>

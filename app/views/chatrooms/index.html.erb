@@ -1,10 +1,43 @@
-<div class="inbox-container">
+<div class="inbox-container" data-controller="user-chat-search">
+  <!-- Inbox Header with Title and "New Message" Action Button -->
   <div class="inbox-header">
-    <div class="inbox-title-row">
-      <h2><i class="ri-chat-3-line"></i> <%= t('navbar.messages', default: 'Messages') %></h2>
-      <span class="inbox-counter"><%= @chatrooms.count %></span>
+    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+      <div>
+        <div class="inbox-title-row">
+          <h2><i class="ri-chat-3-line"></i> <%= t('navbar.messages', default: 'Messages') %></h2>
+          <span class="inbox-counter"><%= @chatrooms.count %></span>
+        </div>
+        <p class="inbox-subtitle mb-0"><%= t('chat.inbox_subtitle', default: 'Coordinate events and gigs with musicians & event organizers.') %></p>
+      </div>
+
+      <!-- New Chat Button -->
+      <button type="button" class="btn new-chat-btn d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#newChatModal">
+        <i class="ri-add-line fs-5"></i>
+        <span><%= t('chat.new_message', default: 'Nuevo Mensaje') %></span>
+      </button>
     </div>
-    <p class="inbox-subtitle"><%= t('chat.inbox_subtitle', default: 'Coordinate events and gigs with musicians & event organizers.') %></p>
+  </div>
+
+  <!-- Search Bar: Filter Active Conversations or Search by Username -->
+  <div class="inbox-search-bar my-3">
+    <div class="inbox-search-wrapper position-relative">
+      <i class="ri-search-line inbox-search-icon"></i>
+      <input type="text"
+             class="inbox-search-input"
+             placeholder="<%= t('chat.search_placeholder', default: 'Buscar en tus mensajes o escribir @username...') %>"
+             data-action="input->user-chat-search#filterInbox"
+             data-user-chat-search-target="inboxInput">
+    </div>
+  </div>
+
+  <!-- Filtered Empty Notice (shown when inbox search yields 0 matches) -->
+  <div class="inbox-filtered-empty p-4 text-center rounded my-3" data-user-chat-search-target="inboxEmptyFiltered" style="display: none;">
+    <i class="ri-user-search-line ri-2x text-primary mb-2 d-block"></i>
+    <p class="text-white mb-1">No tienes conversaciones activas con "<strong class="search-query-text"></strong>"</p>
+    <p class="small text-muted mb-3">Puedes buscar a este usuario por su @username para iniciar una nueva conversación.</p>
+    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#newChatModal">
+      <i class="ri-user-add-line me-1"></i> Buscar usuario y chatear
+    </button>
   </div>
 
   <% if @chatrooms.empty? %>
@@ -14,16 +47,27 @@
       </div>
       <h3><%= t('chat.no_chats', default: 'No conversations yet') %></h3>
       <p><%= t('chat.start_chat_hint', default: 'Browse events or musicians to start coordinating gigs.') %></p>
-      <%= link_to events_path, class: "main-app-btn-pri" do %>
-        <i class="ri-ticket-2-line"></i> <%= t('navbar.events') %>
-      <% end %>
+      <div class="d-flex align-items-center justify-content-center gap-2">
+        <button type="button" class="main-app-btn-pri" data-bs-toggle="modal" data-bs-target="#newChatModal">
+          <i class="ri-chat-new-line me-1"></i> <%= t('chat.new_message', default: 'Nuevo Mensaje') %>
+        </button>
+        <%= link_to events_path, class: "btn btn-outline-light" do %>
+          <i class="ri-ticket-2-line"></i> <%= t('navbar.events') %>
+        <% end %>
+      </div>
     </div>
   <% else %>
     <div class="inbox-list">
       <% @chatrooms.each do |chatroom| %>
         <% other = chatroom.other_user(current_user) %>
         <% last_msg = chatroom.last_message %>
-        <%= link_to chatroom_path(chatroom), class: "inbox-card" do %>
+        <% other_handle = other&.display_handle %>
+        <%= link_to chatroom_path(chatroom),
+                    class: "inbox-card",
+                    data: {
+                      user_chat_search_target: "inboxCard",
+                      username: other_handle
+                    } do %>
           <div class="inbox-card-avatar">
             <% if other&.profile_picture&.attached? %>
               <%= cl_image_tag other.profile_picture.key, class: "chat-avatar", alt: other.full_name %>
@@ -34,7 +78,12 @@
 
           <div class="inbox-card-content">
             <div class="inbox-card-top">
-              <span class="inbox-card-name"><%= other&.full_name || chatroom.name %></span>
+              <div class="d-flex align-items-center gap-1 flex-wrap">
+                <span class="inbox-card-name"><%= other&.full_name || chatroom.name %></span>
+                <% if other_handle.present? %>
+                  <span class="inbox-card-handle text-muted small">@<%= other_handle %></span>
+                <% end %>
+              </div>
               <span class="inbox-card-time"><%= last_msg ? last_msg.created_at.strftime("%b %e, %l:%M %p") : chatroom.created_at.strftime("%b %e") %></span>
             </div>
             <div class="inbox-card-middle">
@@ -56,4 +105,45 @@
       <% end %>
     </div>
   <% end %>
+
+  <!-- Modal: Iniciar Nuevo Chat / Buscar por @username o Nombre -->
+  <div class="modal fade" id="newChatModal" tabindex="-1" aria-labelledby="newChatModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content new-chat-modal-content">
+        <div class="modal-header border-bottom border-secondary border-opacity-25 pb-3">
+          <h5 class="modal-title d-flex align-items-center gap-2 text-white" id="newChatModalLabel">
+            <i class="ri-chat-new-line text-primary"></i> <%= t('chat.new_chat_title', default: 'Iniciar Nuevo Chat') %>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-4">
+          <!-- Search input inside modal -->
+          <div class="modal-search-wrapper mb-3 position-relative">
+            <i class="ri-at-line position-absolute top-50 translate-middle-y ms-3 text-primary fs-5"></i>
+            <input type="text"
+                   class="form-control ps-5 py-2 modal-search-input"
+                   placeholder="<%= t('chat.modal_search_placeholder', default: 'Buscar por @username, nombre o artista...') %>"
+                   data-action="input->user-chat-search#searchModal"
+                   data-user-chat-search-target="input"
+                   autofocus>
+          </div>
+
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="small text-muted text-uppercase fw-semibold" style="font-size: 11px; letter-spacing: 0.5px;">
+              <%= t('chat.available_users', default: 'Usuarios y Artistas') %>
+            </span>
+            <span class="small text-muted" style="font-size: 11px;">
+              <i class="ri-sparkling-fill text-warning me-1"></i>Recomendados
+            </span>
+          </div>
+
+          <!-- Live Results Container -->
+          <div class="modal-user-results-container" data-user-chat-search-target="results">
+            <!-- Populated dynamically via Stimulus user_chat_search_controller -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

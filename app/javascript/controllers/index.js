@@ -57,3 +57,6 @@ application.register("tiktok-feed", TiktokFeedController)
 
 import SearchAutocompleteController from "./search_autocomplete_controller"
 application.register("search-autocomplete", SearchAutocompleteController)
+
+import UserChatSearchController from "./user_chat_search_controller"
+application.register("user-chat-search", UserChatSearchController)

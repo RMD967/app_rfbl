@@ -12,6 +12,7 @@
     <div class="mb-3">
       <%= f.input :first_name, required: true, input_html: { class: 'form-control' } %>
       <%= f.input :last_name, required: true, input_html: { class: 'form-control' } %>
+      <%= f.input :username, required: false, label: t('account.username', default: 'Username (@nombre_de_usuario)'), hint: t('account.username_hint', default: 'Personaliza tu @username único para que otros puedan buscarte y enviarte mensajes directos.'), input_html: { class: 'form-control', placeholder: 'ej. rodrigocumbia' }, hint_html: { class: 'text-white-50' } %>
       <%= f.input :email, required: true, autofocus: true, label_html: { class: 'form-label' }, input_html: { class: 'form-control' } %>
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
         <p class="mb-3 text-white"><%= t('account.confirmation_pending', email: resource.unconfirmed_email) %></p>

@@ -46,6 +46,9 @@ Rails.application.routes.draw do
     end
   end
   resources :chatrooms, only: %i[show index create destroy] do
+    collection do
+      get :search_users
+    end
     resources :messages, only: :create
   end
   # get '/users/:id/dashboard', to: 'users#dashboard', as: :dashboard

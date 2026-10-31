@@ -59,7 +59,7 @@
             <%= render partial: "follows/follow_button", locals: { artist: @dashboard.user } %>
 
             <% if current_user.present? && current_user != @dashboard.user %>
-              <%= link_to chatrooms_path(artist_id: @dashboard.user_id), class: "main-app-btn-pri btn-sm" do %>
+              <%= button_to chatrooms_path(user_id: @dashboard.user_id), method: :post, class: "main-app-btn-pri btn-sm" do %>
                 <i class="ri-chat-3-line"></i> <%= t('dashboard.chat', default: 'Contactar Artista') %>
               <% end %>
             <% end %>

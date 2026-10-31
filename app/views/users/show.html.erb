@@ -1,7 +1,7 @@
 <%
   is_owner = current_user == @user
   artist_db = @user.artist_dashboard
-  user_handle = @user.email.split('@').first
+  user_handle = @user.display_handle
 %>
 
 <div class="tiktok-profile-experience">
@@ -38,7 +38,14 @@
           <i class="ri-verified-badge-fill text-primary" title="Artista Verificado"></i>
         <% end %>
       </h2>
-      <p class="tiktok-profile-handle">@<%= user_handle %></p>
+      <p class="tiktok-profile-handle d-inline-flex align-items-center gap-2">
+        @<%= user_handle %>
+        <% if is_owner %>
+          <%= link_to edit_user_registration_path, class: "text-muted text-decoration-none small", title: "Personalizar tu @username" do %>
+            <i class="ri-edit-2-line" style="font-size: 14px;"></i>
+          <% end %>
+        <% end %>
+      </p>
 
       <div class="tiktok-profile-tags">
         <% if @user.artist? %>
