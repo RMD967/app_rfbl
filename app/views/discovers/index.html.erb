@@ -14,44 +14,40 @@
 
   <!-- Top Navigation Header (Compact & non-overlapping) -->
   <header class="tiktok-nav-header">
-    <div class="tiktok-header-top-row">
-      <div class="tiktok-tabs-container">
-        <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
-                    class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
-          <i class="ri-map-pin-user-fill"></i>
-          <span><%= t('discover.tabs.nearby', default: "Cerca de ti") %></span>
-        <% end %>
+    <div class="tiktok-tabs-container">
+      <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
+                  class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
+        <i class="ri-map-pin-user-fill"></i>
+        <span><%= t('discover.tabs.nearby', default: "Cerca de ti") %></span>
+      <% end %>
 
-        <span class="tiktok-tabs-divider">|</span>
+      <span class="tiktok-tabs-divider">|</span>
 
-        <%= link_to discovers_path(tab: "for_you"),
-                    class: "tiktok-tab-link #{@current_tab == 'for_you' ? 'active' : ''}" do %>
-          <span><%= t('discover.tabs.for_you', default: "Para ti") %></span>
-        <% end %>
+      <%= link_to discovers_path(tab: "for_you"),
+                  class: "tiktok-tab-link #{@current_tab == 'for_you' ? 'active' : ''}" do %>
+        <span><%= t('discover.tabs.for_you', default: "Para ti") %></span>
+      <% end %>
 
-        <span class="tiktok-tabs-divider">|</span>
+      <span class="tiktok-tabs-divider">|</span>
 
-        <%= link_to discovers_path(tab: "genre", genre: (@current_genre.presence || "Tropical")),
-                    class: "tiktok-tab-link #{@current_tab == 'genre' ? 'active' : ''}" do %>
-          <i class="ri-disc-fill"></i>
-          <span class="tab-label-full d-none d-sm-inline"><%= t('discover.tabs.by_genre', default: "Escucha por género") %></span>
-          <span class="tab-label-short d-sm-none"><%= t('discover.tabs.by_genre_short', default: "Por género") %></span>
-        <% end %>
-      </div>
+      <%= link_to discovers_path(tab: "genre", genre: (@current_genre.presence || "Tropical")),
+                  class: "tiktok-tab-link #{@current_tab == 'genre' ? 'active' : ''}" do %>
+        <i class="ri-disc-fill"></i>
+        <span class="tab-label-full d-none d-sm-inline"><%= t('discover.tabs.by_genre', default: "Escucha por género") %></span>
+        <span class="tab-label-short d-sm-none"><%= t('discover.tabs.by_genre_short', default: "Por género") %></span>
+      <% end %>
 
-      <!-- Quick Language Switcher Button -->
+      <span class="tiktok-tabs-divider">|</span>
+
+      <!-- 4th Small Tab: Language Switcher -->
       <% next_locale = (I18n.locale.to_s == 'es' ? :en : :es) %>
-      <div class="tiktok-lang-switcher-wrap">
-        <%= link_to set_language_path(locale: next_locale),
-                    class: "tiktok-lang-btn",
-                    data: { turbo: false },
-                    title: (I18n.locale.to_s == 'es' ? "Switch to English" : "Cambiar a Español") do %>
-          <i class="ri-global-line lang-icon"></i>
-          <span class="lang-switch-tag <%= 'is-active' if I18n.locale.to_s == 'es' %>">ES</span>
-          <span class="lang-switch-sep">/</span>
-          <span class="lang-switch-tag <%= 'is-active' if I18n.locale.to_s == 'en' %>">EN</span>
-        <% end %>
-      </div>
+      <%= link_to set_language_path(locale: next_locale),
+                  class: "tiktok-tab-link tiktok-tab-lang",
+                  data: { turbo: false },
+                  title: (I18n.locale.to_s == 'es' ? "Switch to English" : "Cambiar a Español") do %>
+        <i class="ri-global-line"></i>
+        <span class="lang-code-text"><%= I18n.locale.to_s == 'es' ? 'EN' : 'ES' %></span>
+      <% end %>
     </div>
 
     <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->

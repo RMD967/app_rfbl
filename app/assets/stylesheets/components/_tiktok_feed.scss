@@ -87,18 +87,8 @@ body:has(.tiktok-experience) {
   align-items: center;
   background: #0d0c1d;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px 14px 8px 14px;
+  padding: 6px 12px 8px 12px;
   pointer-events: auto;
-}
-
-.tiktok-header-top-row {
-  position: relative;
-  width: 100%;
-  max-width: 600px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 36px;
 }
 
 .tiktok-tabs-container {
@@ -106,101 +96,25 @@ body:has(.tiktok-experience) {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  width: auto;
+  width: 100%;
+  max-width: 600px;
+  flex-wrap: nowrap;
 
   @media (max-width: 480px) {
     gap: 6px;
   }
-}
 
-// Quick Language Switcher Button in Header
-.tiktok-lang-switcher-wrap {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-  z-index: 5;
-}
-
-.tiktok-lang-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  padding: 3px 9px;
-  border-radius: 16px;
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-decoration: none;
-  backdrop-filter: blur(8px);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-  white-space: nowrap;
-
-  .lang-icon {
-    font-size: 0.85rem;
-    color: #A259FF;
-    transition: transform 0.25s ease;
-  }
-
-  .lang-switch-tag {
-    color: rgba(255, 255, 255, 0.45);
-    transition: color 0.2s ease;
-
-    &.is-active {
-      color: #ffffff;
-      font-weight: 800;
-      text-shadow: 0 0 6px rgba(162, 89, 255, 0.6);
-    }
-  }
-
-  .lang-switch-sep {
-    color: rgba(255, 255, 255, 0.25);
-    font-size: 0.65rem;
-  }
-
-  &:hover {
-    background: rgba(162, 89, 255, 0.25);
-    border-color: #A259FF;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(162, 89, 255, 0.4);
-    transform: translateY(-1px);
-
-    .lang-icon {
-      transform: rotate(25deg);
-    }
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
-
-  @media (max-width: 480px) {
-    padding: 3px 7px;
-    font-size: 0.68rem;
-  }
-
-  @media (max-width: 370px) {
-    padding: 3px 6px;
-    .lang-switch-sep {
-      display: none;
-    }
-    .lang-switch-tag.is-active {
-      display: none;
-    }
+  @media (max-width: 360px) {
+    gap: 4px;
   }
 }
 
 .tiktok-tab-link {
-  font-size: 0.98rem;
+  font-size: 0.96rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.65);
   text-decoration: none;
-  padding: 5px 12px;
+  padding: 5px 10px;
   border-radius: 8px;
   position: relative;
   transition: all 0.25s ease;
@@ -210,9 +124,15 @@ body:has(.tiktok-experience) {
   white-space: nowrap;
 
   @media (max-width: 480px) {
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     padding: 4px 6px;
     gap: 4px;
+  }
+
+  @media (max-width: 360px) {
+    font-size: 0.78rem;
+    padding: 3px 4px;
+    gap: 3px;
   }
 
   &:hover {
@@ -234,6 +154,65 @@ body:has(.tiktok-experience) {
       background: linear-gradient(90deg, #A259FF, #FF62A5);
       border-radius: 3px;
       box-shadow: 0 0 8px rgba(162, 89, 255, 0.8);
+    }
+  }
+
+  // 4th Small Tab: Language Switcher
+  &.tiktok-tab-lang {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.75);
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    gap: 4px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    i {
+      font-size: 0.82rem;
+      color: #A259FF;
+      transition: transform 0.25s ease;
+    }
+
+    .lang-code-text {
+      font-size: 0.76rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.3px;
+    }
+
+    &:hover {
+      background: rgba(162, 89, 255, 0.25);
+      border-color: #A259FF;
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(162, 89, 255, 0.4);
+      transform: translateY(-1px);
+
+      i {
+        transform: rotate(25deg);
+      }
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+
+    &::after {
+      display: none !important;
+    }
+
+    @media (max-width: 480px) {
+      padding: 3px 6px;
+      gap: 3px;
+
+      i {
+        font-size: 0.76rem;
+      }
+
+      .lang-code-text {
+        font-size: 0.72rem;
+      }
     }
   }
 }
