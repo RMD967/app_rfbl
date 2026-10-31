@@ -20,10 +20,22 @@
       <% end %>
     <% end %>
 
-    <div class="followers-pill">
+    <%
+      artist_dashboard = artist.artist_dashboard
+      can_open = artist_dashboard.present? && ((current_user == artist) || artist_dashboard.public_followers?)
+    %>
+    <div class="followers-pill <%= 'cursor-pointer' if can_open %>"
+         <% if can_open %>
+           data-bs-toggle="modal" data-bs-target="#followersModal" title="Ver lista de seguidores" style="cursor: pointer;"
+         <% elsif artist_dashboard.present? && !artist_dashboard.public_followers? %>
+           title="Lista de seguidores privada por el artista" style="cursor: not-allowed;"
+         <% end %>>
       <i class="ri-heart-3-fill"></i>
       <strong><%= artist.followers.count %></strong>
       <span><%= t('follow.followers_label', default: 'followers') %></span>
+      <% if artist_dashboard.present? && !artist_dashboard.public_followers? %>
+        <i class="ri-lock-line ms-1 text-warning" style="font-size: 0.75rem;" title="<%= current_user == artist ? 'Privada para el público' : 'Lista privada' %>"></i>
+      <% end %>
     </div>
   </div>
 <% end %>

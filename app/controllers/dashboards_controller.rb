@@ -99,6 +99,17 @@ class DashboardsController < ApplicationController
     render html: @images_content
   end
 
+  def toggle_public_followers
+    @dashboard = Dashboard.find(params[:id])
+    authorize @dashboard
+    @dashboard.update(public_followers: !@dashboard.public_followers)
+
+    respond_to do |format|
+      format.turbo_stream { redirect_to @dashboard, notice: "Visibilidad de seguidores actualizada a: #{@dashboard.public_followers? ? 'Pública' : 'Privada'}." }
+      format.html { redirect_to @dashboard, notice: "Visibilidad de seguidores actualizada a: #{@dashboard.public_followers? ? 'Pública' : 'Privada'}." }
+    end
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
@@ -108,7 +119,7 @@ class DashboardsController < ApplicationController
 
   # Only allow a list of trusted parameters through.
   def dashboard_params
-    params.require(:dashboard).permit(:avatar, :artist_genre, :artist_count, :artist_name, :artist_instrument, :artist_location, :artist_travel, :artist_radius, :artist_cities, :artist_description, :artist_price, images: [], videos: [], audios: [])
+    params.require(:dashboard).permit(:avatar, :artist_genre, :artist_count, :artist_name, :artist_instrument, :artist_location, :artist_travel, :artist_radius, :artist_cities, :artist_description, :artist_price, :public_followers, images: [], videos: [], audios: [])
   end
 
   def invite_user(email, dashboard)

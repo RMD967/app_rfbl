@@ -26,6 +26,10 @@ class DashboardPolicy < ApplicationPolicy
     record.user == user
   end
 
+  def toggle_public_followers?
+    record.user == user
+  end
+
   def destroy?
     record.user == user
   end

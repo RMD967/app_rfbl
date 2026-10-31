@@ -40,7 +40,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :dashboards
+  resources :dashboards do
+    member do
+      patch :toggle_public_followers
+    end
+  end
   resources :chatrooms, only: %i[show index create destroy] do
     resources :messages, only: :create
   end

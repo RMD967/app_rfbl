@@ -75,15 +75,32 @@
 
         <!-- Stats Counter Row -->
         <div class="artist-stats-bar">
-          <div class="artist-stat-item">
-            <span class="stat-number"><%= @dashboard.followers_count %></span>
-            <span class="stat-label"><%= t('dashboard.followers', default: 'Seguidores') %></span>
+          <% can_view_followers = (current_user == @dashboard.user) || @dashboard.public_followers? %>
+          <div class="artist-stat-item <%= 'interactive' if can_view_followers %>"
+               <% if can_view_followers %>
+                 data-bs-toggle="modal" data-bs-target="#followersModal" title="Ver lista de seguidores" style="cursor: pointer;"
+               <% else %>
+                 title="Lista de seguidores privada por el artista" style="cursor: not-allowed;"
+               <% end %>>
+            <span class="stat-number d-flex align-items-center justify-content-center gap-1">
+              <%= @dashboard.followers_count %>
+              <% unless @dashboard.public_followers? %>
+                <i class="ri-lock-2-line text-warning" style="font-size: 0.85rem;" title="<%= current_user == @dashboard.user ? 'Lista privada para el público (solo visible para ti)' : 'Lista de seguidores privada' %>"></i>
+              <% end %>
+            </span>
+            <span class="stat-label">
+              <%= t('dashboard.followers', default: 'Seguidores') %>
+              <% if can_view_followers %>
+                <i class="ri-arrow-right-s-line small text-primary"></i>
+              <% end %>
+            </span>
           </div>
-          <div class="artist-stat-item">
+
+          <div class="artist-stat-item" data-action="click->tabs#shiftTab" data-tab-name="music" style="cursor: pointer;">
             <span class="stat-number"><%= @music_posts.count %></span>
             <span class="stat-label">🎵 <%= t('dashboard.music_tracks', default: 'Canciones') %></span>
           </div>
-          <div class="artist-stat-item">
+          <div class="artist-stat-item" data-action="click->tabs#shiftTab" data-tab-name="general" style="cursor: pointer;">
             <span class="stat-number"><%= @general_posts.count %></span>
             <span class="stat-label">📱 <%= t('dashboard.general_posts', default: 'Publicaciones') %></span>
           </div>
@@ -97,16 +114,26 @@
 
         <!-- Owner Administration Actions -->
         <% if current_user == @dashboard.user %>
-          <div class="artist-admin-actions-bar mt-3 pt-3 border-top border-secondary">
-            <button type="button" class="btn btn-primary btn-sm me-2" data-bs-toggle="modal" data-bs-target="#newPostModal">
+          <div class="artist-admin-actions-bar mt-3 pt-3 border-top border-secondary d-flex flex-wrap align-items-center gap-2">
+            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newPostModal">
               <i class="ri-add-circle-line"></i> <%= t('dashboard.new_post', default: 'Nueva Publicación / Lanzamiento') %>
             </button>
-            <%= link_to edit_dashboard_path(@dashboard), class: "btn btn-outline-light btn-sm me-2" do %>
+            <%= link_to edit_dashboard_path(@dashboard), class: "btn btn-outline-light btn-sm" do %>
               <i class="ri-edit-line"></i> <%= t('dashboard.edit_profile', default: 'Editar Perfil') %>
             <% end %>
             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#uploadMediaModal">
               <i class="ri-upload-cloud-line"></i> <%= t('dashboard.upload_media', default: 'Subir Archivos') %>
             </button>
+
+            <!-- Quick Followers Visibility Toggle for Artist -->
+            <%= button_to toggle_public_followers_dashboard_path(@dashboard),
+                          method: :patch,
+                          form: { data: { turbo: true } },
+                          class: "btn btn-sm #{@dashboard.public_followers? ? 'btn-outline-info' : 'btn-outline-warning'}",
+                          title: @dashboard.public_followers? ? "Seguidores visibles públicamente. Clic para hacer privada." : "Seguidores privados para el público. Clic para hacer pública." do %>
+              <i class="<%= @dashboard.public_followers? ? 'ri-eye-line' : 'ri-eye-off-line' %>"></i>
+              Seguidores: <strong><%= @dashboard.public_followers? ? 'Públicos' : 'Privados' %></strong>
+            <% end %>
           </div>
         <% end %>
       </div>
@@ -436,6 +463,94 @@
             <%= f.submit "Subir Archivos", class: "main-app-btn-sec" %>
           </div>
         <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<!-- Modal: Lista de Seguidores del Artista -->
+<% can_view_followers = (current_user == @dashboard.user) || @dashboard.public_followers? %>
+<% if can_view_followers %>
+  <div class="modal fade" id="followersModal" tabindex="-1" aria-labelledby="followersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content custom-dark-modal">
+        <div class="modal-header border-secondary">
+          <h5 class="modal-title text-white d-flex align-items-center gap-2" id="followersModalLabel">
+            <i class="ri-user-heart-fill text-danger"></i>
+            <span>Seguidores de <%= @dashboard.artist_name %></span>
+            <span class="badge bg-secondary ms-1"><%= @dashboard.followers_count %></span>
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body p-3">
+          <!-- Artist Privacy Control Switch (Only shown to the artist / owner) -->
+          <% if current_user == @dashboard.user %>
+            <div class="followers-privacy-banner mb-3 p-3 rounded" style="background: rgba(162, 89, 255, 0.12); border: 1px solid rgba(162, 89, 255, 0.3);">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                  <h6 class="text-white mb-1 d-flex align-items-center gap-2">
+                    <i class="<%= @dashboard.public_followers? ? 'ri-eye-line text-success' : 'ri-eye-off-line text-warning' %>"></i>
+                    Visibilidad de la lista: <strong><%= @dashboard.public_followers? ? 'Pública' : 'Privada' %></strong>
+                  </h6>
+                  <small class="text-muted d-block" style="font-size: 0.78rem;">
+                    <%= @dashboard.public_followers? ? 'Cualquier persona puede ver quién te sigue.' : 'Solo tú puedes ver esta lista. La audiencia verá el número pero no los perfiles.' %>
+                  </small>
+                </div>
+
+                <%= button_to toggle_public_followers_dashboard_path(@dashboard),
+                              method: :patch,
+                              form: { data: { turbo: true } },
+                              class: "btn btn-sm #{@dashboard.public_followers? ? 'btn-outline-warning' : 'btn-success'}" do %>
+                  <i class="<%= @dashboard.public_followers? ? 'ri-lock-line' : 'ri-lock-unlock-line' %>"></i>
+                  <%= @dashboard.public_followers? ? 'Hacer Privada' : 'Hacer Pública' %>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- Followers List -->
+          <% followers = @dashboard.user&.followers || [] %>
+          <% if followers.any? %>
+            <div class="followers-modal-list d-flex flex-column gap-2">
+              <% followers.each do |follower| %>
+                <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.08);">
+                  <div class="d-flex align-items-center gap-3">
+                    <% if follower.profile_picture.attached? %>
+                      <%= cl_image_tag follower.profile_picture.key, class: "rounded-circle", style: "width: 44px; height: 44px; object-fit: cover;" %>
+                    <% else %>
+                      <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: linear-gradient(135deg, #A259FF, #6c35de); color: white; font-weight: 800;">
+                        <%= follower.first_name&.first&.upcase || "U" %>
+                      </div>
+                    <% end %>
+                    <div>
+                      <strong class="text-white d-block"><%= follower.full_name %></strong>
+                      <small class="text-muted">@<%= follower.email.split('@').first %></small>
+                    </div>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-2">
+                    <%= link_to user_path(follower), class: "btn btn-sm btn-outline-light", title: "Ver perfil" do %>
+                      <i class="ri-user-line"></i> Perfil
+                    <% end %>
+                    <% if user_signed_in? && current_user != follower %>
+                      <%= render partial: "follows/follow_button", locals: { artist: follower } %>
+                    <% end %>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="text-center py-4 text-muted">
+              <i class="ri-user-heart-line fs-1 d-block mb-2 text-secondary"></i>
+              <p class="mb-0">Aún no hay seguidores registrados para este artista.</p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="modal-footer border-secondary">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+        </div>
       </div>
     </div>
   </div>
