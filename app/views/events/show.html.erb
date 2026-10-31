@@ -28,11 +28,7 @@
   <!-- Hero Header Showcase Banner -->
   <div class="event-hero-banner">
     <div class="event-hero-bg">
-      <% if @event.image.attached? %>
-        <%= cl_image_tag @event.image.key, class: "event-hero-img", alt: @event.title %>
-      <% else %>
-        <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1600&q=80" class="event-hero-img" alt="<%= @event.title %>">
-      <% end %>
+      <img src="<%= event_cover_image_url(@event) %>" class="event-hero-img" alt="<%= @event.title %>">
       <div class="event-hero-overlay"></div>
     </div>
 

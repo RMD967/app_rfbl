@@ -1,7 +1,5 @@
 <div class="map-popup-card">
-  <% if event.image.attached? %>
-    <%= cl_image_tag event.image.key, class: "map-popup-thumb", alt: event.title %>
-  <% end %>
+  <img src="<%= event_cover_image_url(event) %>" class="map-popup-thumb" alt="<%= event.title %>" loading="lazy">
   <div class="map-popup-details">
     <% if event.genre.present? %>
       <span class="map-popup-genre"><%= event.genre %></span>

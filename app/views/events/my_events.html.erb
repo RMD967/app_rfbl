@@ -45,13 +45,10 @@
         <article class="my-event-card">
           <!-- Card Media -->
           <div class="event-card-media">
-            <% if event.image.attached? %>
-              <%= cl_image_tag event.image.key, class: "event-cover-img", alt: event.title %>
-            <% else %>
-              <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80"
-                class="event-cover-img"
-                alt="<%= event.title %>">
-            <% end %>
+            <img src="<%= event_cover_image_url(event) %>"
+                 class="event-cover-img"
+                 loading="lazy"
+                 alt="<%= event.title %>">
 
             <% if event.genre.present? %>
               <span class="event-genre-tag"><%= event.genre %></span>

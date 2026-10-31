@@ -33,11 +33,7 @@ class DiscoversController < ApplicationController
       @search_location = params[:location].presence || params[:location_query].presence || "Puebla"
       matching_dashboards = Dashboard.where("artist_location ILIKE :loc OR artist_cities ILIKE :loc", loc: "%#{@search_location}%")
       scope = base_scope.where(dashboard: matching_dashboards)
-      if params[:refresh].present?
-        @discovers = scope.order(Arel.sql("RANDOM()")).limit(40)
-      else
-        @discovers = scope.order(created_at: :desc).limit(40)
-      end
+      @discovers = scope.order(Arel.sql("RANDOM()")).limit(40)
     elsif @current_tab == "genre"
       if @current_genre.present? && !["All", "Todos", "all", "todos"].include?(@current_genre)
         matching_dashboards = Dashboard.where("artist_genre ILIKE :g", g: "%#{@current_genre}%")
@@ -46,17 +42,9 @@ class DiscoversController < ApplicationController
           g: "%#{@current_genre}%",
           dash_ids: matching_dashboards.select(:id)
         )
-        if params[:refresh].present?
-          @discovers = scope.order(Arel.sql("RANDOM()")).limit(40)
-        else
-          @discovers = scope.order(created_at: :desc).limit(40)
-        end
+        @discovers = scope.order(Arel.sql("RANDOM()")).limit(40)
       else
-        if params[:refresh].present?
-          @discovers = base_scope.order(Arel.sql("RANDOM()")).limit(40)
-        else
-          @discovers = base_scope.order(created_at: :desc).limit(40)
-        end
+        @discovers = base_scope.order(Arel.sql("RANDOM()")).limit(40)
       end
     else
       if @query.present?
@@ -65,10 +53,10 @@ class DiscoversController < ApplicationController
           "discovers.title ILIKE :q OR discovers.genre ILIKE :q OR discovers.dashboard_id IN (:dash_ids)",
           q: "%#{@query}%",
           dash_ids: matching_dashboards.select(:id)
-        ).order(created_at: :desc).limit(40)
+        ).order(Arel.sql("RANDOM()")).limit(40)
       else
-        # Smart personalized recommendation algorithm for "For You"
-        @discovers = fetch_for_you_recommendations(base_scope)
+        # User requested true random music selection across the entire catalog (including YouTube sessions)
+        @discovers = base_scope.order(Arel.sql("RANDOM()")).limit(40)
       end
     end
   end

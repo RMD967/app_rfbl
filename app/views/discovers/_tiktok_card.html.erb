@@ -4,7 +4,7 @@
   artist_location = discover.dashboard&.artist_location || "México"
   artist_price = discover.dashboard&.artist_price
 
-  raw_src = if discover.content.present? && (discover.content.start_with?("http") || discover.content.start_with?("/"))
+  raw_src = if discover.content.present? && (discover.content.start_with?("http") || discover.content.start_with?("/") || discover.content.start_with?("yt:") || discover.content =~ /^[a-zA-Z0-9_-]{11}$/)
               discover.content
             elsif discover.video.attached?
               url_for(discover.video)
@@ -12,7 +12,18 @@
               "/main.mp4"
             end
 
-  video_src = if raw_src.include?("cloudinary.com") && raw_src.include?("/upload/")
+  youtube_id = if raw_src =~ /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+                 $1
+               elsif raw_src.start_with?("yt:")
+                 raw_src.sub("yt:", "")
+               elsif raw_src =~ /^[a-zA-Z0-9_-]{11}$/
+                 raw_src
+               end
+  is_youtube = youtube_id.present?
+
+  video_src = if is_youtube
+                raw_src
+              elsif raw_src.include?("cloudinary.com") && raw_src.include?("/upload/")
                 if raw_src.include?("q_auto")
                   raw_src
                 else
@@ -23,7 +34,7 @@
               end
 %>
 
-<div class="tiktok-card"
+<div class="tiktok-card <%= 'has-youtube' if is_youtube %>"
      id="<%= dom_id(discover) %>"
      data-tiktok-feed-target="card"
      data-video-id="<%= discover.id %>"
@@ -36,27 +47,39 @@
                   touchcancel->tiktok-feed#onTouchCancel">
 
   <!-- Video Player Element -->
-  <div class="tiktok-video-wrapper">
-    <video class="tiktok-video"
-           muted
-           playsinline
-           preload="metadata"
-           data-tiktok-feed-target="video"
-           data-action="click->tiktok-feed#togglePlay
-                        timeupdate->tiktok-feed#onTimeUpdate
-                        ended->tiktok-feed#onVideoEnded">
-      <source src="<%= video_src %>" type="video/mp4">
-    </video>
+  <div class="tiktok-video-wrapper <%= 'is-youtube' if is_youtube %>">
+    <% if is_youtube %>
+      <div class="tiktok-youtube-container">
+        <iframe class="tiktok-youtube-iframe"
+                src="https://www.youtube-nocookie.com/embed/<%= youtube_id %>?enablejsapi=1&autoplay=0&mute=0&controls=1&modestbranding=1&rel=0&playsinline=1"
+                title="<%= discover.title %>"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+        </iframe>
+      </div>
+    <% else %>
+      <video class="tiktok-video"
+             muted
+             playsinline
+             preload="metadata"
+             data-tiktok-feed-target="video"
+             data-action="click->tiktok-feed#togglePlay
+                          timeupdate->tiktok-feed#onTimeUpdate
+                          ended->tiktok-feed#onVideoEnded">
+        <source src="<%= video_src %>" type="video/mp4">
+      </video>
 
-    <!-- Play/Pause Status Icon Overlay -->
-    <div class="tiktok-play-indicator" data-tiktok-feed-target="playIndicator" data-action="click->tiktok-feed#onIndicatorClick">
-      <i class="ri-play-fill"></i>
-    </div>
+      <!-- Play/Pause Status Icon Overlay -->
+      <div class="tiktok-play-indicator" data-tiktok-feed-target="playIndicator" data-action="click->tiktok-feed#onIndicatorClick">
+        <i class="ri-play-fill"></i>
+      </div>
 
-    <!-- Sound Control Floating Button -->
-    <button type="button" class="tiktok-sound-toggle sound-active" data-action="click->tiktok-feed#toggleMute" title="Activar/Silenciar sonido">
-      <i class="ri-volume-up-fill" data-tiktok-feed-target="volumeIcon"></i>
-    </button>
+      <!-- Sound Control Floating Button -->
+      <button type="button" class="tiktok-sound-toggle sound-active" data-action="click->tiktok-feed#toggleMute" title="Activar/Silenciar sonido">
+        <i class="ri-volume-up-fill" data-tiktok-feed-target="volumeIcon"></i>
+      </button>
+    <% end %>
   </div>
 
   <!-- Bottom Metadata Gradient Overlay (Contains card info + action icons under it) -->
@@ -65,6 +88,13 @@
     <div class="tiktok-artist-row">
       <%= link_to dashboard_path(discover.dashboard), class: "tiktok-artist-name" do %>
         @<%= artist_name %>
+      <% end %>
+
+      <% if is_youtube %>
+        <a href="https://www.youtube.com/watch?v=<%= youtube_id %>" target="_blank" rel="noopener noreferrer" class="tiktok-youtube-badge" title="Ver en YouTube">
+          <i class="ri-youtube-fill"></i>
+          <span>Radios FBL Live</span>
+        </a>
       <% end %>
 
       <% if artist_location.present? %>

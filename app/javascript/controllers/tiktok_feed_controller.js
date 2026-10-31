@@ -109,12 +109,17 @@ export default class extends Controller {
     this.observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         const video = entry.target.querySelector("video")
-        if (!video) return
+        const iframe = entry.target.querySelector("iframe.tiktok-youtube-iframe")
 
         if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
-          this.playVideo(video)
+          if (video) this.playVideo(video)
         } else if (!entry.isIntersecting || entry.intersectionRatio < 0.25) {
-          this.pauseVideo(video)
+          if (video) this.pauseVideo(video)
+          if (iframe && iframe.contentWindow) {
+            try {
+              iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', "*")
+            } catch (err) {}
+          }
         }
       })
     }, options)

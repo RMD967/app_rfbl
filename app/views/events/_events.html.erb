@@ -42,13 +42,10 @@
             <!-- Card Image & Overlays -->
             <div class="event-card-media-wrapper">
               <%= link_to event_path(event), class: "event-card-media-link" do %>
-                <% if event.image.attached? %>
-                  <%= cl_image_tag event.image.key, class: "event-card-cover", alt: event.title %>
-                <% else %>
-                  <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80"
-                    class="event-card-cover"
-                    alt="<%= event.title %>">
-                <% end %>
+                <img src="<%= event_cover_image_url(event) %>"
+                     class="event-card-cover"
+                     loading="lazy"
+                     alt="<%= event.title %>">
               <% end %>
 
               <!-- Genre Pill Badge -->
@@ -68,13 +65,10 @@
             <div class="event-card-content">
               <!-- Organizer Row -->
               <div class="event-organizer-row">
-                <% if event.user.profile_picture.attached? %>
-                  <%= cl_image_tag event.user.profile_picture.key, class: "organizer-avatar", alt: event.user.first_name %>
-                <% else %>
-                  <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png"
-                    class="organizer-avatar"
-                    alt="<%= event.user.first_name %>">
-                <% end %>
+                <img src="<%= organizer_avatar_url(event.user) %>"
+                     class="organizer-avatar"
+                     loading="lazy"
+                     alt="<%= event.user.first_name %>">
                 <div class="organizer-meta">
                   <span class="organizer-label">Organizado por</span>
                   <span class="organizer-name"><%= event.user.first_name %> <%= event.user.last_name %></span>

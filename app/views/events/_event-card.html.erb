@@ -1,10 +1,6 @@
 <div class="event-container">
   <div class="event-card">
-    <% if event.image.attached?%>
-      <%= image_tag url_for(event.image), class: "event-card-image"%>
-    <% else %>
-      <%= image_tag("marco-mons-DIXT8Z9p-Sg-unsplash.jpg", class: "event-card-image") %>
-    <% end %>
+    <img src="<%= event_cover_image_url(event) %>" class="event-card-image" alt="<%= event.title %>" loading="lazy">
 
     <div class="event-card-header">
       <h5 class="event-card-main-title"><%= event.title %></h5>
