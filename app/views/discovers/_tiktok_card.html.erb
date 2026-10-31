@@ -38,6 +38,7 @@
            preload="auto"
            data-tiktok-feed-target="video"
            data-action="click->tiktok-feed#togglePlay
+                        timeupdate->tiktok-feed#onTimeUpdate
                         ended->tiktok-feed#onVideoEnded">
       <source src="<%= video_src %>" type="video/mp4">
     </video>

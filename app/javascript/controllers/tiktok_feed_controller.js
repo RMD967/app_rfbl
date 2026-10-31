@@ -112,7 +112,14 @@ export default class extends Controller {
 
     video.muted = this.isMuted
     video.playbackRate = this.savedSpeed || 1.0
-    video.loop = !this.isAutoScroll
+    if (this.isAutoScroll) {
+      video.loop = false
+      video.removeAttribute("loop")
+    } else {
+      video.loop = true
+      video.setAttribute("loop", "loop")
+    }
+    video._autoScrolled = false
 
     const playPromise = video.play()
     if (playPromise !== undefined) {
@@ -379,21 +386,74 @@ export default class extends Controller {
     }
     this.videoTargets.forEach((v) => {
       v.loop = !active
+      if (active) {
+        v.removeAttribute("loop")
+      } else {
+        v.setAttribute("loop", "loop")
+      }
     })
+  }
+
+  onTimeUpdate(event) {
+    if (!this.isAutoScroll) return
+    const video = event.currentTarget
+    // Trigger when within 0.35s of video completion
+    if (video.duration && video.currentTime >= Math.max(0, video.duration - 0.35)) {
+      if (!video._autoScrolled) {
+        video._autoScrolled = true
+        this.triggerAutoScroll(video)
+      }
+    }
   }
 
   onVideoEnded(event) {
     if (!this.isAutoScroll) return
-    const currentCard = event.currentTarget.closest(".tiktok-card")
+    const video = event.currentTarget
+    if (!video._autoScrolled) {
+      video._autoScrolled = true
+      this.triggerAutoScroll(video)
+    }
+  }
+
+  triggerAutoScroll(video) {
+    const currentCard = video.closest(".tiktok-card")
     if (!currentCard) return
 
     const currentIndex = this.cardTargets.indexOf(currentCard)
+    let nextCard = null
+
     if (currentIndex !== -1 && currentIndex < this.cardTargets.length - 1) {
-      const nextCard = this.cardTargets[currentIndex + 1]
-      nextCard.scrollIntoView({ behavior: "smooth" })
-    } else if (this.cardTargets.length > 0) {
+      nextCard = this.cardTargets[currentIndex + 1]
+    } else if (this.cardTargets.length > 1) {
       // Loop back to the very first card if we reached the end of the feed
-      this.cardTargets[0].scrollIntoView({ behavior: "smooth" })
+      nextCard = this.cardTargets[0]
+    } else {
+      // Single card feed: restart it
+      video.currentTime = 0
+      video._autoScrolled = false
+      video.play().catch(() => {})
+      return
+    }
+
+    if (!nextCard) return
+
+    // Smoothly scroll viewport directly to next card
+    if (this.hasFeedViewportTarget) {
+      this.feedViewportTarget.scrollTo({
+        top: nextCard.offsetTop,
+        behavior: "smooth"
+      })
+    } else {
+      nextCard.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+
+    // Play next video once scroll initiates
+    const nextVideo = nextCard.querySelector("video")
+    if (nextVideo) {
+      nextVideo._autoScrolled = false
+      setTimeout(() => {
+        this.playVideo(nextVideo)
+      }, 350)
     }
   }
 
