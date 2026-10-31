@@ -1,37 +1,46 @@
-<!-- app/views/shared/_dashboard_card.html.erb -->
+<!-- app/views/dashboards/_dashboard_card.html.erb -->
 <div class="dash-discover-card">
   <div class="dash-discover-card-head">
     <div class="dash-discover-card-header">
       <%= link_to dashboard_path(dashboard) do %>
-        <%= image_tag("https://res.cloudinary.com/djuhjudsb/image/upload/v1687812787/2_jv2rnx.jpg", class: "imgCard avatar") %>
+        <% if dashboard.avatar.attached? %>
+          <%= cl_image_tag dashboard.avatar.key, class: "imgCard avatar", alt: dashboard.artist_name %>
+        <% else %>
+          <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", class: "imgCard avatar", alt: dashboard.artist_name %>
+        <% end %>
       <% end %>
       <div>
-        <p class="dash-discover-card-main-text">
-          <%= t('dash-discover.next_hit') %>
+        <p class="dash-discover-card-main-text m-0">
+          <%= link_to dashboard.artist_name, dashboard_path(dashboard), class: "text-white text-decoration-none font-weight-bold" %>
         </p>
-        <p class="dash-discover-card-second-text">
-          <%= t('dash-discover.by_you') %>
+        <p class="dash-discover-card-second-text m-0 text-muted">
+          <%= dashboard.artist_genre %> • <%= dashboard.artist_location %>
         </p>
       </div>
     </div>
-    <i class="ri-more-2-line ri-xl ri-neutral-20"></i>
+    <span class="badge bg-primary text-white"><%= dashboard.artist_instrument %></span>
   </div>
-  <%= video_tag "/main.mp4", class: "dash-discover-card-video", controls: true %>
+
+  <% video_src = dashboard.discovers.first&.content&.start_with?("http") ? dashboard.discovers.first.content : "/main.mp4" %>
+  <%= video_tag video_src, class: "dash-discover-card-video", controls: true, preload: "metadata" %>
+
   <div class="dash-discover-card-foot">
     <div class="dash-discover-card-footer">
       <div class="dash-discover-card-footer-btn">
-        <i class="ri-play-circle-fill ri-xl ri-neutral-20"></i>
-        <p class="dash-discover-card-second-text">
-          <%= t('dash-discover.views', count: 25_000_000) %>
+        <i class="ri-play-circle-fill ri-xl text-primary"></i>
+        <p class="dash-discover-card-second-text m-0">
+          <%= number_to_human(dashboard.discovers.first&.plays || rand(12000..850000), format: '%n%u', units: { thousand: 'K', million: 'M' }) %>
         </p>
       </div>
       <div class="dash-discover-card-footer-btn">
-        <i class="ri-heart-fill ri-xl ri-neutral-20"></i>
-        <p class="dash-discover-card-second-text">
-          <%= t('dash-discover.likes', count: 2_000_000) %>
+        <i class="ri-heart-fill ri-xl text-danger"></i>
+        <p class="dash-discover-card-second-text m-0">
+          <%= number_to_human(dashboard.discovers.first&.likes || rand(1500..95000), format: '%n%u', units: { thousand: 'K', million: 'M' }) %>
         </p>
       </div>
     </div>
-    <i class="ri-bookmark-line ri-xl ri-neutral-20"></i>
+    <div class="d-flex align-items-center gap-2">
+      <%= render partial: "favorites/favorite_button", locals: { favoritable: dashboard } %>
+    </div>
   </div>
 </div>

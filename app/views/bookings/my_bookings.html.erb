@@ -13,7 +13,11 @@
     <div class="my-booking-row">
       <% @my_bookings.each do |booking| %>
         <div class="my-booking-card-body">
-          <%= image_tag booking.event.image, class: "my-booking-card-image" %>
+          <% if booking.event.image.attached? %>
+            <%= cl_image_tag booking.event.image.key, class: "my-booking-card-image" %>
+          <% else %>
+            <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80" class="my-booking-card-image" alt="<%= booking.event.title %>">
+          <% end %>
           <div class="my-booking-info">
             <h5 class="card-title"><%= booking.event.title %></h5>
             <p class="card-subtitle"><%= t('booking.event_from', first_name: booking.event.user.first_name, last_name: booking.event.user.last_name) %></p>
