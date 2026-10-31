@@ -94,21 +94,35 @@ body:has(.tiktok-experience) {
 .tiktok-tabs-container {
   display: flex;
   align-items: center;
-  gap: 18px;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
 }
 
 .tiktok-tab-link {
-  font-size: 1.05rem;
+  font-size: 0.98rem;
   font-weight: 700;
   color: rgba(255, 255, 255, 0.65);
   text-decoration: none;
-  padding: 6px 14px;
+  padding: 5px 12px;
   border-radius: 8px;
   position: relative;
   transition: all 0.25s ease;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  white-space: nowrap;
+
+  @media (max-width: 480px) {
+    font-size: 0.85rem;
+    padding: 4px 6px;
+    gap: 4px;
+  }
 
   &:hover {
     color: #ffffff;
@@ -123,8 +137,8 @@ body:has(.tiktok-experience) {
       content: "";
       position: absolute;
       bottom: -4px;
-      left: 18%;
-      right: 18%;
+      left: 12%;
+      right: 12%;
       height: 3px;
       background: linear-gradient(90deg, #A259FF, #FF62A5);
       border-radius: 3px;
@@ -135,7 +149,12 @@ body:has(.tiktok-experience) {
 
 .tiktok-tabs-divider {
   color: rgba(255, 255, 255, 0.25);
-  font-size: 1rem;
+  font-size: 0.95rem;
+  user-select: none;
+
+  @media (max-width: 480px) {
+    font-size: 0.8rem;
+  }
 }
 
 // Search header container for both "Cerca de ti" and "Para ti"
@@ -251,6 +270,171 @@ body:has(.tiktok-experience) {
     &:hover {
       color: #ff4757;
     }
+  }
+
+  .badge-events-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #ffffff;
+    background: rgba(162, 89, 255, 0.45);
+    border: 1px solid rgba(162, 89, 255, 0.7);
+    padding: 1px 7px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #A259FF;
+      color: #ffffff;
+      transform: scale(1.04);
+    }
+  }
+}
+
+// ----------------- Genre Tab Header & Chips Carousel -----------------
+.tiktok-genre-header-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  width: 100%;
+  max-width: 480px;
+  padding: 0 4px;
+}
+
+.tiktok-genre-chips-scroll {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 6px 2px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  -webkit-overflow-scrolling: touch;
+}
+
+.tiktok-genre-pill-chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 4px 12px;
+  border-radius: 16px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+
+  i {
+    font-size: 0.82rem;
+  }
+
+  &:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.35);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    color: #ffffff;
+    background: linear-gradient(135deg, rgba(162, 89, 255, 0.65) 0%, rgba(255, 98, 165, 0.65) 100%);
+    border-color: #A259FF;
+    box-shadow: 0 0 12px rgba(162, 89, 255, 0.45);
+    font-weight: 700;
+  }
+}
+
+// ----------------- Dual-Action Context Bar (Listen vs Events) -----------------
+.tiktok-feed-context-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  box-sizing: border-box;
+
+  .context-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: rgba(255, 255, 255, 0.85);
+    min-width: 0;
+
+    strong {
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .count-tag {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+  }
+}
+
+.tiktok-switch-events-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(162, 89, 255, 0.4) 0%, rgba(255, 98, 165, 0.4) 100%);
+  border: 1px solid rgba(162, 89, 255, 0.65);
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background: linear-gradient(135deg, #A259FF 0%, #FF62A5 100%);
+    color: #ffffff;
+    border-color: #ffffff;
+    box-shadow: 0 0 12px rgba(162, 89, 255, 0.55);
+    transform: translateY(-1px);
+  }
+
+  &.location-variant {
+    background: linear-gradient(135deg, rgba(239, 71, 111, 0.4) 0%, rgba(255, 107, 107, 0.4) 100%);
+    border-color: rgba(239, 71, 111, 0.65);
+
+    &:hover {
+      background: linear-gradient(135deg, #ef476f 0%, #ff6b6b 100%);
+      box-shadow: 0 0 12px rgba(239, 71, 111, 0.55);
+    }
+  }
+
+  i {
+    font-size: 0.85rem;
+  }
+
+  .arrow-subtle {
+    font-size: 0.9rem;
+    opacity: 0.8;
   }
 }
 
@@ -553,13 +737,39 @@ body:has(.tiktok-experience) {
   font-weight: 600;
   color: #ffffff;
   background: rgba(162, 89, 255, 0.4);
-  border: 1px solid rgba(162, 89, 255, 0.6);
-  padding: 2px 7px;
+  border: 1px solid rgba(162, 89, 255, 0.65);
+  padding: 2px 8px;
   border-radius: 12px;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   backdrop-filter: blur(4px);
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  i {
+    color: #FF62A5;
+    font-size: 0.78rem;
+    transition: transform 0.2s;
+  }
+
+  &:hover {
+    background: rgba(162, 89, 255, 0.8);
+    border-color: #ffffff;
+    color: #ffffff;
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 0 10px rgba(162, 89, 255, 0.6);
+
+    i {
+      transform: scale(1.15);
+    }
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
 }
 
 .tiktok-title-row {
@@ -585,12 +795,42 @@ body:has(.tiktok-experience) {
 }
 
 .tiktok-genre-tag {
-  font-size: 0.68rem;
-  padding: 2px 6px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.15);
-  color: #eaeaea;
-  font-weight: 500;
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: rgba(255, 98, 165, 0.25);
+  border: 1px solid rgba(255, 98, 165, 0.55);
+  color: #ffc2de;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  i {
+    font-size: 0.74rem;
+    color: #FF62A5;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover {
+    background: rgba(255, 98, 165, 0.6);
+    border-color: #ffffff;
+    color: #ffffff;
+    transform: translateY(-1px) scale(1.05);
+    box-shadow: 0 0 10px rgba(255, 98, 165, 0.6);
+
+    i {
+      transform: rotate(90deg);
+    }
+  }
+
+  &:active {
+    transform: scale(0.96);
+  }
 }
 
 .tiktok-type-badge {
@@ -1232,6 +1472,52 @@ body:has(.tiktok-experience) {
           border-color: rgba(162, 89, 255, 0.6);
           color: #ffffff;
           box-shadow: 0 2px 10px rgba(162, 89, 255, 0.5);
+        }
+      }
+    }
+  }
+
+  // Quick Discovery Links inside Options Sheet
+  .sheet-shortcuts-section {
+    padding-top: 4px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+
+    .sheet-shortcut-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 14px;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+      i {
+        font-size: 1.15rem;
+      }
+
+      span {
+        flex: 1;
+      }
+
+      .arrow-right {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 1.2rem;
+        transition: transform 0.2s;
+      }
+
+      &:hover {
+        background: rgba(162, 89, 255, 0.2);
+        border-color: #A259FF;
+        transform: translateX(2px);
+
+        .arrow-right {
+          color: #ffffff;
+          transform: translateX(3px);
         }
       }
     }

@@ -23,6 +23,8 @@
      id="<%= dom_id(discover) %>"
      data-tiktok-feed-target="card"
      data-video-id="<%= discover.id %>"
+     data-artist-location="<%= artist_location %>"
+     data-genre="<%= discover.genre %>"
      data-action="contextmenu->tiktok-feed#onContextMenu
                   touchstart->tiktok-feed#onTouchStart
                   touchmove->tiktok-feed#onTouchMove
@@ -61,9 +63,14 @@
         @<%= artist_name %>
       <% end %>
 
-      <span class="tiktok-location-pill">
-        <i class="ri-map-pin-2-fill"></i> <%= artist_location %>
-      </span>
+      <% if artist_location.present? %>
+        <%= link_to discovers_path(tab: "nearby", location: artist_location),
+                    class: "tiktok-location-pill",
+                    title: "Ver contenido de #{artist_location}" do %>
+          <i class="ri-map-pin-2-fill"></i>
+          <span><%= artist_location %></span>
+        <% end %>
+      <% end %>
     </div>
 
     <!-- Title Row -->
@@ -76,7 +83,14 @@
         <% end %>
         <%= discover.title %>
       </h3>
-      <span class="tiktok-genre-tag"><%= discover.genre %></span>
+      <% if discover.genre.present? %>
+        <%= link_to discovers_path(tab: "genre", genre: discover.genre),
+                    class: "tiktok-genre-tag",
+                    title: "Escuchar sólo #{discover.genre}" do %>
+          <i class="ri-disc-fill"></i>
+          <span><%= discover.genre %></span>
+        <% end %>
+      <% end %>
       <span class="tiktok-type-badge <%= discover.general? ? 'badge-general' : 'badge-music' %>">
         <%= discover.general? ? '📱 Publicación' : '🎵 Música' %>
       </span>

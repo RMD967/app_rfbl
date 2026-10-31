@@ -17,18 +17,28 @@
     <div class="tiktok-tabs-container">
       <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
                   class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
-        <i class="ri-map-pin-user-fill"></i> Cerca de ti
+        <i class="ri-map-pin-user-fill"></i>
+        <span><%= t('discover.tabs.nearby', default: "Cerca de ti") %></span>
       <% end %>
 
       <span class="tiktok-tabs-divider">|</span>
 
       <%= link_to discovers_path(tab: "for_you"),
                   class: "tiktok-tab-link #{@current_tab == 'for_you' ? 'active' : ''}" do %>
-        Para ti
+        <span><%= t('discover.tabs.for_you', default: "Para ti") %></span>
+      <% end %>
+
+      <span class="tiktok-tabs-divider">|</span>
+
+      <%= link_to discovers_path(tab: "genre", genre: (@current_genre.presence || "Tropical")),
+                  class: "tiktok-tab-link #{@current_tab == 'genre' ? 'active' : ''}" do %>
+        <i class="ri-disc-fill"></i>
+        <span class="tab-label-full d-none d-sm-inline"><%= t('discover.tabs.by_genre', default: "Escucha por género") %></span>
+        <span class="tab-label-short d-sm-none"><%= t('discover.tabs.by_genre_short', default: "Por género") %></span>
       <% end %>
     </div>
 
-    <!-- Search bar for "Cerca de ti" with Autocomplete & Recommendations -->
+    <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->
     <% if @current_tab == "nearby" %>
       <div class="tiktok-header-search-container" data-controller="search-autocomplete">
         <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form", data: { search_autocomplete_target: "form" } do %>
@@ -76,9 +86,90 @@
             <% end %>
           </div>
         </div>
+
+        <!-- Location Context Action Bar: Listen vs Events -->
+        <div class="tiktok-feed-context-bar">
+          <div class="context-info">
+            <i class="ri-map-pin-2-fill text-danger"></i>
+            <span>
+              <%= @search_location %>
+              <small class="count-tag">(<%= @discovers.count %> <%= @discovers.count == 1 ? 'video' : 'videos' %>)</small>
+            </span>
+          </div>
+
+          <%= link_to events_path(query: @search_location), class: "tiktok-switch-events-btn location-variant", title: "Buscar eventos en #{@search_location}" do %>
+            <i class="ri-calendar-event-fill"></i>
+            <span><%= t('discover.actions.see_events_in', location: @search_location, default: "Ver eventos en #{@search_location}") %></span>
+            <i class="ri-arrow-right-s-line arrow-subtle"></i>
+          <% end %>
+        </div>
       </div>
 
-    <!-- Search bar for "Para ti" with Autocomplete & Recommendations for Artists & Music -->
+    <!-- Sub-bar for "Por género": Horizontal Genre Carousel + Genre Events Cross-link -->
+    <% elsif @current_tab == "genre" %>
+      <div class="tiktok-genre-header-container">
+        <!-- Horizontal Genre Chips Selector -->
+        <div class="tiktok-genre-chips-scroll">
+          <%= link_to discovers_path(tab: "genre", genre: "Todos"),
+                      class: "tiktok-genre-pill-chip #{(@current_genre.blank? || ['Todos', 'All'].include?(@current_genre)) ? 'active' : ''}" do %>
+            <i class="ri-apps-2-line"></i>
+            <span><%= t('discover.actions.all_genres', default: "Todos") %></span>
+          <% end %>
+
+          <% @available_genres.each do |genre| %>
+            <%= link_to discovers_path(tab: "genre", genre: genre),
+                        class: "tiktok-genre-pill-chip #{@current_genre.to_s.downcase == genre.downcase ? 'active' : ''}" do %>
+              <% if genre.downcase == 'tropical' %>
+                <i class="ri-sun-fill text-warning"></i>
+              <% elsif genre.downcase == 'rock' %>
+                <i class="ri-fire-fill text-danger"></i>
+              <% elsif genre.downcase == 'pop' %>
+                <i class="ri-headphone-fill text-info"></i>
+              <% elsif genre.downcase == 'urban' || genre.downcase == 'urbano' %>
+                <i class="ri-building-line text-secondary"></i>
+              <% elsif genre.downcase == 'jazz' %>
+                <i class="ri-music-fill text-warning"></i>
+              <% elsif genre.downcase == 'dj' %>
+                <i class="ri-disc-line text-primary"></i>
+              <% else %>
+                <i class="ri-music-2-line"></i>
+              <% end %>
+              <span><%= genre %></span>
+            <% end %>
+          <% end %>
+        </div>
+
+        <!-- Genre Context Action Bar: Listen vs Events -->
+        <div class="tiktok-feed-context-bar">
+          <div class="context-info">
+            <i class="ri-disc-fill text-pink"></i>
+            <span>
+              <% if @current_genre.blank? || ['Todos', 'All'].include?(@current_genre) %>
+                <%= t('discover.actions.listening_all', default: "Todos los géneros") %>
+              <% else %>
+                <strong><%= @current_genre %></strong>
+              <% end %>
+              <small class="count-tag">(<%= @discovers.count %> <%= @discovers.count == 1 ? 'video' : 'videos' %>)</small>
+            </span>
+          </div>
+
+          <%= link_to events_path(genre: (@current_genre.present? && !['Todos', 'All'].include?(@current_genre) ? @current_genre : nil)),
+                      class: "tiktok-switch-events-btn",
+                      title: "Buscar eventos de este género" do %>
+            <i class="ri-calendar-event-fill"></i>
+            <span>
+              <% if @current_genre.present? && !['Todos', 'All'].include?(@current_genre) %>
+                <%= t('discover.actions.see_events_of', genre: @current_genre, default: "Ver eventos de #{@current_genre}") %>
+              <% else %>
+                <%= t('discover.actions.see_all_events', default: "Ver todos los eventos") %>
+              <% end %>
+            </span>
+            <i class="ri-arrow-right-s-line arrow-subtle"></i>
+          <% end %>
+        </div>
+      </div>
+
+    <!-- Sub-bar for "Para ti": Search Form with Autocomplete -->
     <% else %>
       <div class="tiktok-header-search-container" data-controller="search-autocomplete">
         <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form", data: { search_autocomplete_target: "form" } do %>
@@ -152,6 +243,9 @@
             <%= link_to discovers_path(tab: "for_you"), class: "badge-clear-btn" do %>
               <i class="ri-close-line"></i> Quitar filtro
             <% end %>
+            <%= link_to events_path(query: @query), class: "badge-events-btn ms-2", title: "Ver eventos relacionados" do %>
+              <i class="ri-calendar-event-fill"></i> Ver eventos
+            <% end %>
           </div>
         <% end %>
       </div>
@@ -170,20 +264,29 @@
           <div class="empty-feed-icon">
             <% if @current_tab == "nearby" %>
               <i class="ri-map-pin-range-line"></i>
+            <% elsif @current_tab == "genre" %>
+              <i class="ri-disc-line"></i>
             <% else %>
               <i class="ri-search-eye-line"></i>
             <% end %>
           </div>
           <% if @current_tab == "nearby" %>
             <h2>No hay videos en <%= @search_location %> aún</h2>
-            <p>Sé el primero en subir un video o explora el contenido de artistas en otras ciudades.</p>
+            <p>Sé el primero en subir un video o explora los eventos en esta ciudad.</p>
             <div class="empty-feed-actions">
               <%= link_to "Ver feed 'Para ti'", discovers_path(tab: "for_you"), class: "main-app-btn-pri" %>
-              <%= link_to "Explorar Puebla", discovers_path(tab: "nearby", location: "Puebla"), class: "main-app-btn-sec" %>
+              <%= link_to "Explorar eventos en #{@search_location}", events_path(query: @search_location), class: "main-app-btn-sec" %>
+            </div>
+          <% elsif @current_tab == "genre" %>
+            <h2>No hay videos de <%= @current_genre %> aún</h2>
+            <p>Explora otros géneros musicales o consulta los eventos disponibles para este género.</p>
+            <div class="empty-feed-actions">
+              <%= link_to "Ver todos los géneros", discovers_path(tab: "genre", genre: "Todos"), class: "main-app-btn-pri" %>
+              <%= link_to "Ver eventos de #{@current_genre}", events_path(genre: @current_genre), class: "main-app-btn-sec" %>
             </div>
           <% else %>
             <h2>No se encontraron resultados para "<%= @query %>"</h2>
-            <p>Intenta con el nombre de otro artista, canción o género musical (ej. Jazz, Rock, DJ, Cumbia).</p>
+            <p>Intenta con el nombre de otro artista, canción o género musical (ej. Tropical, Jazz, Rock, DJ).</p>
             <div class="empty-feed-actions">
               <%= link_to "Ver todas las canciones", discovers_path(tab: "for_you"), class: "main-app-btn-pri" %>
             </div>
@@ -274,6 +377,29 @@
               </button>
             <% end %>
           </div>
+        </div>
+
+        <!-- Quick Discovery Links Section -->
+        <div class="sheet-shortcuts-section">
+          <% if @current_tab == "nearby" %>
+            <%= link_to events_path(query: @search_location), class: "sheet-shortcut-action-btn" do %>
+              <i class="ri-calendar-event-fill text-danger"></i>
+              <span>Ver eventos en <%= @search_location %></span>
+              <i class="ri-arrow-right-s-line arrow-right"></i>
+            <% end %>
+          <% elsif @current_tab == "genre" && @current_genre.present? && !['Todos', 'All'].include?(@current_genre) %>
+            <%= link_to events_path(genre: @current_genre), class: "sheet-shortcut-action-btn" do %>
+              <i class="ri-calendar-event-fill text-pink"></i>
+              <span>Ver eventos de <%= @current_genre %></span>
+              <i class="ri-arrow-right-s-line arrow-right"></i>
+            <% end %>
+          <% else %>
+            <%= link_to events_path, class: "sheet-shortcut-action-btn" do %>
+              <i class="ri-calendar-event-fill text-primary"></i>
+              <span>Explorar cartelera de eventos</span>
+              <i class="ri-arrow-right-s-line arrow-right"></i>
+            <% end %>
+          <% end %>
         </div>
       </div>
     </div>

@@ -281,6 +281,20 @@ es:
     likes: "%{count}M"
     search_content: "Busca por artista o por genero"
     see_more: "Ver más"
+    tabs:
+      nearby: "Cerca de ti"
+      for_you: "Para ti"
+      by_genre: "Escucha por género"
+      by_genre_short: "Por género"
+    actions:
+      all_genres: "Todos"
+      listening_to: "Escuchando:"
+      listening_all: "Escuchando: Todos los géneros"
+      see_events_in: "Ver eventos en %{location}"
+      see_events_of: "Ver eventos de %{genre}"
+      see_all_events: "Ver todos los eventos"
+      see_content_in: "Ver videos en %{location}"
+      listen_only_genre: "Escuchar sólo %{genre}"
 
   events:
     title: "Título:"
