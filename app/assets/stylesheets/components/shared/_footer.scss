@@ -11,7 +11,7 @@ footer.app-modern-footer {
   z-index: 10;
   box-sizing: border-box;
 
-  @media (max-width: 860px) {
+  @media (max-width: 900px) {
     padding: 36px 20px calc(88px + env(safe-area-inset-bottom, 0px)) 20px;
   }
 }
@@ -24,15 +24,14 @@ footer.app-modern-footer {
   gap: 48px;
   align-items: start;
 
-  @media (max-width: 991px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 36px;
-  }
-
-  @media (max-width: 680px) {
+  @media (max-width: 900px) {
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     gap: 32px;
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -41,20 +40,47 @@ footer.app-modern-footer {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
 
-  @media (max-width: 680px) {
+  @media (max-width: 900px) {
     align-items: center;
+    justify-content: center;
     text-align: center;
+    margin: 0 auto;
   }
 
   .footer-brand-header {
+    width: 100%;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+
+    @media (max-width: 900px) {
+      justify-content: center;
+      text-align: center;
+      margin: 0 auto;
+    }
+
+    .footer-brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      margin: 0;
+
+      @media (max-width: 900px) {
+        margin: 0 auto;
+        justify-content: center;
+        text-align: center;
+      }
+    }
 
     .footer-brand-img {
-      max-width: 140px;
+      max-width: 155px;
       height: auto;
       object-fit: contain;
+      display: block;
+      margin: 0 auto;
       filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
     }
   }
@@ -65,12 +91,23 @@ footer.app-modern-footer {
     line-height: 1.5;
     margin: 12px 0 18px 0;
     max-width: 320px;
+
+    @media (max-width: 900px) {
+      margin: 12px auto 18px auto;
+      text-align: center;
+    }
   }
 
   .footer-social-row {
     display: flex;
     align-items: center;
     gap: 12px;
+
+    @media (max-width: 900px) {
+      justify-content: center;
+      margin: 0 auto;
+      width: 100%;
+    }
 
     .footer-social-pill {
       width: 40px;
@@ -101,11 +138,14 @@ footer.app-modern-footer {
 .footer-explore-col {
   display: flex;
   flex-direction: column;
+  width: 100%;
 
-  @media (max-width: 680px) {
+  @media (max-width: 900px) {
     align-items: center;
+    justify-content: center;
     text-align: center;
     width: 100%;
+    margin: 0 auto;
   }
 
   .footer-col-heading {
@@ -122,8 +162,10 @@ footer.app-modern-footer {
     flex-direction: column;
     gap: 10px;
 
-    @media (max-width: 680px) {
+    @media (max-width: 900px) {
       align-items: center;
+      justify-content: center;
+      margin: 0 auto;
     }
 
     .footer-link-item {
@@ -156,13 +198,12 @@ footer.app-modern-footer {
 
 // ----------------- Subscription Component Column -----------------
 .footer-newsletter-col {
-  @media (max-width: 991px) {
-    grid-column: span 2;
-  }
+  width: 100%;
 
-  @media (max-width: 680px) {
-    grid-column: span 1;
+  @media (max-width: 900px) {
     width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
   }
 }
 
