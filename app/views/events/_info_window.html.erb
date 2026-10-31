@@ -1,8 +1,20 @@
-<div class="info-window-card-body p-2" style="color: #191830; max-width: 240px;">
-  <h6 style="font-weight: 700; margin-bottom: 4px; color: #191830;"><%= event.title %></h6>
-  <p style="font-size: 12px; margin-bottom: 6px; color: #555;"><i class="ri-calendar-line"></i> <%= format_event_date(event.datetime) %></p>
-  <p style="font-size: 12px; margin-bottom: 8px; color: #555;"><i class="ri-map-pin-2-fill" style="color: #FF62A5;"></i> <%= event.address %></p>
-  <%= link_to event_path(event), class: "btn btn-sm btn-primary text-white w-100", style: "border-radius: 8px; font-size: 12px; padding: 4px 8px;" do %>
-    Ver Evento
+<div class="map-popup-card">
+  <% if event.image.attached? %>
+    <%= cl_image_tag event.image.key, class: "map-popup-thumb", alt: event.title %>
   <% end %>
+  <div class="map-popup-details">
+    <% if event.genre.present? %>
+      <span class="map-popup-genre"><%= event.genre %></span>
+    <% end %>
+    <h5 class="map-popup-title"><%= event.title %></h5>
+    <p class="map-popup-meta">
+      <i class="ri-calendar-line"></i> <%= format_event_date(event.datetime) %>
+    </p>
+    <p class="map-popup-address">
+      <i class="ri-map-pin-2-line"></i> <%= event.address %>
+    </p>
+    <%= link_to event_path(event), class: "map-popup-cta" do %>
+      Ver Detalles →
+    <% end %>
+  </div>
 </div>

@@ -1,37 +1,79 @@
-<div class="nav-container">
-  <div class="event-genre-icon-buttons">
-    <div class="nav-index-title">
-      <h1><%= t('events.browse_events') %></h1>
-      <h3>
-        <% if params[:query].blank? %>
-          <%= t('events.events_near_you', count: @events.count) %></h3>
-        <% end %>
-    </div>
-    <div class="index-event-buttons-row">
-      <div class="my-events-button-index">
-        <h5><%= t('events.my_events') %></h5>
-        <%= link_to t('events.my_events_link'), my_events_path, class: "main-app-btn-pri" if policy(Event).new? %>
+<div class="events-main-wrapper">
+  <!-- Top Header with Actions -->
+  <header class="events-header-section">
+    <div class="events-header-content">
+      <div class="events-title-block">
+        <h1 class="events-page-title"><%= t('events.browse_events') %></h1>
+        <p class="events-page-subtitle">
+          <% if params[:query].present? %>
+            Resultados para "<%= params[:query] %>" (<%= @events.count %> <%= @events.count == 1 ? 'evento' : 'eventos' %>)
+          <% else %>
+            <%= t('events.events_near_you', count: @events.count) %>
+          <% end %>
+        </p>
       </div>
-      <div class="my-bookings-button-index">
-        <% if current_user.artist? %>
-          <h5><%= t('events.my_bookings') %></h5>
-          <%= link_to t('events.my_bookings_link'), my_bookings_path, class: "main-app-btn-pri" %>
+
+      <div class="events-quick-actions">
+        <% if user_signed_in? && policy(Event).new? %>
+          <%= link_to my_events_path, class: "events-action-btn" do %>
+            <i class="ri-calendar-todo-line"></i>
+            <span><%= t('events.my_events') %></span>
+          <% end %>
+          <%= link_to new_event_path, class: "events-action-btn primary" do %>
+            <i class="ri-add-line"></i>
+            <span><%= t('my_events.create_event_button') %></span>
+          <% end %>
+        <% end %>
+
+        <% if current_user&.artist? %>
+          <%= link_to my_bookings_path, class: "events-action-btn" do %>
+            <i class="ri-ticket-line"></i>
+            <span><%= t('events.my_bookings') %></span>
+          <% end %>
         <% end %>
       </div>
     </div>
-  </div>
-  <div class="outer-container">
-    <div class="genre-filter-container" data-controller="genre">
-      <% @genres.each do |genre| %>
-        <%= link_to events_path(genre: genre), class: "genre-icon-link", data: { "genre-target": "genreButton", action: "click->genre#toggleColor" } do %>
-          <i data-genre="<%= genre %>" class="<%= @genre_icon_classes[genre] %>"></i>
-          <p data-genre="<%= genre %>"><%= genre %></p>
+
+    <!-- Modern Search Bar -->
+    <div class="events-search-container">
+      <%= form_with url: events_path, method: :get, local: true, class: "events-search-form" do |f| %>
+        <% if params[:genre].present? && params[:genre] != "All" %>
+          <%= f.hidden_field :genre, value: params[:genre] %>
         <% end %>
+        <div class="events-search-input-group">
+          <i class="ri-search-line search-icon"></i>
+          <%= f.text_field :query,
+            value: params[:query],
+            placeholder: "Buscar eventos por nombre, género, ciudad, artista...",
+            class: "events-search-input",
+            autocomplete: "off" %>
+          <% if params[:query].present? %>
+            <%= link_to events_path(genre: params[:genre].presence), class: "clear-search-btn", title: "Limpiar búsqueda" do %>
+              <i class="ri-close-circle-fill"></i>
+            <% end %>
+          <% end %>
+          <%= f.submit "Buscar", class: "events-search-submit" %>
+        </div>
       <% end %>
     </div>
-  </div>
-</div>
 
-<div class="event-cards-render">
-  <%= render "events", events: @events, markers: @markers %>
+    <!-- Genre Filter Pills Carousel -->
+    <div class="genre-filter-wrapper">
+      <div class="genre-filter-scroll">
+        <% @genres.each do |genre| %>
+          <% is_active = (params[:genre] == genre) || (genre == 'All' && params[:genre].blank?) %>
+          <%= link_to events_path(genre: genre, query: params[:query].presence),
+            class: "genre-pill #{'active' if is_active}" do %>
+            <i class="<%= @genre_icon_classes[genre] %>"></i>
+            <span><%= genre == 'All' ? 'Todos' : genre %></span>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </header>
+
+  <!-- Events Content (List and Map Widget) -->
+  <main class="events-content-area">
+    <%= render "events/events", events: @events, markers: @markers %>
+  </main>
 </div>

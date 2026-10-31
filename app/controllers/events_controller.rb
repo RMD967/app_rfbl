@@ -16,6 +16,10 @@ class EventsController < ApplicationController
     @events = policy_scope(Event)
     @events = Event.all
 
+    if params[:query].present?
+      q = "%#{params[:query]}%"
+      @events = @events.where("title ILIKE :q OR address ILIKE :q OR description ILIKE :q OR genre ILIKE :q", q: q)
+    end
 
     @events = @events.where(genre: params[:genre]) if params[:genre].present? && params[:genre] != "All"
 

@@ -166,14 +166,17 @@
       <% end %>
     </div>
 
-    <!-- Vinyl Disc Graphic -->
-    <div class="tiktok-vinyl-disc" title="<%= discover.title %>">
-      <div class="vinyl-outer">
-        <div class="vinyl-inner">
-          <i class="ri-music-fill"></i>
+    <!-- Vinyl Disc Graphic: Click to view video / music on artist profile -->
+    <% vinyl_url = discover.dashboard.present? ? dashboard_path(discover.dashboard, anchor: "discover-#{discover.id}") : (artist_user.present? ? user_id_path(artist_user) : "#") %>
+    <%= link_to vinyl_url, class: "tiktok-vinyl-disc-link text-decoration-none", title: "#{discover.title} - Ver en perfil" do %>
+      <div class="tiktok-vinyl-disc">
+        <div class="vinyl-outer">
+          <div class="vinyl-inner">
+            <i class="ri-music-fill"></i>
+          </div>
         </div>
       </div>
-    </div>
+    <% end %>
   </div>
 
   <!-- Slide-up Comments Drawer -->

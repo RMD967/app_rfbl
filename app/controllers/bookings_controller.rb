@@ -37,9 +37,9 @@ class BookingsController < ApplicationController
   end
 
   def destroy
-    @booking.destroy
     authorize @booking
-    redirect_to events_path, status: :see_other
+    @booking.destroy
+    redirect_back fallback_location: my_bookings_path, status: :see_other, notice: "Postulación cancelada correctamente."
   end
 
   def my_bookings

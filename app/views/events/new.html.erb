@@ -1,36 +1,183 @@
-<%= link_to :back do %>
-  <i class="fas fa-arrow-left"></i>
-<% end %>
+<div class="new-event-page-wrapper">
+  <!-- Back navigation -->
+  <div class="new-event-nav">
+    <%= link_to events_path, class: "back-nav-pill" do %>
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver a Eventos</span>
+    <% end %>
+  </div>
 
-<div class="new-event-container">
-  <h1 class="new-event-text-title"><%= t("events.new_event_title") %></h1>
-  <h3 class="new-event-text-subtitle"><%= t("events.new_event_subtitle") %></h3>
-  <p><%= t("events.new_event_description") %></p>
-
-  <div class="new-event-form-inputs" data-controller="new-event-screens">
-    <!-- Step 1 form inputs -->
-    <div class="step" data-new-event-screens-target="step" data-step="1">
-      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form-step-1" }) do |f| %>
-        <%= render 'new_event/step1', event: f.object %>
-        <%= button_tag "Next Step", class: "next-step", data: { action: "click->new-event-screens#nextStep" } %>
-      <% end %>
+  <div class="new-event-card-container" data-controller="new-event-screens">
+    <!-- Header -->
+    <div class="wizard-header">
+      <h1 class="wizard-main-title"><%= t("events.new_event_title") %></h1>
+      <p class="wizard-subtitle"><%= t("events.new_event_subtitle") %></p>
     </div>
 
-    <!-- Step 2 form inputs -->
-    <div class="step d-none" data-new-event-screens-target="step" data-step="2">
-      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form-step-2" }) do |f| %>
-        <%= render 'new_event/step2', event: f.object %>
-        <%= button_tag "Previous Step", class: "prev-step", data: { action: "click->new-event-screens#previousStep" } %>
-        <%= button_tag "Next Step", class: "next-step", data: { action: "click->new-event-screens#nextStep" } %>
-      <% end %>
+    <!-- Stepper Progress Tracker -->
+    <div class="wizard-stepper-tracker">
+      <div class="step-indicator-item active" data-new-event-screens-target="indicator" data-step-index="0" data-action="click->new-event-screens#goToStep">
+        <div class="step-num"><i class="ri-information-line"></i> 1</div>
+        <span class="step-label">Información</span>
+      </div>
+
+      <div class="step-divider"></div>
+
+      <div class="step-indicator-item" data-new-event-screens-target="indicator" data-step-index="1" data-action="click->new-event-screens#goToStep">
+        <div class="step-num"><i class="ri-map-pin-line"></i> 2</div>
+        <span class="step-label">Ubicación y Foto</span>
+      </div>
+
+      <div class="step-divider"></div>
+
+      <div class="step-indicator-item" data-new-event-screens-target="indicator" data-step-index="2" data-action="click->new-event-screens#goToStep">
+        <div class="step-num"><i class="ri-calendar-event-line"></i> 3</div>
+        <span class="step-label">Fecha y Horario</span>
+      </div>
     </div>
 
-    <!-- Step 3 form inputs -->
-    <div class="step d-none" data-new-event-screens-target="step" data-step="3">
-      <%= simple_form_for(@event, url: { action: "create" }, html: { id: "event-form-step-3" }) do |f| %>
-        <%= render 'new_event/step3', event: f.object %>
-        <%= button_tag "Previous Step", class: "prev-step", data: { action: "click->new-event-screens#previousStep" } %>
-      <% end %>
+    <!-- Progress Track Bar -->
+    <div class="wizard-progress-track">
+      <div class="wizard-progress-bar" data-new-event-screens-target="progressBar" style="width: 33.33%;"></div>
     </div>
+
+    <!-- Unified Form -->
+    <%= simple_form_for(@event, url: events_path, html: { class: "wizard-form-body", multipart: true }) do |f| %>
+      <!-- STEP 1: Basic Information -->
+      <section class="wizard-step-section" data-new-event-screens-target="step" data-step="1">
+        <div class="step-section-header">
+          <h3><i class="ri-information-fill"></i> Paso 1: Información Básica</h3>
+          <p>Define el título, género y descripción de tu evento.</p>
+        </div>
+
+        <div class="wizard-form-group">
+          <%= f.input :title,
+            label: t('events.event_title'),
+            placeholder: "Ej. Noche de Rock Alternativo en Vivo",
+            required: true,
+            input_html: { class: "wizard-form-input" } %>
+        </div>
+
+        <div class="wizard-form-group">
+          <%= f.input :genre,
+            as: :select,
+            collection: Event::GENRE,
+            prompt: "Selecciona el género musical...",
+            label: t('events.music_genre'),
+            required: true,
+            input_html: { class: "wizard-form-select" } %>
+        </div>
+
+        <div class="wizard-form-group">
+          <%= f.input :description,
+            as: :text,
+            label: t('events.event_description'),
+            placeholder: "Describe la experiencia, lo que buscas en los artistas participantes, requisitos de equipo...",
+            required: true,
+            input_html: { rows: 4, class: "wizard-form-textarea" } %>
+        </div>
+
+        <div class="wizard-actions-footer">
+          <div></div>
+          <button type="button"
+            class="wizard-btn-next"
+            data-action="click->new-event-screens#nextStep">
+            <span>Siguiente: Ubicación</span>
+            <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 2: Location & Media -->
+      <section class="wizard-step-section d-none" data-new-event-screens-target="step" data-step="2">
+        <div class="step-section-header">
+          <h3><i class="ri-map-pin-fill"></i> Paso 2: Ubicación y Cartel</h3>
+          <p>Indica dónde se llevará a cabo y añade la imagen principal.</p>
+        </div>
+
+        <div class="wizard-form-group">
+          <%= f.input :address,
+            label: t('events.event_address'),
+            input_html: {
+              data: { address_autocomplete_target: "address" },
+              class: "d-none",
+              placeholder: "Escribe la dirección o nombre del local..."
+            },
+            wrapper_html: {
+              data: {
+                controller: "address-autocomplete",
+                address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]
+              },
+              class: "address-geocoder-wrapper"
+            },
+            required: true %>
+        </div>
+
+        <div class="wizard-form-group">
+          <label class="wizard-field-label"><%= t('events.add_image') %></label>
+          <div class="wizard-file-upload-box">
+            <i class="ri-image-add-line upload-box-icon"></i>
+            <span class="upload-box-title">Seleccionar imagen o cartel</span>
+            <span class="upload-box-subtitle">Formatos soportados: JPG, PNG o WebP (máx. 10MB)</span>
+            <%= f.input_field :image, as: :file, accept: "image/*", class: "wizard-file-input" %>
+          </div>
+        </div>
+
+        <div class="wizard-actions-footer">
+          <button type="button"
+            class="wizard-btn-prev"
+            data-action="click->new-event-screens#previousStep">
+            <i class="ri-arrow-left-line"></i>
+            <span>Anterior</span>
+          </button>
+          <button type="button"
+            class="wizard-btn-next"
+            data-action="click->new-event-screens#nextStep">
+            <span>Siguiente: Fecha y Horario</span>
+            <i class="ri-arrow-right-line"></i>
+          </button>
+        </div>
+      </section>
+
+      <!-- STEP 3: Date, Duration & Submit -->
+      <section class="wizard-step-section d-none" data-new-event-screens-target="step" data-step="3">
+        <div class="step-section-header">
+          <h3><i class="ri-calendar-event-fill"></i> Paso 3: Fecha y Duración</h3>
+          <p>Define la fecha y cuánto durará la presentación.</p>
+        </div>
+
+        <div class="wizard-form-group">
+          <%= f.input :datetime,
+            as: :datetime,
+            label: t('events.date_and_time'),
+            html5: true,
+            required: true,
+            input_html: { class: "wizard-form-input" } %>
+        </div>
+
+        <div class="wizard-form-group">
+          <%= f.input :duration,
+            as: :integer,
+            label: "#{t('events.show_duration')} (en minutos)",
+            hint: "Mínimo 30 minutos (ej. 60 para 1 hora, 120 para 2 horas)",
+            placeholder: "120",
+            required: true,
+            input_html: { min: 30, class: "wizard-form-input" } %>
+        </div>
+
+        <div class="wizard-actions-footer">
+          <button type="button"
+            class="wizard-btn-prev"
+            data-action="click->new-event-screens#previousStep">
+            <i class="ri-arrow-left-line"></i>
+            <span>Anterior</span>
+          </button>
+          <button type="submit" class="wizard-btn-submit">
+            <i class="ri-check-line"></i>
+            <span>Publicar Evento</span>
+          </button>
+        </div>
+      </section>
+    <% end %>
   </div>
 </div>

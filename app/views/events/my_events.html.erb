@@ -1,32 +1,113 @@
-<%= link_to :back, title: t('back') do %>
-  <i class="fas fa-arrow-left"></i>
-<% end %>
+<div class="my-events-page-wrapper">
+  <!-- Top Navigation & Header -->
+  <div class="my-events-header">
+    <%= link_to events_path, class: "back-nav-pill" do %>
+      <i class="ri-arrow-left-line"></i>
+      <span>Volver a Eventos</span>
+    <% end %>
 
-<div class="my-events-container">
-  <% if @created_events.empty? %>
-    <h1><%= t('my_events.no_events_title') %></h1>
-    <p><%= t('my_events.no_events_description') %></p>
-    <%= link_to t('my_events.create_event_button'), new_event_path, class: "main-app-btn-pri" %>
-  <% else %>
-    <h1><%= t('my_events.created_events_title') %></h1>
-      <div class="my-events-row" data-event-target="events">
-        <% @created_events.each do |event| %>
-          <div>
-            <%= link_to event do %>
-              <div class="my-events-card">
-                  <% if event.image.attached? %>
-                    <%= image_tag url_for(event.image) %>
-                  <% else %>
-                    <%= image_tag "https://picsum.photos/seed/picsum/200/200" %>
-                  <% end %>
-                <h3 class="the-event-title"><%= event.title %></h3>
-                <p class="the-event-info"><%= t('my_events.duration') %>: <%= event.duration %> <%= t('my_events.duration_unit') %></p>
-                <p class="the-event-info"><%= t('my_events.description') %>: <%= event.description %></p>
-              </div>
-            <% end %>
-          </div>
+    <div class="my-events-title-area">
+      <div class="title-with-actions">
+        <div>
+          <h1 class="my-events-title"><%= t('my_events.created_events_title') %></h1>
+          <p class="my-events-subtitle">
+            Administra tus eventos y revisa las postulaciones de artistas.
+          </p>
+        </div>
+
+        <% if user_signed_in? && policy(Event).new? %>
+          <%= link_to new_event_path, class: "btn-create-event-top" do %>
+            <i class="ri-add-line"></i>
+            <span><%= t('my_events.create_event_button') %></span>
+          <% end %>
         <% end %>
       </div>
-    <%= link_to t('my_events.create_event_button'), new_event_path, class: "main-app-btn-pri" if policy(Event).new? %>
+    </div>
+  </div>
+
+  <% if @created_events.empty? %>
+    <div class="events-empty-card">
+      <div class="empty-icon-circle">
+        <i class="ri-calendar-event-line"></i>
+      </div>
+      <h3><%= t('my_events.no_events_title') %></h3>
+      <p><%= t('my_events.no_events_description') %></p>
+      <% if user_signed_in? && policy(Event).new? %>
+        <%= link_to new_event_path, class: "btn-empty-create" do %>
+          <i class="ri-add-circle-line"></i>
+          <span><%= t('my_events.create_event_button') %></span>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="my-events-grid">
+      <% @created_events.each do |event| %>
+        <article class="my-event-card">
+          <!-- Card Media -->
+          <div class="event-card-media">
+            <% if event.image.attached? %>
+              <%= cl_image_tag event.image.key, class: "event-cover-img", alt: event.title %>
+            <% else %>
+              <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=600&auto=format&fit=crop&q=80"
+                class="event-cover-img"
+                alt="<%= event.title %>">
+            <% end %>
+
+            <% if event.genre.present? %>
+              <span class="event-genre-tag"><%= event.genre %></span>
+            <% end %>
+
+            <span class="event-applicants-badge">
+              <i class="ri-user-voice-line"></i>
+              <%= event.bookings.count %> <%= event.bookings.count == 1 ? 'postulación' : 'postulaciones' %>
+            </span>
+          </div>
+
+          <!-- Card Body -->
+          <div class="event-card-body">
+            <h3 class="event-title">
+              <%= link_to event.title, event_path(event) %>
+            </h3>
+
+            <div class="event-meta-list">
+              <div class="event-meta-item">
+                <i class="ri-calendar-line date-icon"></i>
+                <div class="meta-wrap">
+                  <span class="meta-date"><%= format_event_date(event.datetime) %></span>
+                  <% if format_event_time(event.datetime).present? %>
+                    <span class="meta-time"><%= format_event_time(event.datetime) %></span>
+                  <% end %>
+                </div>
+              </div>
+
+              <div class="event-meta-item">
+                <i class="ri-map-pin-2-line loc-icon"></i>
+                <span class="truncate-loc"><%= event.address.presence || "Ubicación por confirmar" %></span>
+              </div>
+
+              <% if event.duration.present? %>
+                <div class="event-meta-item">
+                  <i class="ri-time-line dur-icon"></i>
+                  <span><%= format_event_duration(event.duration) %></span>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Actions -->
+            <div class="event-actions-row">
+              <%= link_to event_path(event), class: "btn-event-view" do %>
+                <i class="ri-eye-line"></i> Ver Evento
+              <% end %>
+
+              <% if user_signed_in? && policy(event).edit? %>
+                <%= link_to edit_event_path(event), class: "btn-event-edit" do %>
+                  <i class="ri-edit-line"></i> Editar
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </article>
+      <% end %>
+    </div>
   <% end %>
 </div>

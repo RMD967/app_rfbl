@@ -1,54 +1,80 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ["step"];
+  static targets = ["step", "indicator", "progressBar"];
 
-  nextStep() {
-    const currentStep = this.getCurrentStep();
-    const nextStep = currentStep.nextElementSibling;
-
-    currentStep.classList.add("d-none");
-    nextStep.classList.remove("d-none");
+  connect() {
+    this.currentStepIndex = 0;
+    this.updateUI();
   }
 
-  previousStep() {
-    const currentStep = this.getCurrentStep();
-    const previousStep = currentStep.previousElementSibling;
+  nextStep(event) {
+    if (event) event.preventDefault();
 
-    currentStep.classList.add("d-none");
-    previousStep.classList.remove("d-none");
-  }
+    const currentStep = this.stepTargets[this.currentStepIndex];
+    if (!currentStep) return;
 
-  createEvent(event) {
-    event.preventDefault();
-    console.log("Create Event button clicked!");
+    // Validate inputs inside the current step before advancing
+    const inputs = currentStep.querySelectorAll("input, select, textarea");
+    for (const input of inputs) {
+      if (input.required && !input.value.trim()) {
+        input.reportValidity();
+        input.focus();
+        return;
+      }
+    }
 
-    const form = event.target.closest("form");
-    if (form) {
-      const formData = new FormData(form);
-      console.log("Form data:", formData);
-
-      const url = form.getAttribute("action");
-      console.log("Form action URL:", url);
-
-      // Perform the AJAX request to create the event
-      fetch(url, {
-        method: "POST",
-        body: formData,
-      })
-        .then(response => response.json())
-        .then(data => {
-          console.log("Event created!", data);
-          // Optionally, you can perform any additional actions after event creation
-        })
-        .catch(error => {
-          console.error("Error creating event:", error);
-          // Optionally, you can handle the error or display an error message
-        });
+    if (this.currentStepIndex < this.stepTargets.length - 1) {
+      this.currentStepIndex++;
+      this.updateUI();
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
-  getCurrentStep() {
-    return this.stepTargets.find((step) => !step.classList.contains("d-none"));
+  previousStep(event) {
+    if (event) event.preventDefault();
+
+    if (this.currentStepIndex > 0) {
+      this.currentStepIndex--;
+      this.updateUI();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  goToStep(event) {
+    const targetStep = parseInt(event.currentTarget.dataset.stepIndex, 10);
+    if (!isNaN(targetStep) && targetStep < this.currentStepIndex) {
+      this.currentStepIndex = targetStep;
+      this.updateUI();
+    }
+  }
+
+  updateUI() {
+    this.stepTargets.forEach((step, idx) => {
+      if (idx === this.currentStepIndex) {
+        step.classList.remove("d-none");
+      } else {
+        step.classList.add("d-none");
+      }
+    });
+
+    if (this.hasIndicatorTargets) {
+      this.indicatorTargets.forEach((indicator, idx) => {
+        if (idx === this.currentStepIndex) {
+          indicator.classList.add("active");
+          indicator.classList.remove("completed");
+        } else if (idx < this.currentStepIndex) {
+          indicator.classList.remove("active");
+          indicator.classList.add("completed");
+        } else {
+          indicator.classList.remove("active", "completed");
+        }
+      });
+    }
+
+    if (this.hasProgressBarTarget) {
+      const percentage = ((this.currentStepIndex + 1) / this.stepTargets.length) * 100;
+      this.progressBarTarget.style.width = `${percentage}%`;
+    }
   }
 }

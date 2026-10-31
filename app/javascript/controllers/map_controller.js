@@ -8,14 +8,30 @@ export default class extends Controller {
   }
 
   connect() {
-    mapboxgl.accessToken = "pk.eyJ1IjoiMDBkZXZ5dGVjaCIsImEiOiJjbGluZTVlcmEwcXFjM3BudnZqNXg2NjNjIn0.dTHrWAaoRqZZNzLiwWSbgQ"
+    mapboxgl.accessToken = this.apiKeyValue
 
     this.map = new mapboxgl.Map({
       container: this.element,
       style: "mapbox://styles/mapbox/dark-v11"
     })
+    this.element._mapboxMap = this.map
+
     this.#addMarkersToMap()
     this.#fitMapToMarkers()
+
+    this.resizeHandler = () => {
+      if (this.map) this.map.resize()
+    }
+    window.addEventListener("resize", this.resizeHandler)
+  }
+
+  disconnect() {
+    if (this.resizeHandler) {
+      window.removeEventListener("resize", this.resizeHandler)
+    }
+    if (this.map) {
+      this.map.remove()
+    }
   }
 
 
@@ -31,6 +47,7 @@ export default class extends Controller {
   }
 
   #fitMapToMarkers() {
+    if (!this.markersValue || this.markersValue.length === 0) return
     const bounds = new mapboxgl.LngLatBounds()
     this.markersValue.forEach(marker => bounds.extend([ marker.lng, marker.lat ]))
     this.map.fitBounds(bounds, { padding: 70, maxZoom: 15, duration: 0 })

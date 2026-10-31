@@ -13,6 +13,9 @@ application.register("chatroom-subscription", ChatroomSubscriptionController)
 import EventController from "./event_controller"
 application.register("event", EventController)
 
+import EventsViewController from "./events_view_controller"
+application.register("events-view", EventsViewController)
+
 import FadeOutController from "./fade_out_controller"
 application.register("fade-out", FadeOutController)
 

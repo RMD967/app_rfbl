@@ -4,7 +4,11 @@
 .tiktok-profile-experience {
   max-width: 960px;
   margin: 0 auto;
-  padding: 28px 16px 60px 16px;
+  padding: 28px 16px 120px 16px;
+
+  @media (max-width: 679px) {
+    padding: 20px 14px calc(110px + env(safe-area-inset-bottom, 0px)) 14px;
+  }
 }
 
 // ----------------- Profile Header Card -----------------
