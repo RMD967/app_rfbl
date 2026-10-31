@@ -18,7 +18,17 @@ export default class extends Controller {
     "pullRefreshSpinner",
     "pullRefreshIcon",
     "pullRefreshText",
-    "headerRefreshIcon"
+    "headerRefreshIcon",
+    "uploadBackdrop",
+    "uploadModal",
+    "sourceLinkBtn",
+    "sourceFileBtn",
+    "linkSection",
+    "fileSection",
+    "linkInput",
+    "fileInput",
+    "dropzoneText",
+    "youtubePreview"
   ]
 
   connect() {
@@ -712,5 +722,81 @@ export default class extends Controller {
         commentInput.placeholder = "Agrega un comentario..."
       }
     }
+  }
+
+  // ---------------- Upload to Feed Modal ----------------
+  openUploadModal(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    if (this.hasUploadBackdropTarget) {
+      this.uploadBackdropTarget.classList.remove("d-none")
+      void this.uploadBackdropTarget.offsetWidth
+      this.uploadBackdropTarget.classList.add("visible")
+    }
+  }
+
+  closeUploadModal(event) {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    if (this.hasUploadBackdropTarget) {
+      this.uploadBackdropTarget.classList.remove("visible")
+      setTimeout(() => {
+        if (!this.uploadBackdropTarget.classList.contains("visible")) {
+          this.uploadBackdropTarget.classList.add("d-none")
+        }
+      }, 250)
+    }
+  }
+
+  switchSourceToLink(event) {
+    if (event) event.preventDefault()
+    if (this.hasSourceLinkBtnTarget) this.sourceLinkBtnTarget.classList.add("active")
+    if (this.hasSourceFileBtnTarget) this.sourceFileBtnTarget.classList.remove("active")
+    if (this.hasLinkSectionTarget) this.linkSectionTarget.classList.remove("d-none")
+    if (this.hasFileSectionTarget) this.fileSectionTarget.classList.add("d-none")
+  }
+
+  switchSourceToFile(event) {
+    if (event) event.preventDefault()
+    if (this.hasSourceFileBtnTarget) this.sourceFileBtnTarget.classList.add("active")
+    if (this.hasSourceLinkBtnTarget) this.sourceLinkBtnTarget.classList.remove("active")
+    if (this.hasFileSectionTarget) this.fileSectionTarget.classList.remove("d-none")
+    if (this.hasLinkSectionTarget) this.linkSectionTarget.classList.add("d-none")
+  }
+
+  triggerFileInput(event) {
+    if (event) event.preventDefault()
+    if (this.hasFileInputTarget) {
+      this.fileInputTarget.click()
+    }
+  }
+
+  onFileSelected(event) {
+    if (this.hasFileInputTarget && this.fileInputTarget.files.length > 0) {
+      const file = this.fileInputTarget.files[0]
+      if (this.hasDropzoneTextTarget) {
+        this.dropzoneTextTarget.textContent = `✓ Archivo seleccionado: ${file.name}`
+      }
+    }
+  }
+
+  onLinkInput(event) {
+    const val = event.currentTarget.value.trim()
+    const isYt = val.includes("youtube.com") || val.includes("youtu.be")
+    if (this.hasYoutubePreviewTarget) {
+      if (isYt) {
+        this.youtubePreviewTarget.classList.remove("d-none")
+      } else {
+        this.youtubePreviewTarget.classList.add("d-none")
+      }
+    }
+  }
+
+  stopProp(event) {
+    event.stopPropagation()
   }
 }

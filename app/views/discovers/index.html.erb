@@ -58,6 +58,17 @@
                   title: (I18n.locale.to_s == 'es' ? "Actualizar feed de videos" : "Refresh video feed") do %>
         <i class="ri-refresh-line refresh-icon" data-tiktok-feed-target="headerRefreshIcon"></i>
       <% end %>
+
+      <span class="tiktok-tabs-divider">|</span>
+
+      <!-- 6th Action: Upload to Feed Button -->
+      <button type="button"
+              class="tiktok-tab-link tiktok-tab-upload-btn"
+              data-action="click->tiktok-feed#openUploadModal"
+              title="<%= t('discover.upload_btn', default: 'Subir video o enlace') %>">
+        <i class="ri-add-circle-fill upload-icon text-success"></i>
+        <span class="upload-label"><%= t('discover.upload', default: 'Subir') %></span>
+      </button>
     </div>
 
     <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->
@@ -457,6 +468,148 @@
           <% end %>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Floating Upload Button for quick access anywhere on feed -->
+  <button type="button"
+          class="tiktok-floating-upload-btn"
+          data-action="click->tiktok-feed#openUploadModal"
+          title="Subir video o enlace al feed">
+    <i class="ri-add-line"></i>
+    <span>Subir</span>
+  </button>
+
+  <!-- Upload to Feed Modal -->
+  <div class="tiktok-upload-backdrop d-none" data-tiktok-feed-target="uploadBackdrop" data-action="click->tiktok-feed#closeUploadModal">
+    <div class="tiktok-upload-modal" data-tiktok-feed-target="uploadModal" data-action="click->tiktok-feed#stopProp">
+      <div class="upload-modal-header">
+        <div class="header-title-box">
+          <i class="ri-upload-cloud-2-fill text-purple"></i>
+          <h3><%= t('discover.upload_modal_title', default: "Subir Contenido al Feed") %></h3>
+        </div>
+        <button type="button" class="upload-modal-close-btn" data-action="click->tiktok-feed#closeUploadModal" title="Cerrar">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <% if user_signed_in? %>
+        <%= form_with model: Discover.new, url: discovers_path, method: :post, local: true, multipart: true, class: "upload-modal-form" do |f| %>
+          <!-- Source Type Switcher (Link vs File) -->
+          <div class="upload-source-pills">
+            <button type="button"
+                    class="upload-source-pill active"
+                    data-tiktok-feed-target="sourceLinkBtn"
+                    data-action="click->tiktok-feed#switchSourceToLink">
+              <i class="ri-links-line"></i>
+              <span>Pegar Enlace (YouTube / URL)</span>
+            </button>
+            <button type="button"
+                    class="upload-source-pill"
+                    data-tiktok-feed-target="sourceFileBtn"
+                    data-action="click->tiktok-feed#switchSourceToFile">
+              <i class="ri-folder-video-line"></i>
+              <span>Subir Archivo de Video</span>
+            </button>
+          </div>
+
+          <!-- Mode 1: Video Link (YouTube / MP4) -->
+          <div class="upload-field-section" data-tiktok-feed-target="linkSection">
+            <label class="upload-field-label">
+              <i class="ri-youtube-fill text-danger"></i>
+              <span>Enlace del video (YouTube o URL directa)</span>
+            </label>
+            <%= f.text_field :content,
+                             placeholder: "https://www.youtube.com/watch?v=... o https://youtu.be/...",
+                             class: "upload-input",
+                             data: {
+                               tiktok_feed_target: "linkInput",
+                               action: "input->tiktok-feed#onLinkInput"
+                             } %>
+            <small class="upload-hint">
+              Soporta videos, transmisiones en vivo y Shorts de YouTube, o enlaces directos .mp4
+            </small>
+            <div class="youtube-detected-preview d-none" data-tiktok-feed-target="youtubePreview">
+              <i class="ri-checkbox-circle-fill text-success"></i>
+              <span>Video de YouTube detectado correctamente</span>
+            </div>
+          </div>
+
+          <!-- Mode 2: Video File Upload (MP4 / WebM / MOV) -->
+          <div class="upload-field-section d-none" data-tiktok-feed-target="fileSection">
+            <label class="upload-field-label">
+              <i class="ri-file-video-fill text-info"></i>
+              <span>Selecciona tu archivo de video</span>
+            </label>
+            <div class="upload-dropzone" data-action="click->tiktok-feed#triggerFileInput">
+              <i class="ri-upload-cloud-line dropzone-icon"></i>
+              <span class="dropzone-text" data-tiktok-feed-target="dropzoneText">Haz clic para elegir un video (.mp4, .webm, .mov)</span>
+              <%= f.file_field :video,
+                               accept: "video/mp4,video/webm,video/quicktime",
+                               class: "d-none",
+                               data: {
+                                 tiktok_feed_target: "fileInput",
+                                 action: "change->tiktok-feed#onFileSelected"
+                               } %>
+            </div>
+          </div>
+
+          <!-- Common Fields: Title & Genre -->
+          <div class="upload-field-section">
+            <label class="upload-field-label">
+              <i class="ri-music-2-line text-warning"></i>
+              <span>Título de la canción / video</span>
+            </label>
+            <%= f.text_field :title,
+                             placeholder: "Ej: Cumbia Sabrosa en Vivo en Cholula",
+                             required: true,
+                             class: "upload-input" %>
+          </div>
+
+          <div class="upload-form-row">
+            <div class="upload-form-col">
+              <label class="upload-field-label">
+                <i class="ri-disc-line text-pink"></i>
+                <span>Género</span>
+              </label>
+              <%= f.select :genre,
+                           options_for_select(Event::GENRE, "Tropical"),
+                           {},
+                           class: "upload-select" %>
+            </div>
+
+            <div class="upload-form-col">
+              <label class="upload-field-label">
+                <i class="ri-price-tag-3-line text-secondary"></i>
+                <span>Tipo</span>
+              </label>
+              <%= f.select :post_type,
+                           options_for_select([["Música / Canción", "music"], ["Video General", "general"]], "music"),
+                           {},
+                           class: "upload-select" %>
+            </div>
+          </div>
+
+          <div class="upload-modal-footer">
+            <button type="button" class="btn-cancel-upload" data-action="click->tiktok-feed#closeUploadModal">
+              Cancelar
+            </button>
+            <%= f.submit "Publicar en el Feed 🚀", class: "btn-submit-upload" %>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="upload-auth-prompt">
+          <div class="auth-icon-circle">
+            <i class="ri-lock-2-line"></i>
+          </div>
+          <h4>Inicia sesión para subir contenido</h4>
+          <p>Para compartir tus canciones o videos de YouTube en el feed de Radios FBL, necesitas iniciar sesión o crear una cuenta.</p>
+          <div class="auth-actions-row">
+            <%= link_to "Iniciar Sesión", new_user_session_path, class: "main-app-btn-pri" %>
+            <%= link_to "Registrarme", new_user_registration_path, class: "main-app-btn-sec" %>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>

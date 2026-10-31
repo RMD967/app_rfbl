@@ -59,6 +59,16 @@ class DiscoversController < ApplicationController
         @discovers = base_scope.order(Arel.sql("RANDOM()")).limit(40)
       end
     end
+
+    # If user just uploaded a new post, place it at the very top of the feed
+    if params[:new_post_id].present?
+      new_post = base_scope.find_by(id: params[:new_post_id])
+      @discovers = ([new_post] + @discovers).compact.uniq if new_post
+    elsif user_signed_in? && current_user.artist_dashboard
+      # Ensure user's most recent upload is visible at top of feed
+      recent_user_post = base_scope.where(dashboard: current_user.artist_dashboard).order(created_at: :desc).first
+      @discovers = ([recent_user_post] + @discovers).compact.uniq if recent_user_post
+    end
   end
 
   def show
@@ -71,14 +81,32 @@ class DiscoversController < ApplicationController
   end
 
   def create
+    authenticate_user! unless user_signed_in?
+
     @discover = Discover.new(discover_params)
-    @discover.user = current_user if @discover.respond_to?(:user=)
     authorize @discover
 
+    if user_signed_in?
+      dashboard = current_user.artist_dashboard
+      unless dashboard
+        dashboard = Dashboard.new(
+          user_id: current_user.id,
+          artist_name: current_user.full_name.presence || "Artista FBL",
+          artist_genre: @discover.genre.presence || "Pop",
+          artist_location: "México",
+          artist_description: "Creador de contenido en Radios FBL."
+        )
+        dashboard.save(validate: false)
+      end
+      @discover.dashboard = dashboard
+    end
+
+    @discover.post_type = "music" if @discover.post_type.blank?
+
     if @discover.save
-      redirect_back fallback_location: dashboard_path(@discover.dashboard), notice: "Publicación creada con éxito (#{@discover.music? ? 'Música' : 'Publicación General'})."
+      redirect_to discovers_path(new_post_id: @discover.id), notice: "¡Tu publicación ha sido subida con éxito al feed!"
     else
-      redirect_back fallback_location: discovers_path, alert: @discover.errors.full_messages.join(", ")
+      redirect_to discovers_path, alert: "Error al publicar: #{@discover.errors.full_messages.to_sentence}"
     end
   end
 
