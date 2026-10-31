@@ -26,26 +26,31 @@ class ApplicationController < ActionController::Base
   end
 
   def set_language
-    puts "Set language action called!" # Add this line
+    requested = params[:locale].to_s.downcase.to_sym
+    target_locale = if [:en, :es].include?(requested)
+                      requested
+                    elsif I18n.locale == :en
+                      :es
+                    else
+                      :en
+                    end
 
-    if I18n.locale == :en
-      locale = :es
-    else
-      locale = :en
-    end
-
-    if I18n.available_locales.include?(locale)
-      session[:locale] = locale
-      cookies.permanent[:locale] = { value: locale, expires: 1.year.from_now }
-    end
-
-    I18n.locale = locale # Set the current locale immediately
+    session[:locale] = target_locale
+    cookies.permanent[:locale] = { value: target_locale.to_s, expires: 1.year.from_now }
+    I18n.locale = target_locale
 
     redirect_back(fallback_location: root_path)
   end
 
   def set_locale
-    I18n.locale = session[:locale] || cookies[:locale] || I18n.default_locale
+    raw_locale = params[:locale] || session[:locale] || cookies[:locale] || I18n.default_locale
+    locale = raw_locale.to_s.downcase.to_sym
+    if [:en, :es].include?(locale)
+      I18n.locale = locale
+      session[:locale] = locale
+    else
+      I18n.locale = I18n.default_locale
+    end
   end
 
   skip_after_action :verify_authorized, only: :set_language

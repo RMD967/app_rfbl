@@ -60,6 +60,5 @@ Rails.application.routes.draw do
   get '/images-content', to: 'dashboards#images'
   get 'activity', to: 'messages#index', as: :activity
   get '/users/:id', to: 'users#show', as: :user_id
-  get 'set_language/:locale', to: 'application#set_language', as: 'set_language'
-  # post '/set_language/:locale', to: 'languages#set_language', as: 'set_language'
+  match 'set_language(/:locale)', to: 'application#set_language', via: [:get, :post], as: 'set_language'
 end

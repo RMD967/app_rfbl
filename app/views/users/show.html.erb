@@ -50,7 +50,7 @@
       <div class="tiktok-profile-tags">
         <% if @user.artist? %>
           <span class="profile-role-badge artist">
-            <i class="ri-music-2-fill"></i> <%= artist_db&.artist_genre || "Músico / Artista" %>
+            <i class="ri-music-2-fill"></i> <%= artist_db&.artist_genre || t('profile.musician_artist', default: "Musician / Artist") %>
           </span>
           <% if artist_db&.artist_location.present? %>
             <span class="profile-role-badge location">
@@ -59,7 +59,7 @@
           <% end %>
         <% else %>
           <span class="profile-role-badge user">
-            <i class="ri-user-smile-line"></i> Fan de la Música
+            <i class="ri-user-smile-line"></i> <%= t('profile.music_fan', default: "Music Fan") %>
           </span>
         <% end %>
       </div>
@@ -69,24 +69,24 @@
     <div class="tiktok-profile-stats">
       <div class="tiktok-stat-box" data-action="click->tabs#shiftTab" data-tab-name="following" style="cursor: pointer;">
         <span class="stat-number"><%= @following.count %></span>
-        <span class="stat-title">Siguiendo</span>
+        <span class="stat-title"><%= t('profile.following', default: "Following") %></span>
       </div>
 
       <% if @user.artist? %>
         <div class="tiktok-stat-box">
           <span class="stat-number"><%= @followers.count %></span>
-          <span class="stat-title">Seguidores</span>
+          <span class="stat-title"><%= t('profile.followers', default: "Followers") %></span>
         </div>
       <% end %>
 
       <div class="tiktok-stat-box" data-action="click->tabs#shiftTab" data-tab-name="favorites" style="cursor: pointer;">
         <span class="stat-number text-warning"><%= @favorites.count %></span>
-        <span class="stat-title">Favoritos</span>
+        <span class="stat-title"><%= t('profile.favorites', default: "Favorites") %></span>
       </div>
 
       <div class="tiktok-stat-box" data-action="click->tabs#shiftTab" data-tab-name="likes" style="cursor: pointer;">
         <span class="stat-number text-danger"><%= @liked_discovers.count %></span>
-        <span class="stat-title">Me gusta</span>
+        <span class="stat-title"><%= t('profile.likes', default: "Likes") %></span>
       </div>
     </div>
 
@@ -94,36 +94,54 @@
     <div class="tiktok-profile-actions">
       <% if is_owner %>
         <%= link_to edit_user_registration_path, class: "tiktok-action-btn edit-profile" do %>
-          <i class="ri-edit-2-line"></i> Editar Perfil
+          <i class="ri-edit-2-line"></i> <%= t('profile.edit_profile', default: "Edit Profile") %>
         <% end %>
 
         <% if @user.artist? && artist_db.present? %>
           <%= link_to dashboard_path(artist_db), class: "tiktok-action-btn artist-link" do %>
-            <i class="ri-music-fill"></i> Mi Perfil de Artista
+            <i class="ri-music-fill"></i> <%= t('profile.artist_profile', default: "My Artist Profile") %>
           <% end %>
         <% end %>
 
         <div class="dropdown d-inline-block">
-          <button class="tiktok-action-btn settings" type="button" id="profileSettingsDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Configuración">
+          <button class="tiktok-action-btn settings" type="button" id="profileSettingsDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="<%= t('profile.settings', default: 'Settings') %>">
             <i class="ri-settings-4-line"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileSettingsDropdown">
             <li>
               <%= link_to edit_password_user_path(@user), class: "dropdown-item d-flex align-items-center gap-2" do %>
-                <i class="ri-lock-password-line"></i> Cambiar contraseña
+                <i class="ri-lock-password-line"></i> <%= t('profile.change_password', default: "Change Password") %>
               <% end %>
             </li>
             <% if @user.profile_picture.attached? %>
               <li>
                 <%= button_to delete_profile_picture_user_path(@user), method: :delete, class: "dropdown-item text-danger d-flex align-items-center gap-2", form: { data: { turbo_confirm: "¿Eliminar foto de perfil?" } } do %>
-                  <i class="ri-delete-bin-line"></i> Eliminar foto de perfil
+                  <i class="ri-delete-bin-line"></i> <%= t('profile.delete_photo', default: "Delete profile photo") %>
                 <% end %>
               </li>
             <% end %>
             <li><hr class="dropdown-divider border-secondary"></li>
             <li>
+              <span class="dropdown-header text-muted py-1" style="font-size: 0.75rem;">
+                <i class="ri-global-line"></i> <%= t('navbar.language', default: 'Language / Idioma') %>
+              </span>
+            </li>
+            <li>
+              <%= link_to set_language_path(locale: :en), class: "dropdown-item d-flex align-items-center justify-content-between #{'active' if I18n.locale == :en}", data: { turbo: false } do %>
+                <span>🇺🇸 English</span>
+                <% if I18n.locale == :en %><i class="ri-check-line text-success"></i><% end %>
+              <% end %>
+            </li>
+            <li>
+              <%= link_to set_language_path(locale: :es), class: "dropdown-item d-flex align-items-center justify-content-between #{'active' if I18n.locale == :es}", data: { turbo: false } do %>
+                <span>🇲🇽 Español</span>
+                <% if I18n.locale == :es %><i class="ri-check-line text-success"></i><% end %>
+              <% end %>
+            </li>
+            <li><hr class="dropdown-divider border-secondary"></li>
+            <li>
               <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item text-danger d-flex align-items-center gap-2" do %>
-                <i class="ri-logout-box-r-line"></i> Cerrar sesión
+                <i class="ri-logout-box-r-line"></i> <%= t('profile.log_out', default: "Log out") %>
               <% end %>
             </li>
           </ul>
@@ -142,7 +160,7 @@
               data-tab-name="following"
               data-tabs-target="button">
         <i class="ri-user-heart-fill"></i>
-        <span>Siguiendo</span>
+        <span><%= t('profile.following', default: "Following") %></span>
         <span class="tab-badge"><%= @following.count %></span>
       </button>
 
@@ -153,7 +171,7 @@
               data-tab-name="favorites"
               data-tabs-target="button">
         <i class="ri-bookmark-3-fill"></i>
-        <span>Favoritos</span>
+        <span><%= t('profile.favorites', default: "Favorites") %></span>
         <span class="tab-badge"><%= @favorites.count %></span>
       </button>
 
@@ -164,7 +182,7 @@
               data-tab-name="likes"
               data-tabs-target="button">
         <i class="ri-heart-3-fill"></i>
-        <span>Me gusta</span>
+        <span><%= t('profile.likes', default: "Likes") %></span>
         <span class="tab-badge"><%= @liked_discovers.count %></span>
       </button>
 
@@ -176,7 +194,7 @@
                 data-tab-name="events"
                 data-tabs-target="button">
           <i class="ri-calendar-event-fill"></i>
-          <span>Mis Eventos</span>
+          <span><%= t('profile.my_events', default: "My Events") %></span>
           <span class="tab-badge"><%= @user_events.count %></span>
         </button>
       <% end %>
@@ -235,7 +253,7 @@
                 <div class="artist-card-footer">
                   <% if artist_db %>
                     <%= link_to dashboard_path(artist_db), class: "btn-artist-view" do %>
-                      <i class="ri-eye-line"></i> Perfil
+                      <i class="ri-eye-line"></i> <%= t('profile.view_profile', default: "Profile") %>
                     <% end %>
                   <% end %>
 
@@ -250,10 +268,10 @@
           <div class="empty-tab-icon">
             <i class="ri-user-heart-line"></i>
           </div>
-          <h3>Aún no sigues a ningún artista</h3>
-          <p>Explora el feed de Descubrir y sigue a músicos para ver sus lanzamientos y contenido exclusivo.</p>
+          <h3><%= t('profile.no_following_title', default: "You are not following any artists yet") %></h3>
+          <p><%= t('profile.no_following_desc', default: "Explore Discover feed and follow musicians to see their latest releases and exclusive content.") %></p>
           <%= link_to discovers_path, class: "main-app-btn-pri" do %>
-            <i class="ri-compass-3-line"></i> Explorar Artistas en Descubrir
+            <i class="ri-compass-3-line"></i> <%= t('profile.explore_discover', default: "Explore Artists in Discover") %>
           <% end %>
         </div>
       <% end %>
@@ -278,14 +296,14 @@
           <div class="empty-tab-icon">
             <i class="ri-bookmark-3-line"></i>
           </div>
-          <h3>No tienes favoritos guardados</h3>
-          <p>Guarda eventos y músicos con el icono de marcador para tenerlos a la mano y contratarlos fácilmente.</p>
+          <h3><%= t('profile.no_favorites_title', default: "You have no saved favorites") %></h3>
+          <p><%= t('profile.no_favorites_desc', default: "Save events and musicians with the bookmark icon to easily hire them later.") %></p>
           <div class="d-flex justify-content-center gap-3 mt-3">
             <%= link_to discovers_path, class: "main-app-btn-pri" do %>
-              <i class="ri-music-2-line"></i> Descubrir Músicos
+              <i class="ri-music-2-line"></i> <%= t('profile.discover_musicians', default: "Discover Musicians") %>
             <% end %>
             <%= link_to events_path, class: "main-app-btn-sec" do %>
-              <i class="ri-ticket-2-line"></i> Explorar Eventos
+              <i class="ri-ticket-2-line"></i> <%= t('profile.explore_events', default: "Explore Events") %>
             <% end %>
           </div>
         </div>
@@ -320,10 +338,10 @@
           <div class="empty-tab-icon">
             <i class="ri-heart-3-line"></i>
           </div>
-          <h3>No has dado "Me gusta" a ningún video</h3>
-          <p>Ve a la sección Descubrir y da like a los videos de los artistas que más te gusten.</p>
+          <h3><%= t('profile.no_likes_title', default: "You haven't liked any videos yet") %></h3>
+          <p><%= t('profile.no_likes_desc', default: "Go to Discover and like videos of the artists you enjoy most.") %></p>
           <%= link_to discovers_path, class: "main-app-btn-pri" do %>
-            <i class="ri-play-circle-line"></i> Ir a Descubrir
+            <i class="ri-play-circle-line"></i> <%= t('profile.go_to_discover', default: "Go to Discover") %>
           <% end %>
         </div>
       <% end %>

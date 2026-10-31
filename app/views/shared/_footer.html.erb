@@ -51,9 +51,13 @@
     <div class="lang-switcher-container">
       <p><%= t('footer.you_are_in') %></p>
       <% if I18n.locale == :en %>
-        <%= link_to t('footer.change_to_es'), set_language_path(locale: :es), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token }, onclick: "alert('Listo pa rokear?')" %>
+        <%= link_to set_language_path(locale: :es), class: "language-switcher", data: { turbo: false } do %>
+          <i class="ri-global-line"></i> <%= t('footer.change_to_es') %>
+        <% end %>
       <% else %>
-        <%= link_to t('footer.change_to_en'), set_language_path(locale: :en), class: "language-switcher", method: :post, data: { csrf_token: form_authenticity_token }, onclick: "alert('Ready to rock?')" %>
+        <%= link_to set_language_path(locale: :en), class: "language-switcher", data: { turbo: false } do %>
+          <i class="ri-global-line"></i> <%= t('footer.change_to_en') %>
+        <% end %>
       <% end %>
     </div>
     <p class="footer-mellow">© Radios FBL <%= Time.now.year %></p>

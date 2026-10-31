@@ -230,26 +230,50 @@
 // ----------------- Segmented Tabs Bar -----------------
 .tiktok-profile-content-container {
   margin-top: 24px;
+  width: 100%;
 }
 
 .tiktok-profile-tabs-header {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 14px;
   margin-bottom: 24px;
   overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
   scrollbar-width: none;
+  box-sizing: border-box;
+
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  // Mobile: full bleed horizontal scroll bar with safe padding
+  @media (max-width: 679px) {
+    margin-left: -14px;
+    margin-right: -14px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  // Desktop: center tabs cleanly when they fit
+  @media (min-width: 768px) {
+    justify-content: center;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
 .tiktok-profile-tab {
-  padding: 8px 18px;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  padding: 8px 16px;
   border-radius: 22px;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 700;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -260,6 +284,12 @@
   gap: 6px;
   transition: all 0.2s ease;
   white-space: nowrap;
+
+  @media (max-width: 480px) {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    gap: 5px;
+  }
 
   &:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -280,6 +310,11 @@
     border-radius: 10px;
     font-size: 0.72rem;
     font-weight: 800;
+
+    @media (max-width: 480px) {
+      padding: 1px 5px;
+      font-size: 0.68rem;
+    }
   }
 }
 
