@@ -65,8 +65,10 @@ export default class extends Controller {
     this.element.classList.add("has-overflow")
 
     // Show/hide left arrow based on scroll position
+    const canLeft = el.scrollLeft > 6
+    this.element.classList.toggle("can-scroll-left", canLeft)
     if (this.hasLeftArrowTarget) {
-      if (el.scrollLeft > 6) {
+      if (canLeft) {
         this.leftArrowTarget.classList.remove("d-none")
       } else {
         this.leftArrowTarget.classList.add("d-none")
@@ -74,8 +76,10 @@ export default class extends Controller {
     }
 
     // Show/hide right arrow based on scroll position
+    const canRight = el.scrollLeft < maxScroll - 6
+    this.element.classList.toggle("can-scroll-right", canRight)
     if (this.hasRightArrowTarget) {
-      if (el.scrollLeft < maxScroll - 6) {
+      if (canRight) {
         this.rightArrowTarget.classList.remove("d-none")
       } else {
         this.rightArrowTarget.classList.add("d-none")

@@ -137,6 +137,8 @@ es:
     exclusive_promotions: "Recibe promociones exclusivas y actualizaciones directamente en tu bandeja de entrada."
     enter_email: "Ingresa tu correo electrónico"
     subscribe: "Suscribirse"
+    subscribed_success: "¡Gracias por suscribirte a nuestro resumen!"
+    no_spam: "Sin spam. Cancela tu suscripción cuando quieras."
     change_to_es: "Cambia a Español"
     change_to_en: "Change to English"
     you_are_in: "Estás en Español"

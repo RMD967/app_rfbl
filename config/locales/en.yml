@@ -100,6 +100,8 @@ en:
     exclusive_promotions: "Get exclusive promotions & updates straight to your inbox."
     enter_email: "Enter your email"
     subscribe: "Subscribe"
+    subscribed_success: "Thank you for subscribing to our digest!"
+    no_spam: "No spam. Unsubscribe anytime."
     change_to_es: "Cambia a Español"
     change_to_en: "Change to English"
     you_are_in: "You are in English"

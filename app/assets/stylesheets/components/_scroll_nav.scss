@@ -63,28 +63,29 @@
     }
   }
 
-  // Soft gradient fade masks on edges when content overflows
-  &.has-overflow {
-    &::before,
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 44px;
-      pointer-events: none;
-      z-index: 8;
-      transition: opacity 0.25s ease;
-    }
+  // Soft gradient fade masks on edges only when content can scroll in that direction
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    pointer-events: none;
+    z-index: 8;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
 
-    &::before {
-      left: 0;
-      background: linear-gradient(90deg, rgba(13, 12, 29, 0.95) 0%, transparent 100%);
-    }
+  &.can-scroll-left::before {
+    left: 0;
+    background: linear-gradient(90deg, rgba(20, 19, 38, 0.8) 0%, transparent 100%);
+    opacity: 1;
+  }
 
-    &::after {
-      right: 0;
-      background: linear-gradient(270deg, rgba(13, 12, 29, 0.95) 0%, transparent 100%);
-    }
+  &.can-scroll-right::after {
+    right: 0;
+    background: linear-gradient(270deg, rgba(20, 19, 38, 0.8) 0%, transparent 100%);
+    opacity: 1;
   }
 }

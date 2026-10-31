@@ -1,65 +1,90 @@
 <% if user_signed_in? %>
-  <footer>
-    <div class="footer-container">
-      <div class="footer-brand-container">
-        <% if current_user.artist? %>
-          <% image_url = I18n.locale == :es ? "https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" : "https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" %>
-          <%= link_to root_path do %>
-            <img src="<%= image_url %>" alt="Artist FBL">
+  <footer class="app-modern-footer">
+    <div class="footer-main-grid">
+      <!-- Brand & Mission Column -->
+      <div class="footer-col footer-brand-col">
+        <div class="footer-brand-header">
+          <%= link_to root_path, class: "footer-brand-logo-link" do %>
+            <% if current_user.artist? %>
+              <% image_url = I18n.locale == :es ? "https://i.postimg.cc/vT8T1xPJ/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-1.png" : "https://i.postimg.cc/bN5zHBCV/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation-2.png" %>
+              <img src="<%= image_url %>" alt="Artist FBL" class="footer-brand-img">
+            <% else %>
+              <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL" class="footer-brand-img">
+            <% end %>
           <% end %>
-        <% else %>
-          <%= link_to root_path do %>
-            <img src="https://i.postimg.cc/8cmBhvmN/Copy-of-Clean-Modern-App-Portfolio-Mockup-Presentation.png" alt="Radios FBL">
-          <% end %>
-        <% end %>
-        <p class="footer-info-text"><%= t('footer.own_music') %></p>
+        </div>
 
-        <div class="footer-links">
-          <a href="https://github.com/RMD96/app_rfbl"><i class="fs-3 text-white text-decoration-none fab fa-github"></i></a>
-          <a href="https://www.facebook.com/radios.f.b.l"><i class="fs-3 text-white text-decoration-none fab fa-facebook"></i></a>
-          <a href="https://www.instagram.com/estudio.fbl/"><i class="fs-3 text-white text-decoration-none fab fa-instagram"></i></a>
+        <p class="footer-tagline"><%= t('footer.own_music') %></p>
+
+        <div class="footer-social-row">
+          <a href="https://github.com/RMD96/app_rfbl" class="footer-social-pill" target="_blank" rel="noopener noreferrer" title="GitHub" aria-label="GitHub">
+            <i class="ri-github-fill"></i>
+          </a>
+          <a href="https://www.facebook.com/radios.f.b.l" class="footer-social-pill" target="_blank" rel="noopener noreferrer" title="Facebook" aria-label="Facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a href="https://www.instagram.com/estudio.fbl/" class="footer-social-pill" target="_blank" rel="noopener noreferrer" title="Instagram" aria-label="Instagram">
+            <i class="ri-instagram-line"></i>
+          </a>
         </div>
       </div>
 
-      <div class="footer-explore-container">
-        <h4 class="footer-explore-title"><%= t('footer.explore_title') %></h4>
-        <%= link_to t('footer.see_content'), discovers_path, class: "footer-info-text" %>
-        <% if current_user.artist? %>
-          <%= link_to t('footer.upload_music'), dashboards_path, class: "footer-info-text" %>
+      <!-- Explore Navigation Column -->
+      <div class="footer-col footer-explore-col">
+        <h4 class="footer-col-heading"><%= t('footer.explore_title') %></h4>
+        <nav class="footer-links-list">
+          <%= link_to discovers_path, class: "footer-link-item" do %>
+            <i class="ri-compass-3-line"></i>
+            <span><%= t('footer.see_content') %></span>
+          <% end %>
+
+          <% if current_user.artist? %>
+            <%= link_to dashboards_path, class: "footer-link-item" do %>
+              <i class="ri-music-2-line"></i>
+              <span><%= t('footer.upload_music') %></span>
+            <% end %>
+          <% else %>
+            <%= link_to user_id_path(id: current_user.id), class: "footer-link-item" do %>
+              <i class="ri-mic-line"></i>
+              <span><%= t('footer.be_artist') %></span>
+            <% end %>
+          <% end %>
+
+          <%= link_to new_event_path, class: "footer-link-item" do %>
+            <i class="ri-calendar-event-line"></i>
+            <span><%= t('footer.create_event') %></span>
+          <% end %>
+        </nav>
+      </div>
+
+      <!-- Newsletter Subscription Form Component Column -->
+      <div class="footer-col footer-newsletter-col">
+        <%= render "shared/newsletter_form" %>
+      </div>
+    </div>
+
+    <!-- Bottom Bar (Language Switcher + Copyright) -->
+    <div class="footer-bottom-row">
+      <div class="footer-lang-container">
+        <span class="lang-status-text">
+          <i class="ri-global-line"></i> <%= t('footer.you_are_in') %>
+        </span>
+        <% if I18n.locale == :en %>
+          <%= link_to set_language_path(locale: :es), class: "footer-lang-switcher-btn", data: { turbo: false } do %>
+            <span><%= t('footer.change_to_es') %></span>
+            <i class="ri-arrow-right-line"></i>
+          <% end %>
         <% else %>
-          <%= link_to t('footer.be_artist'), user_id_path(id: @user.id), class: "footer-info-text" %>
+          <%= link_to set_language_path(locale: :en), class: "footer-lang-switcher-btn", data: { turbo: false } do %>
+            <span><%= t('footer.change_to_en') %></span>
+            <i class="ri-arrow-right-line"></i>
+          <% end %>
         <% end %>
-        <%= link_to t('footer.create_event'), new_event_path, class: "footer-info-text" %>
       </div>
 
-      <div id="footer-newsletter-container">
-        <div class="input-container">
-          <h4 class="footer-newsletter-title"><%= t('footer.newsletter_title') %></h4>
-          <p class="footer-info-text"><%= t('footer.exclusive_promotions') %></p>
-          <!-- Add your input fields for the newsletter subscription here -->
-
-          <form action="/subscribe" method="POST">
-            <div class="footer-input-container">
-              <input type="hidden" name="user_id" value="<%= current_user.id %>">
-              <input id="email" name="email" type="email" class="newsletter-email-input" placeholder="<%= t('footer.enter_email') %>" required>
-              <button class="main-app-btn-pri" type="submit"><%= t('footer.subscribe') %></button>
-            </div>
-          </form>
-        </div>
-      </div>
+      <p class="footer-copyright-text">
+        © Radios FBL <%= Time.now.year %> · All rights reserved.
+      </p>
     </div>
-    <div class="lang-switcher-container">
-      <p><%= t('footer.you_are_in') %></p>
-      <% if I18n.locale == :en %>
-        <%= link_to set_language_path(locale: :es), class: "language-switcher", data: { turbo: false } do %>
-          <i class="ri-global-line"></i> <%= t('footer.change_to_es') %>
-        <% end %>
-      <% else %>
-        <%= link_to set_language_path(locale: :en), class: "language-switcher", data: { turbo: false } do %>
-          <i class="ri-global-line"></i> <%= t('footer.change_to_en') %>
-        <% end %>
-      <% end %>
-    </div>
-    <p class="footer-mellow">© Radios FBL <%= Time.now.year %></p>
   </footer>
 <% end %>

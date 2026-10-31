@@ -150,76 +150,54 @@
     </div>
   </div>
 
-  <!-- TikTok Navigation Tabs (Segmented bar: Following / Favorites / Likes / Events) -->
+  <!-- Profile Navigation Tabs (Modern Responsive Segmented Tab Bar) -->
   <div class="tiktok-profile-content-container" data-controller="tabs">
-    <div class="scroll-nav-wrapper" data-controller="scroll-nav">
-      <!-- Left Scroll Arrow -->
+    <div class="tiktok-profile-tabs-header">
+      <!-- TAB 1: Artistas que sigues -->
       <button type="button"
-              class="scroll-arrow-btn left-arrow d-none"
-              data-scroll-nav-target="leftArrow"
-              data-action="click->scroll-nav#scrollLeft"
-              title="Ver pestañas anteriores"
-              aria-label="Scroll left">
-        <i class="ri-arrow-left-s-line"></i>
+              class="tiktok-profile-tab active"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="following"
+              data-tabs-target="button">
+        <i class="ri-user-heart-fill"></i>
+        <span class="tab-label"><%= t('profile.following', default: "Following") %></span>
+        <span class="tab-badge"><%= @following.count %></span>
       </button>
 
-      <div class="tiktok-profile-tabs-header" data-scroll-nav-target="scrollable">
-        <!-- TAB 1: Artistas que sigues -->
-        <button type="button"
-                class="tiktok-profile-tab active"
-                data-action="click->tabs#shiftTab"
-                data-tab-name="following"
-                data-tabs-target="button">
-          <i class="ri-user-heart-fill"></i>
-          <span><%= t('profile.following', default: "Following") %></span>
-          <span class="tab-badge"><%= @following.count %></span>
-        </button>
+      <!-- TAB 2: Favoritos -->
+      <button type="button"
+              class="tiktok-profile-tab"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="favorites"
+              data-tabs-target="button">
+        <i class="ri-bookmark-3-fill"></i>
+        <span class="tab-label"><%= t('profile.favorites', default: "Favorites") %></span>
+        <span class="tab-badge"><%= @favorites.count %></span>
+      </button>
 
-        <!-- TAB 2: Favoritos -->
+      <!-- TAB 3: Me gusta -->
+      <button type="button"
+              class="tiktok-profile-tab"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="likes"
+              data-tabs-target="button">
+        <i class="ri-heart-3-fill"></i>
+        <span class="tab-label"><%= t('profile.likes', default: "Likes") %></span>
+        <span class="tab-badge"><%= @liked_discovers.count %></span>
+      </button>
+
+      <!-- TAB 4: Mis Eventos (si tiene) -->
+      <% if @user_events.any? %>
         <button type="button"
                 class="tiktok-profile-tab"
                 data-action="click->tabs#shiftTab"
-                data-tab-name="favorites"
+                data-tab-name="events"
                 data-tabs-target="button">
-          <i class="ri-bookmark-3-fill"></i>
-          <span><%= t('profile.favorites', default: "Favorites") %></span>
-          <span class="tab-badge"><%= @favorites.count %></span>
+          <i class="ri-calendar-event-fill"></i>
+          <span class="tab-label"><%= t('profile.my_events', default: "My Events") %></span>
+          <span class="tab-badge"><%= @user_events.count %></span>
         </button>
-
-        <!-- TAB 3: Me gusta -->
-        <button type="button"
-                class="tiktok-profile-tab"
-                data-action="click->tabs#shiftTab"
-                data-tab-name="likes"
-                data-tabs-target="button">
-          <i class="ri-heart-3-fill"></i>
-          <span><%= t('profile.likes', default: "Likes") %></span>
-          <span class="tab-badge"><%= @liked_discovers.count %></span>
-        </button>
-
-        <!-- TAB 4: Mis Eventos (si tiene) -->
-        <% if @user_events.any? %>
-          <button type="button"
-                  class="tiktok-profile-tab"
-                  data-action="click->tabs#shiftTab"
-                  data-tab-name="events"
-                  data-tabs-target="button">
-            <i class="ri-calendar-event-fill"></i>
-            <span><%= t('profile.my_events', default: "My Events") %></span>
-            <span class="tab-badge"><%= @user_events.count %></span>
-          </button>
-        <% end %>
-      </div>
-
-      <!-- Right Scroll Arrow -->
-      <button type="button"
-              class="scroll-arrow-btn right-arrow d-none"
-              data-scroll-nav-target="rightArrow"
-              data-action="click->scroll-nav#scrollRight"
-              title="Ver más pestañas"
-              aria-label="Scroll right">
-        <i class="ri-arrow-right-s-line"></i>
-      </button>
+      <% end %>
     </div>
 
     <!-- ================= TAB 1: ARTISTAS QUE SIGUES ================= -->

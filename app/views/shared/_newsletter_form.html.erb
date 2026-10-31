@@ -1,0 +1,33 @@
+<div class="footer-newsletter-card">
+  <div class="newsletter-header">
+    <div class="newsletter-icon-badge">
+      <i class="ri-mail-send-fill"></i>
+    </div>
+    <div class="newsletter-title-wrap">
+      <h4 class="footer-heading"><%= t('footer.newsletter_title') %></h4>
+      <p class="newsletter-subtext"><%= t('footer.exclusive_promotions') %></p>
+    </div>
+  </div>
+
+  <%= form_with url: subscribe_path, method: :post, local: true, class: "newsletter-form" do |f| %>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+    <div class="newsletter-input-box">
+      <i class="ri-mail-line input-icon"></i>
+      <%= f.email_field :email,
+                        id: "footer_newsletter_email",
+                        placeholder: t('footer.enter_email'),
+                        required: true,
+                        class: "newsletter-input",
+                        autocomplete: "email" %>
+      <button type="submit" class="newsletter-submit-btn" aria-label="<%= t('footer.subscribe') %>">
+        <span><%= t('footer.subscribe') %></span>
+        <i class="ri-arrow-right-line"></i>
+      </button>
+    </div>
+  <% end %>
+
+  <div class="newsletter-trust-row">
+    <i class="ri-shield-check-line"></i>
+    <span><%= t('footer.no_spam', default: "No spam. Unsubscribe anytime.") %></span>
+  </div>
+</div>

@@ -1,14 +1,16 @@
 class SubscriptionsController < ApplicationController
   def create
-    # Get the email and user ID from the form data
-    email = params[:email]
-    user_id = params[:user_id]
-    # Create a new Subscription record
-    @subscription = Subscription.create(email: email, user_id: user_id)
-    # Authorize the subscription
+    email = params[:email] || params.dig(:subscription, :email)
+    user_id = params[:user_id] || params.dig(:subscription, :user_id) || current_user&.id
+
+    @subscription = Subscription.new(email: email, user_id: user_id)
     authorize @subscription
-    # Redirect to a success page
-    redirect_to root_path
+
+    if @subscription.save
+      redirect_back fallback_location: root_path, notice: t('footer.subscribed_success', default: "Thank you for subscribing to our digest!")
+    else
+      redirect_back fallback_location: root_path, alert: @subscription.errors.full_messages.to_sentence
+    end
   end
 
   private

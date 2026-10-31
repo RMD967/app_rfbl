@@ -227,7 +227,7 @@
   }
 }
 
-// ----------------- Segmented Tabs Bar -----------------
+// ----------------- Modern Segmented Tabs Bar -----------------
 .tiktok-profile-content-container {
   margin-top: 24px;
   width: 100%;
@@ -235,86 +235,101 @@
 
 .tiktok-profile-tabs-header {
   display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  width: 100%;
   gap: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0 38px 14px 38px;
+  padding: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
   margin-bottom: 24px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
   box-sizing: border-box;
 
-  &::-webkit-scrollbar {
-    display: none;
-  }
-
-  // Mobile: full bleed horizontal scroll bar with safe padding
-  @media (max-width: 679px) {
-    margin-left: -14px;
-    margin-right: -14px;
-    padding-left: 36px;
-    padding-right: 36px;
-  }
-
-  // Desktop: center tabs cleanly when they fit
-  @media (min-width: 768px) {
-    justify-content: center;
-    padding-left: 8px;
-    padding-right: 8px;
+  @media (max-width: 480px) {
+    gap: 4px;
+    padding: 4px;
+    border-radius: 14px;
   }
 }
 
 .tiktok-profile-tab {
-  flex-shrink: 0;
-  scroll-snap-align: start;
-  padding: 8px 16px;
-  border-radius: 22px;
+  flex: 1 1 0px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 12px;
   font-size: 0.86rem;
   font-weight: 700;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.65);
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  transition: all 0.2s ease;
-  white-space: nowrap;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  text-align: center;
 
-  @media (max-width: 480px) {
-    padding: 7px 12px;
-    font-size: 0.8rem;
-    gap: 5px;
+  i {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .tab-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tab-badge {
+    background: rgba(255, 255, 255, 0.12);
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.85);
+    flex-shrink: 0;
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    color: white;
-    border-color: rgba(162, 89, 255, 0.4);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.07);
   }
 
   &.active {
     background: linear-gradient(135deg, #A259FF 0%, #6c35de 100%) !important;
-    border-color: #A259FF !important;
-    color: white !important;
-    box-shadow: 0 4px 15px rgba(162, 89, 255, 0.4);
+    border-color: rgba(162, 89, 255, 0.5) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 16px rgba(162, 89, 255, 0.35);
+
+    .tab-badge {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
   }
 
-  .tab-badge {
-    background: rgba(255, 255, 255, 0.2);
-    padding: 1px 7px;
-    border-radius: 10px;
-    font-size: 0.72rem;
-    font-weight: 800;
+  @media (max-width: 480px) {
+    padding: 8px 4px;
+    gap: 4px;
+    font-size: 0.78rem;
 
-    @media (max-width: 480px) {
+    i {
+      font-size: 0.9rem;
+    }
+
+    .tab-badge {
       padding: 1px 5px;
       font-size: 0.68rem;
+    }
+  }
+
+  @media (max-width: 360px) {
+    padding: 7px 2px;
+    font-size: 0.72rem;
+    gap: 3px;
+
+    .tab-badge {
+      padding: 1px 4px;
+      font-size: 0.64rem;
     }
   }
 }
