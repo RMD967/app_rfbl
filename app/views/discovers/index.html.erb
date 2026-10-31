@@ -2,7 +2,7 @@
   <!-- Floating Top Tabs Navigation -->
   <header class="tiktok-nav-header">
     <div class="tiktok-tabs-container">
-      <%= link_to discovers_path(tab: "nearby", location: @selected_location),
+      <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
                   class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
         <i class="ri-map-pin-user-fill"></i> Cerca de ti
       <% end %>
@@ -15,24 +15,65 @@
       <% end %>
     </div>
 
-    <!-- Location Filter Bar (Shown when 'Cerca de ti' is active) -->
+    <!-- Search bar for "Cerca de ti" (Exact location search + quick pills) -->
     <% if @current_tab == "nearby" %>
-      <div class="tiktok-location-bar">
-        <div class="location-bar-label">
-          <i class="ri-compass-3-line"></i>
-          <span>Ubicación:</span>
-        </div>
+      <div class="tiktok-header-search-container">
+        <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form" do %>
+          <%= hidden_field_tag :tab, "nearby" %>
+          <div class="tiktok-search-input-wrapper">
+            <i class="ri-map-pin-2-fill search-icon text-danger"></i>
+            <%= text_field_tag :location, @search_location, placeholder: "Buscar ciudad o ubicación...", class: "tiktok-search-input", autocomplete: "off" %>
+            <% if params[:location].present? && params[:location] != "Puebla" %>
+              <%= link_to discovers_path(tab: "nearby", location: "Puebla"), class: "tiktok-search-clear", title: "Restablecer" do %>
+                <i class="ri-close-circle-fill"></i>
+              <% end %>
+            <% end %>
+            <button type="submit" class="tiktok-search-btn" title="Buscar ubicación">
+              <i class="ri-search-2-line"></i>
+            </button>
+          </div>
+        <% end %>
+
         <div class="location-pills-scroll">
           <% @available_locations.each do |loc| %>
             <%= link_to discovers_path(tab: "nearby", location: loc),
-                        class: "location-pill #{'active' if @selected_location.downcase == loc.downcase}" do %>
-              <% if @selected_location.downcase == loc.downcase %>
+                        class: "location-pill #{'active' if @search_location.to_s.downcase == loc.downcase}" do %>
+              <% if @search_location.to_s.downcase == loc.downcase %>
                 <i class="ri-map-pin-fill"></i>
               <% end %>
               <%= loc %>
             <% end %>
           <% end %>
         </div>
+      </div>
+
+    <!-- Search bar for "Para ti" (Song, Artist, Genre search) -->
+    <% else %>
+      <div class="tiktok-header-search-container">
+        <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form" do %>
+          <%= hidden_field_tag :tab, "for_you" %>
+          <div class="tiktok-search-input-wrapper">
+            <i class="ri-search-2-line search-icon text-primary"></i>
+            <%= text_field_tag :query, @query, placeholder: "Buscar canciones, artistas o géneros...", class: "tiktok-search-input", autocomplete: "off" %>
+            <% if @query.present? %>
+              <%= link_to discovers_path(tab: "for_you"), class: "tiktok-search-clear", title: "Limpiar búsqueda" do %>
+                <i class="ri-close-circle-fill"></i>
+              <% end %>
+            <% end %>
+            <button type="submit" class="tiktok-search-btn" title="Buscar música">
+              <i class="ri-search-2-line"></i>
+            </button>
+          </div>
+        <% end %>
+
+        <% if @query.present? %>
+          <div class="tiktok-active-filter-badge">
+            <span>Resultados para: <strong>"<%= @query %>"</strong> (<%= @discovers.count %>)</span>
+            <%= link_to discovers_path(tab: "for_you"), class: "badge-clear-btn" do %>
+              <i class="ri-close-line"></i> Quitar filtro
+            <% end %>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </header>
@@ -47,14 +88,26 @@
       <div class="tiktok-empty-feed">
         <div class="empty-feed-card">
           <div class="empty-feed-icon">
-            <i class="ri-map-pin-range-line"></i>
+            <% if @current_tab == "nearby" %>
+              <i class="ri-map-pin-range-line"></i>
+            <% else %>
+              <i class="ri-search-eye-line"></i>
+            <% end %>
           </div>
-          <h2>No hay videos en <%= @selected_location %> aún</h2>
-          <p>Sé el primero en subir un video o explora el contenido global de artistas en otras ciudades.</p>
-          <div class="empty-feed-actions">
-            <%= link_to "Ver feed 'Para ti'", discovers_path(tab: "for_you"), class: "main-app-btn-pri" %>
-            <%= link_to "Explorar Puebla", discovers_path(tab: "nearby", location: "Puebla"), class: "main-app-btn-sec" %>
-          </div>
+          <% if @current_tab == "nearby" %>
+            <h2>No hay videos en <%= @search_location %> aún</h2>
+            <p>Sé el primero en subir un video o explora el contenido de artistas en otras ciudades.</p>
+            <div class="empty-feed-actions">
+              <%= link_to "Ver feed 'Para ti'", discovers_path(tab: "for_you"), class: "main-app-btn-pri" %>
+              <%= link_to "Explorar Puebla", discovers_path(tab: "nearby", location: "Puebla"), class: "main-app-btn-sec" %>
+            </div>
+          <% else %>
+            <h2>No se encontraron resultados para "<%= @query %>"</h2>
+            <p>Intenta con el nombre de otro artista, canción o género musical (ej. Jazz, Rock, DJ, Cumbia).</p>
+            <div class="empty-feed-actions">
+              <%= link_to "Ver todas las canciones", discovers_path(tab: "for_you"), class: "main-app-btn-pri" %>
+            </div>
+          <% end %>
         </div>
       </div>
     <% end %>

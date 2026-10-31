@@ -4,7 +4,7 @@ class DiscoversController < ApplicationController
   def index
     @current_tab = params[:tab].presence || "for_you"
     @available_locations = ["Puebla", "New York", "Miami", "San Francisco", "Los Angeles", "Chicago", "Austin", "Nashville", "Atlanta"]
-    @selected_location = params[:location].presence || "Puebla"
+    @query = params[:query].to_s.strip
 
     base_scope = policy_scope(Discover).includes(
       :likes,
@@ -13,10 +13,20 @@ class DiscoversController < ApplicationController
     )
 
     if @current_tab == "nearby"
-      matching_dashboards = Dashboard.where("artist_location ILIKE :loc OR artist_cities ILIKE :loc", loc: "%#{@selected_location}%")
+      @search_location = params[:location].presence || params[:location_query].presence || "Puebla"
+      matching_dashboards = Dashboard.where("artist_location ILIKE :loc OR artist_cities ILIKE :loc", loc: "%#{@search_location}%")
       @discovers = base_scope.where(dashboard: matching_dashboards).order(created_at: :desc)
     else
-      @discovers = base_scope.order(created_at: :desc)
+      if @query.present?
+        matching_dashboards = Dashboard.where("artist_name ILIKE :q OR artist_genre ILIKE :q OR artist_instrument ILIKE :q", q: "%#{@query}%")
+        @discovers = base_scope.where(
+          "discovers.title ILIKE :q OR discovers.genre ILIKE :q OR discovers.dashboard_id IN (:dash_ids)",
+          q: "%#{@query}%",
+          dash_ids: matching_dashboards.select(:id)
+        ).order(created_at: :desc)
+      else
+        @discovers = base_scope.order(created_at: :desc)
+      end
     end
   end
 

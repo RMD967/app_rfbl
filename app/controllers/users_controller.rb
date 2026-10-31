@@ -8,6 +8,14 @@ class UsersController < ApplicationController
 
   def show
     skip_authorization
+    @user = User.find_by(id: params[:id]) || current_user
+    @following = @user.following.includes(:dashboards, profile_picture_attachment: :blob)
+    @followers = @user.followers
+    @favorite_dashboards = @user.favorite_dashboards
+    @favorite_events = @user.favorite_events
+    @favorites = @user.favorites.includes(:favoritable).order(created_at: :desc)
+    @liked_discovers = Discover.joins(:likes).where(likes: { user_id: @user.id }).distinct.includes(dashboard: { avatar_attachment: :blob })
+    @user_events = (@user.created_events + @user.events).uniq
   end
 
   def edit

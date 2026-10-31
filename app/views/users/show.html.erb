@@ -1,85 +1,336 @@
-<div class="show-user-container">
-  <h1><%= t('user.greeting', first_name: @user.first_name, last_name: @user.last_name) %></h1>
-  <p class="user-email-text"><%= @user.email %></p>
+<%
+  is_owner = current_user == @user
+  artist_db = @user.artist_dashboard
+  user_handle = @user.email.split('@').first
+%>
 
-  <!-- Follow & Favorite Stats Bar -->
-  <div class="user-follow-stats my-3 d-flex justify-content-center gap-4">
-    <div class="stat-box text-center">
-      <h3 class="m-0 text-white font-weight-bold"><%= @user.following.count %></h3>
-      <span class="text-muted small"><%= t('user.following', default: 'Following') %></span>
-    </div>
-    <% if @user.artist? %>
-      <div class="stat-box text-center">
-        <h3 class="m-0 text-white font-weight-bold"><%= @user.followers.count %></h3>
-        <span class="text-muted small"><%= t('user.followers', default: 'Followers') %></span>
-      </div>
-    <% end %>
-    <div class="stat-box text-center">
-      <%= link_to favorites_path, class: "text-decoration-none" do %>
-        <h3 class="m-0 text-warning font-weight-bold"><%= @user.favorites.count %></h3>
-        <span class="text-muted small"><%= t('favorites.title', default: 'Favorites') %></span>
-      <% end %>
-    </div>
-  </div>
+<div class="tiktok-profile-experience">
+  <!-- Profile Header Card (TikTok style) -->
+  <div class="tiktok-profile-header">
+    <div class="tiktok-profile-avatar-wrapper">
+      <div class="tiktok-avatar-ring">
+        <% if @user.profile_picture.attached? %>
+          <%= cl_image_tag @user.profile_picture.key, alt: @user.full_name, class: "tiktok-profile-avatar-img" %>
+        <% else %>
+          <div class="tiktok-avatar-placeholder-lg">
+            <%= @user.first_name&.first&.upcase || "U" %>
+          </div>
+        <% end %>
 
-  <div class="view-profile-picture">
-    <div class='user-profile-picture'>
-      <% if @user.profile_picture.attached? %>
-        <%= cl_image_tag @user.profile_picture.key, alt: t('user.profile_picture') %>
-      <% else %>
-        <%= image_tag "https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png", alt: t('user.alt_profile_picture') %>
-      <% end %>
-      <%= form_for @user, url: update_profile_picture_user_path(@user), method: :patch, html: { data: { controller: "upload", target: "upload.form" } } do |f| %>
-        <label for="my-pencil-icon" id="my-label" class="fa fa-pencil"></label>
-        <%= f.file_field :profile_picture, id: 'my-pencil-icon', style: 'display: none;', data: { target: "upload.fileField" } %>
-      <% end %>
-    </div>
-    <% if @user.profile_picture.attached? %>
-      <%= form_for @user, url: delete_profile_picture_user_path(@user), method: :delete do |f| %>
-        <%= f.submit t('user.delete_image'), class: 'main-app-btn-del' %>
-      <% end %>
-    <% end %>
-  </div>
-
-  <!-- Artists I Follow Section -->
-  <% if @user.following.any? %>
-    <div class="followed-artists-section my-4">
-      <h4 class="mb-3 text-white"><i class="ri-user-heart-line text-primary"></i> <%= t('user.followed_artists', default: 'Artists You Follow') %> (<%= @user.following.count %>)</h4>
-      <div class="d-flex flex-column gap-2">
-        <% @user.following.each do |artist| %>
-          <% artist_db = artist.artist_dashboard %>
-          <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background: #2A2A3F;">
-            <div class="d-flex align-items-center gap-2">
-              <% if artist.profile_picture.attached? %>
-                <%= cl_image_tag artist.profile_picture.key, class: "chat-avatar", style: "width:40px;height:40px;" %>
-              <% else %>
-                <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png" class="chat-avatar" style="width:40px;height:40px;">
-              <% end %>
-              <div>
-                <strong class="text-white d-block"><%= artist_db&.artist_name || artist.full_name %></strong>
-                <small class="text-muted"><%= artist_db&.artist_genre || "Musician" %></small>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <% if artist_db %>
-                <%= link_to dashboard_path(artist_db), class: "btn btn-sm btn-outline-light" do %>
-                  <i class="ri-eye-line"></i> Profile
-                <% end %>
-              <% end %>
-              <%= render partial: "follows/follow_button", locals: { artist: artist } %>
-            </div>
+        <% if is_owner %>
+          <div class="tiktok-avatar-edit-badge" title="Cambiar foto de perfil">
+            <%= form_for @user, url: update_profile_picture_user_path(@user), method: :patch, html: { data: { controller: "upload", target: "upload.form" } } do |f| %>
+              <label for="tiktok-avatar-upload" class="avatar-edit-label">
+                <i class="ri-camera-fill"></i>
+              </label>
+              <%= f.file_field :profile_picture, id: 'tiktok-avatar-upload', style: 'display: none;', data: { target: "upload.fileField" } %>
+            <% end %>
           </div>
         <% end %>
       </div>
     </div>
-  <% end %>
 
-  <div class="user-profile-buttons">
-    <%= link_to favorites_path, class: "btn btn-outline-warning w-100 mb-2 d-flex align-items-center justify-content-center gap-2" do %>
-      <i class="ri-bookmark-3-line"></i> <%= t('favorites.view_saved', default: 'View Saved Favorites') %> (<%= @user.favorites.count %>)
+    <!-- User Identity & Badges -->
+    <div class="tiktok-profile-identity">
+      <h2 class="tiktok-profile-name">
+        <%= @user.full_name %>
+        <% if @user.artist? %>
+          <i class="ri-verified-badge-fill text-primary" title="Artista Verificado"></i>
+        <% end %>
+      </h2>
+      <p class="tiktok-profile-handle">@<%= user_handle %></p>
+
+      <div class="tiktok-profile-tags">
+        <% if @user.artist? %>
+          <span class="profile-role-badge artist">
+            <i class="ri-music-2-fill"></i> <%= artist_db&.artist_genre || "Músico / Artista" %>
+          </span>
+          <% if artist_db&.artist_location.present? %>
+            <span class="profile-role-badge location">
+              <i class="ri-map-pin-2-fill text-danger"></i> <%= artist_db.artist_location %>
+            </span>
+          <% end %>
+        <% else %>
+          <span class="profile-role-badge user">
+            <i class="ri-user-smile-line"></i> Fan de la Música
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- TikTok 3/4 Metric Counter Row -->
+    <div class="tiktok-profile-stats">
+      <div class="tiktok-stat-box" data-action="click->tabs#shiftTab" data-tab-name="following" style="cursor: pointer;">
+        <span class="stat-number"><%= @following.count %></span>
+        <span class="stat-title">Siguiendo</span>
+      </div>
+
+      <% if @user.artist? %>
+        <div class="tiktok-stat-box">
+          <span class="stat-number"><%= @followers.count %></span>
+          <span class="stat-title">Seguidores</span>
+        </div>
+      <% end %>
+
+      <div class="tiktok-stat-box" data-action="click->tabs#shiftTab" data-tab-name="favorites" style="cursor: pointer;">
+        <span class="stat-number text-warning"><%= @favorites.count %></span>
+        <span class="stat-title">Favoritos</span>
+      </div>
+
+      <div class="tiktok-stat-box" data-action="click->tabs#shiftTab" data-tab-name="likes" style="cursor: pointer;">
+        <span class="stat-number text-danger"><%= @liked_discovers.count %></span>
+        <span class="stat-title">Me gusta</span>
+      </div>
+    </div>
+
+    <!-- Profile Action Buttons (Pill Row) -->
+    <div class="tiktok-profile-actions">
+      <% if is_owner %>
+        <%= link_to edit_user_registration_path, class: "tiktok-action-btn edit-profile" do %>
+          <i class="ri-edit-2-line"></i> Editar Perfil
+        <% end %>
+
+        <% if @user.artist? && artist_db.present? %>
+          <%= link_to dashboard_path(artist_db), class: "tiktok-action-btn artist-link" do %>
+            <i class="ri-music-fill"></i> Mi Perfil de Artista
+          <% end %>
+        <% end %>
+
+        <div class="dropdown d-inline-block">
+          <button class="tiktok-action-btn settings" type="button" id="profileSettingsDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="Configuración">
+            <i class="ri-settings-4-line"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileSettingsDropdown">
+            <li>
+              <%= link_to edit_password_user_path(@user), class: "dropdown-item d-flex align-items-center gap-2" do %>
+                <i class="ri-lock-password-line"></i> Cambiar contraseña
+              <% end %>
+            </li>
+            <% if @user.profile_picture.attached? %>
+              <li>
+                <%= button_to delete_profile_picture_user_path(@user), method: :delete, class: "dropdown-item text-danger d-flex align-items-center gap-2", form: { data: { turbo_confirm: "¿Eliminar foto de perfil?" } } do %>
+                  <i class="ri-delete-bin-line"></i> Eliminar foto de perfil
+                <% end %>
+              </li>
+            <% end %>
+            <li><hr class="dropdown-divider border-secondary"></li>
+            <li>
+              <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item text-danger d-flex align-items-center gap-2" do %>
+                <i class="ri-logout-box-r-line"></i> Cerrar sesión
+              <% end %>
+            </li>
+          </ul>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- TikTok Navigation Tabs (Segmented bar like TikTok: Siguiendo / Favoritos / Me gusta / Eventos) -->
+  <div class="tiktok-profile-content-container" data-controller="tabs">
+    <div class="tiktok-profile-tabs-header">
+      <!-- TAB 1: Artistas que sigues -->
+      <button type="button"
+              class="tiktok-profile-tab active"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="following"
+              data-tabs-target="button">
+        <i class="ri-user-heart-fill"></i>
+        <span>Siguiendo</span>
+        <span class="tab-badge"><%= @following.count %></span>
+      </button>
+
+      <!-- TAB 2: Favoritos -->
+      <button type="button"
+              class="tiktok-profile-tab"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="favorites"
+              data-tabs-target="button">
+        <i class="ri-bookmark-3-fill"></i>
+        <span>Favoritos</span>
+        <span class="tab-badge"><%= @favorites.count %></span>
+      </button>
+
+      <!-- TAB 3: Me gusta -->
+      <button type="button"
+              class="tiktok-profile-tab"
+              data-action="click->tabs#shiftTab"
+              data-tab-name="likes"
+              data-tabs-target="button">
+        <i class="ri-heart-3-fill"></i>
+        <span>Me gusta</span>
+        <span class="tab-badge"><%= @liked_discovers.count %></span>
+      </button>
+
+      <!-- TAB 4: Mis Eventos (si tiene) -->
+      <% if @user_events.any? %>
+        <button type="button"
+                class="tiktok-profile-tab"
+                data-action="click->tabs#shiftTab"
+                data-tab-name="events"
+                data-tabs-target="button">
+          <i class="ri-calendar-event-fill"></i>
+          <span>Mis Eventos</span>
+          <span class="tab-badge"><%= @user_events.count %></span>
+        </button>
+      <% end %>
+    </div>
+
+    <!-- ================= TAB 1: ARTISTAS QUE SIGUES ================= -->
+    <div id="following-tab" data-tabs-target="tab" class="profile-tab-pane">
+      <% if @following.any? %>
+        <div class="tiktok-artists-grid">
+          <% @following.each do |artist| %>
+            <% artist_db = artist.artist_dashboard %>
+            <div class="tiktok-artist-card" id="<%= dom_id(artist, :profile_following_card) %>">
+              <div class="artist-card-banner">
+                <% if artist_db&.images&.attached? && artist_db.images.any? %>
+                  <%= cl_image_tag artist_db.images.first.key, class: "artist-banner-img" %>
+                <% else %>
+                  <div class="artist-banner-pattern"></div>
+                <% end %>
+              </div>
+
+              <div class="artist-card-body">
+                <div class="artist-card-avatar-wrapper">
+                  <% if artist_db&.avatar&.attached? %>
+                    <%= cl_image_tag artist_db.avatar.key, class: "artist-card-avatar" %>
+                  <% elsif artist.profile_picture.attached? %>
+                    <%= cl_image_tag artist.profile_picture.key, class: "artist-card-avatar" %>
+                  <% else %>
+                    <div class="artist-card-avatar placeholder">
+                      <%= (artist_db&.artist_name || artist.full_name).first.upcase %>
+                    </div>
+                  <% end %>
+                </div>
+
+                <h4 class="artist-card-name">
+                  <%= artist_db&.artist_name || artist.full_name %>
+                  <i class="ri-verified-badge-fill text-primary" title="Verificado"></i>
+                </h4>
+
+                <div class="artist-card-meta">
+                  <span class="artist-meta-pill genre">
+                    <i class="ri-music-2-line"></i> <%= artist_db&.artist_genre || "Músico" %>
+                  </span>
+                  <% if artist_db&.artist_location.present? %>
+                    <span class="artist-meta-pill location">
+                      <i class="ri-map-pin-2-fill text-danger"></i> <%= artist_db.artist_location %>
+                    </span>
+                  <% end %>
+                </div>
+
+                <% if artist_db&.artist_description.present? %>
+                  <p class="artist-card-bio">
+                    <%= truncate(artist_db.artist_description, length: 75) %>
+                  </p>
+                <% end %>
+
+                <div class="artist-card-footer">
+                  <% if artist_db %>
+                    <%= link_to dashboard_path(artist_db), class: "btn-artist-view" do %>
+                      <i class="ri-eye-line"></i> Perfil
+                    <% end %>
+                  <% end %>
+
+                  <%= render partial: "follows/follow_button", locals: { artist: artist } %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="tiktok-empty-tab">
+          <div class="empty-tab-icon">
+            <i class="ri-user-heart-line"></i>
+          </div>
+          <h3>Aún no sigues a ningún artista</h3>
+          <p>Explora el feed de Descubrir y sigue a músicos para ver sus lanzamientos y contenido exclusivo.</p>
+          <%= link_to discovers_path, class: "main-app-btn-pri" do %>
+            <i class="ri-compass-3-line"></i> Explorar Artistas en Descubrir
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- ================= TAB 2: FAVORITOS GUARDADOS ================= -->
+    <div id="favorites-tab" data-tabs-target="tab" class="profile-tab-pane d-none">
+      <% if @favorites.any? %>
+        <div class="fav-grid">
+          <% @favorites.each do |fav| %>
+            <% item = fav.favoritable %>
+            <% next unless item.present? %>
+            <% if item.is_a?(Event) %>
+              <%= render partial: "favorites/event_fav_card", locals: { event: item } %>
+            <% elsif item.is_a?(Dashboard) %>
+              <%= render partial: "favorites/artist_fav_card", locals: { dashboard: item } %>
+            <% end %>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="tiktok-empty-tab">
+          <div class="empty-tab-icon">
+            <i class="ri-bookmark-3-line"></i>
+          </div>
+          <h3>No tienes favoritos guardados</h3>
+          <p>Guarda eventos y músicos con el icono de marcador para tenerlos a la mano y contratarlos fácilmente.</p>
+          <div class="d-flex justify-content-center gap-3 mt-3">
+            <%= link_to discovers_path, class: "main-app-btn-pri" do %>
+              <i class="ri-music-2-line"></i> Descubrir Músicos
+            <% end %>
+            <%= link_to events_path, class: "main-app-btn-sec" do %>
+              <i class="ri-ticket-2-line"></i> Explorar Eventos
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- ================= TAB 3: ME GUSTA (LIKED VIDEOS TIKTOK STYLE) ================= -->
+    <div id="likes-tab" data-tabs-target="tab" class="profile-tab-pane d-none">
+      <% if @liked_discovers.any? %>
+        <div class="tiktok-liked-grid">
+          <% @liked_discovers.each do |discover| %>
+            <div class="liked-video-card">
+              <%= link_to discovers_path, class: "liked-video-link", title: discover.title do %>
+                <div class="liked-video-thumb">
+                  <% raw_src = discover.content.presence || (discover.video.attached? ? url_for(discover.video) : "/main.mp4") %>
+                  <% video_src = raw_src.include?("cloudinary.com") && raw_src.include?("/upload/") && !raw_src.include?("q_auto") ? raw_src.gsub("/upload/", "/upload/q_auto,w_360,vc_h264/") : raw_src %>
+                  <video src="<%= video_src %>" muted preload="metadata" playsinline class="liked-video-element"></video>
+                  <div class="liked-video-overlay">
+                    <span class="liked-heart-count">
+                      <i class="ri-heart-fill text-danger"></i> <%= discover.likes.count %>
+                    </span>
+                    <span class="liked-video-title"><%= discover.title %></span>
+                    <span class="liked-artist-name">@<%= discover.dashboard&.artist_name || "Artista" %></span>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="tiktok-empty-tab">
+          <div class="empty-tab-icon">
+            <i class="ri-heart-3-line"></i>
+          </div>
+          <h3>No has dado "Me gusta" a ningún video</h3>
+          <p>Ve a la sección Descubrir y da like a los videos de los artistas que más te gusten.</p>
+          <%= link_to discovers_path, class: "main-app-btn-pri" do %>
+            <i class="ri-play-circle-line"></i> Ir a Descubrir
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- ================= TAB 4: MIS EVENTOS ================= -->
+    <% if @user_events.any? %>
+      <div id="events-tab" data-tabs-target="tab" class="profile-tab-pane d-none">
+        <div class="fav-grid">
+          <% @user_events.each do |event| %>
+            <%= render partial: "favorites/event_fav_card", locals: { event: event } %>
+          <% end %>
+        </div>
+      </div>
     <% end %>
-    <%= link_to t('user.edit_profile_info'), edit_user_registration_path %>
-    <%= link_to t('user.change_password'), edit_password_user_path(@user) %>
-    <%= link_to t('user.log_out'), destroy_user_session_path, data: { turbo_method: :delete }, class: ""  %>
   </div>
 </div>
