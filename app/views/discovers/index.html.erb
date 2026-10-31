@@ -14,28 +14,44 @@
 
   <!-- Top Navigation Header (Compact & non-overlapping) -->
   <header class="tiktok-nav-header">
-    <div class="tiktok-tabs-container">
-      <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
-                  class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
-        <i class="ri-map-pin-user-fill"></i>
-        <span><%= t('discover.tabs.nearby', default: "Cerca de ti") %></span>
-      <% end %>
+    <div class="tiktok-header-top-row">
+      <div class="tiktok-tabs-container">
+        <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
+                    class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
+          <i class="ri-map-pin-user-fill"></i>
+          <span><%= t('discover.tabs.nearby', default: "Cerca de ti") %></span>
+        <% end %>
 
-      <span class="tiktok-tabs-divider">|</span>
+        <span class="tiktok-tabs-divider">|</span>
 
-      <%= link_to discovers_path(tab: "for_you"),
-                  class: "tiktok-tab-link #{@current_tab == 'for_you' ? 'active' : ''}" do %>
-        <span><%= t('discover.tabs.for_you', default: "Para ti") %></span>
-      <% end %>
+        <%= link_to discovers_path(tab: "for_you"),
+                    class: "tiktok-tab-link #{@current_tab == 'for_you' ? 'active' : ''}" do %>
+          <span><%= t('discover.tabs.for_you', default: "Para ti") %></span>
+        <% end %>
 
-      <span class="tiktok-tabs-divider">|</span>
+        <span class="tiktok-tabs-divider">|</span>
 
-      <%= link_to discovers_path(tab: "genre", genre: (@current_genre.presence || "Tropical")),
-                  class: "tiktok-tab-link #{@current_tab == 'genre' ? 'active' : ''}" do %>
-        <i class="ri-disc-fill"></i>
-        <span class="tab-label-full d-none d-sm-inline"><%= t('discover.tabs.by_genre', default: "Escucha por género") %></span>
-        <span class="tab-label-short d-sm-none"><%= t('discover.tabs.by_genre_short', default: "Por género") %></span>
-      <% end %>
+        <%= link_to discovers_path(tab: "genre", genre: (@current_genre.presence || "Tropical")),
+                    class: "tiktok-tab-link #{@current_tab == 'genre' ? 'active' : ''}" do %>
+          <i class="ri-disc-fill"></i>
+          <span class="tab-label-full d-none d-sm-inline"><%= t('discover.tabs.by_genre', default: "Escucha por género") %></span>
+          <span class="tab-label-short d-sm-none"><%= t('discover.tabs.by_genre_short', default: "Por género") %></span>
+        <% end %>
+      </div>
+
+      <!-- Quick Language Switcher Button -->
+      <% next_locale = (I18n.locale.to_s == 'es' ? :en : :es) %>
+      <div class="tiktok-lang-switcher-wrap">
+        <%= link_to set_language_path(locale: next_locale),
+                    class: "tiktok-lang-btn",
+                    data: { turbo: false },
+                    title: (I18n.locale.to_s == 'es' ? "Switch to English" : "Cambiar a Español") do %>
+          <i class="ri-global-line lang-icon"></i>
+          <span class="lang-switch-tag <%= 'is-active' if I18n.locale.to_s == 'es' %>">ES</span>
+          <span class="lang-switch-sep">/</span>
+          <span class="lang-switch-tag <%= 'is-active' if I18n.locale.to_s == 'en' %>">EN</span>
+        <% end %>
+      </div>
     </div>
 
     <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->
@@ -307,7 +323,7 @@
       <div class="sheet-header">
         <div class="sheet-header-title">
           <i class="ri-sound-module-fill sheet-title-icon"></i>
-          <span>Opciones de Reproducción</span>
+          <span><%= t('discover.sheet.title', default: "Opciones de Reproducción") %></span>
         </div>
         <button type="button" class="sheet-close-btn" data-action="click->tiktok-feed#closeOptionsMenu" title="Cerrar">
           <i class="ri-close-line"></i>
@@ -321,8 +337,8 @@
             <i class="ri-fullscreen-line"></i>
           </div>
           <div class="option-info">
-            <span class="option-label">Pantalla limpia</span>
-            <span class="option-desc">Oculta controles y textos para ver solo el video</span>
+            <span class="option-label"><%= t('discover.sheet.clear_screen', default: "Pantalla limpia") %></span>
+            <span class="option-desc"><%= t('discover.sheet.clear_screen_desc', default: "Oculta controles y textos para ver solo el video") %></span>
           </div>
           <button type="button"
                   class="option-toggle-btn"
@@ -341,8 +357,8 @@
             <i class="ri-skip-down-line"></i>
           </div>
           <div class="option-info">
-            <span class="option-label">Desplazamiento automático</span>
-            <span class="option-desc">Pasa al siguiente video al terminar el actual</span>
+            <span class="option-label"><%= t('discover.sheet.auto_scroll', default: "Desplazamiento automático") %></span>
+            <span class="option-desc"><%= t('discover.sheet.auto_scroll_desc', default: "Pasa al siguiente video al terminar el actual") %></span>
           </div>
           <button type="button"
                   class="option-toggle-btn"
@@ -355,15 +371,38 @@
           </button>
         </div>
 
-        <!-- Option 3: Velocidad de Reproducción -->
+        <!-- Option 3: Idioma / Language -->
+        <div class="sheet-option-item">
+          <div class="option-icon-box">
+            <i class="ri-global-line"></i>
+          </div>
+          <div class="option-info">
+            <span class="option-label"><%= t('discover.sheet.language', default: "Idioma / Language") %></span>
+            <span class="option-desc"><%= t('discover.sheet.currently_in', default: "Actualmente en Español") %></span>
+          </div>
+          <div class="sheet-lang-pills">
+            <%= link_to set_language_path(locale: :es),
+                        class: "sheet-lang-btn #{'active' if I18n.locale.to_s == 'es'}",
+                        data: { turbo: false } do %>
+              Español
+            <% end %>
+            <%= link_to set_language_path(locale: :en),
+                        class: "sheet-lang-btn #{'active' if I18n.locale.to_s == 'en'}",
+                        data: { turbo: false } do %>
+              English
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Option 4: Velocidad de Reproducción -->
         <div class="sheet-option-group">
           <div class="group-header">
             <div class="option-icon-box">
               <i class="ri-speed-line"></i>
             </div>
             <div class="option-info">
-              <span class="option-label">Velocidad de reproducción</span>
-              <span class="option-desc">Se guardará tu preferencia persistente para todos los videos</span>
+              <span class="option-label"><%= t('discover.sheet.speed', default: "Velocidad de reproducción") %></span>
+              <span class="option-desc"><%= t('discover.sheet.speed_desc', default: "Se guardará tu preferencia persistente para todos los videos") %></span>
             </div>
           </div>
           <div class="speed-pills-row">
@@ -384,19 +423,19 @@
           <% if @current_tab == "nearby" %>
             <%= link_to events_path(query: @search_location), class: "sheet-shortcut-action-btn" do %>
               <i class="ri-calendar-event-fill text-danger"></i>
-              <span>Ver eventos en <%= @search_location %></span>
+              <span><%= t('discover.actions.see_events_in', location: @search_location, default: "Ver eventos en #{@search_location}") %></span>
               <i class="ri-arrow-right-s-line arrow-right"></i>
             <% end %>
           <% elsif @current_tab == "genre" && @current_genre.present? && !['Todos', 'All'].include?(@current_genre) %>
             <%= link_to events_path(genre: @current_genre), class: "sheet-shortcut-action-btn" do %>
               <i class="ri-calendar-event-fill text-pink"></i>
-              <span>Ver eventos de <%= @current_genre %></span>
+              <span><%= t('discover.actions.see_events_of', genre: @current_genre, default: "Ver eventos de #{@current_genre}") %></span>
               <i class="ri-arrow-right-s-line arrow-right"></i>
             <% end %>
           <% else %>
             <%= link_to events_path, class: "sheet-shortcut-action-btn" do %>
               <i class="ri-calendar-event-fill text-primary"></i>
-              <span>Explorar cartelera de eventos</span>
+              <span><%= t('discover.actions.see_all_events', default: "Ver todos los eventos") %></span>
               <i class="ri-arrow-right-s-line arrow-right"></i>
             <% end %>
           <% end %>

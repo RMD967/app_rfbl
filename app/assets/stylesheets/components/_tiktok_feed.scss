@@ -87,8 +87,18 @@ body:has(.tiktok-experience) {
   align-items: center;
   background: #0d0c1d;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px 16px 8px 16px;
+  padding: 6px 14px 8px 14px;
   pointer-events: auto;
+}
+
+.tiktok-header-top-row {
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
 }
 
 .tiktok-tabs-container {
@@ -96,11 +106,92 @@ body:has(.tiktok-experience) {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  width: 100%;
-  max-width: 520px;
+  width: auto;
 
   @media (max-width: 480px) {
     gap: 6px;
+  }
+}
+
+// Quick Language Switcher Button in Header
+.tiktok-lang-switcher-wrap {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 5;
+}
+
+.tiktok-lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 3px 9px;
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  white-space: nowrap;
+
+  .lang-icon {
+    font-size: 0.85rem;
+    color: #A259FF;
+    transition: transform 0.25s ease;
+  }
+
+  .lang-switch-tag {
+    color: rgba(255, 255, 255, 0.45);
+    transition: color 0.2s ease;
+
+    &.is-active {
+      color: #ffffff;
+      font-weight: 800;
+      text-shadow: 0 0 6px rgba(162, 89, 255, 0.6);
+    }
+  }
+
+  .lang-switch-sep {
+    color: rgba(255, 255, 255, 0.25);
+    font-size: 0.65rem;
+  }
+
+  &:hover {
+    background: rgba(162, 89, 255, 0.25);
+    border-color: #A259FF;
+    color: #ffffff;
+    box-shadow: 0 0 10px rgba(162, 89, 255, 0.4);
+    transform: translateY(-1px);
+
+    .lang-icon {
+      transform: rotate(25deg);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 480px) {
+    padding: 3px 7px;
+    font-size: 0.68rem;
+  }
+
+  @media (max-width: 370px) {
+    padding: 3px 6px;
+    .lang-switch-sep {
+      display: none;
+    }
+    .lang-switch-tag.is-active {
+      display: none;
+    }
   }
 }
 
@@ -1386,6 +1477,38 @@ body:has(.tiktok-experience) {
 
       .toggle-thumb {
         transform: translateX(22px);
+      }
+    }
+  }
+
+  // Language Switcher inside Options Sheet
+  .sheet-lang-pills {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .sheet-lang-btn {
+      padding: 5px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.18);
+        color: #ffffff;
+      }
+
+      &.active {
+        background: linear-gradient(135deg, #A259FF 0%, #FF62A5 100%);
+        border-color: #A259FF;
+        color: #ffffff;
+        box-shadow: 0 2px 8px rgba(162, 89, 255, 0.5);
       }
     }
   }

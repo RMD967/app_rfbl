@@ -295,6 +295,16 @@ es:
       see_all_events: "Ver todos los eventos"
       see_content_in: "Ver videos en %{location}"
       listen_only_genre: "Escuchar sólo %{genre}"
+    sheet:
+      title: "Opciones de Reproducción"
+      clear_screen: "Pantalla limpia"
+      clear_screen_desc: "Oculta controles y textos para ver solo el video"
+      auto_scroll: "Desplazamiento automático"
+      auto_scroll_desc: "Pasa al siguiente video al terminar el actual"
+      speed: "Velocidad de reproducción"
+      speed_desc: "Se guardará tu preferencia persistente para todos los videos"
+      language: "Idioma / Language"
+      currently_in: "Actualmente en Español"
 
   events:
     title: "Título:"
