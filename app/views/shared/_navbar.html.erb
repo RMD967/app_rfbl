@@ -31,9 +31,14 @@
         <% end %>
       </li>
 
-      <li class="navbar-item <%= 'active' if current_page?(my_bookings_path) %>">
-        <%= link_to my_bookings_path, class: "nav-link" do %>
-          <i class="ri-calendar-check-line"></i> <span><%= t('navbar.activity') %></span>
+      <li class="navbar-item <%= 'active' if current_page?(activity_path) || current_page?(my_bookings_path) %>">
+        <%= link_to activity_path, class: "nav-link activity-nav-link" do %>
+          <i class="ri-notification-3-line"></i>
+          <span><%= t('navbar.activity', default: 'Actividad') %></span>
+          <% unread_notifs = current_user.unread_notifications_count rescue 0 %>
+          <% if unread_notifs > 0 %>
+            <span class="nav-activity-badge"><%= unread_notifs > 99 ? '99+' : unread_notifs %></span>
+          <% end %>
         <% end %>
       </li>
 

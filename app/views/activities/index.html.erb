@@ -1,0 +1,363 @@
+<div class="activity-hub-container" data-controller="push-notifications">
+  <!-- Toast message feedback -->
+  <div class="activity-toast-pill d-none" data-push-notifications-target="toast"></div>
+
+  <!-- Breadcrumb & Top Action Navigation -->
+  <div class="activity-top-nav">
+    <%= link_to root_path, class: "activity-back-link" do %>
+      <i class="ri-arrow-left-line"></i>
+      <span><%= t('activity.back_to_discover', default: "Volver a Descubrir") %></span>
+    <% end %>
+
+    <div class="activity-top-actions">
+      <!-- Push notification status badge pill -->
+      <button type="button"
+              class="activity-push-status-pill default"
+              data-push-notifications-target="statusPill"
+              data-action="click->push-notifications#requestPermission"
+              title="Configurar notificaciones push">
+        <i class="ri-notification-3-line text-warning"></i>
+        <span>Push Notifications</span>
+      </button>
+
+      <!-- Mark all as read button -->
+      <% if @counts[:unread] > 0 %>
+        <%= button_to mark_all_read_notifications_path,
+                      method: :post,
+                      class: "activity-mark-all-read-btn",
+                      title: "Marcar todas las notificaciones como leídas" do %>
+          <i class="ri-check-double-line"></i>
+          <span><%= t('activity.mark_all_read', default: "Marcar todo como leído") %></span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Activity Hub Header -->
+  <header class="activity-header">
+    <div class="activity-header-info">
+      <h1 class="activity-title">
+        <i class="ri-notification-badge-fill text-purple"></i>
+        <span><%= t('activity.title', default: "Centro de Actividad") %></span>
+        <% if @counts[:unread] > 0 %>
+          <span class="activity-unread-pill"><%= @counts[:unread] %> <%= t('activity.new_label', default: "nuevas") %></span>
+        <% end %>
+      </h1>
+      <p class="activity-subtitle">
+        <%= t('activity.subtitle', default: "Nuevos lanzamientos de artistas que sigues, mensajes de chat, seguidores y estado de tus postulaciones a eventos.") %>
+      </p>
+    </div>
+  </header>
+
+  <!-- Interactive Push Notifications Banner -->
+  <div class="activity-push-banner" data-push-notifications-target="banner">
+    <div class="push-banner-icon-circle">
+      <i class="ri-notification-3-fill"></i>
+    </div>
+    <div class="push-banner-content">
+      <h4 class="push-banner-title">
+        <%= t('activity.push_banner_title', default: "¿Deseas recibir Notificaciones Push?") %>
+      </h4>
+      <p class="push-banner-desc">
+        <%= t('activity.push_banner_desc', default: "Recibe alertas en tu dispositivo cuando un artista que sigues publique nueva música, recibas un mensaje de chat o se confirme tu participación en un evento.") %>
+      </p>
+      <div class="push-banner-actions">
+        <button type="button"
+                class="push-banner-btn primary"
+                data-push-notifications-target="enableBtn"
+                data-action="click->push-notifications#requestPermission">
+          <i class="ri-notification-fill"></i>
+          <span><%= t('activity.enable_push', default: "Activar Notificaciones Push") %></span>
+        </button>
+
+        <button type="button"
+                class="push-banner-btn secondary d-none"
+                data-push-notifications-target="testBtn"
+                data-action="click->push-notifications#sendTestNotification">
+          <i class="ri-send-plane-fill"></i>
+          <span><%= t('activity.test_push', default: "Probar Notificación") %></span>
+        </button>
+
+        <button type="button"
+                class="push-banner-dismiss-btn"
+                data-action="click->push-notifications#dismissBanner"
+                title="Descartar">
+          <%= t('activity.dismiss', default: "Ahora no") %>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Segmented Category Filter Tabs -->
+  <div class="activity-tabs-carousel">
+    <%= link_to activity_path(category: "all"),
+                class: "activity-tab-chip #{@current_category == 'all' ? 'active' : ''}" do %>
+      <i class="ri-apps-2-line"></i>
+      <span><%= t('activity.tabs.all', default: "Todas") %></span>
+      <span class="tab-count"><%= @counts[:all] %></span>
+    <% end %>
+
+    <%= link_to activity_path(category: "following"),
+                class: "activity-tab-chip #{@current_category == 'following' ? 'active' : ''}" do %>
+      <i class="ri-disc-fill text-pink"></i>
+      <span><%= t('activity.tabs.following', default: "Nuevos Posts") %></span>
+      <span class="tab-count"><%= @counts[:following] %></span>
+    <% end %>
+
+    <%= link_to activity_path(category: "messages"),
+                class: "activity-tab-chip #{@current_category == 'messages' ? 'active' : ''}" do %>
+      <i class="ri-chat-3-fill text-primary"></i>
+      <span><%= t('activity.tabs.messages', default: "Mensajes") %></span>
+      <span class="tab-count"><%= @counts[:messages] %></span>
+    <% end %>
+
+    <%= link_to activity_path(category: "interactions"),
+                class: "activity-tab-chip #{@current_category == 'interactions' ? 'active' : ''}" do %>
+      <i class="ri-heart-3-fill text-danger"></i>
+      <span><%= t('activity.tabs.interactions', default: "Interacciones") %></span>
+      <span class="tab-count"><%= @counts[:interactions] %></span>
+    <% end %>
+
+    <%= link_to activity_path(category: "bookings"),
+                class: "activity-tab-chip #{@current_category == 'bookings' ? 'active' : ''}" do %>
+      <i class="ri-calendar-check-fill text-warning"></i>
+      <span><%= t('activity.tabs.bookings', default: "Postulaciones & Gigs") %></span>
+      <span class="tab-count"><%= @my_bookings.count %></span>
+    <% end %>
+  </div>
+
+  <!-- Main Feed Content Area -->
+  <main class="activity-feed-wrapper">
+    <% if @current_category == "bookings" %>
+      <!-- Sub-view: Gigs and Event Bookings -->
+      <section class="activity-bookings-section">
+        <div class="section-header">
+          <h2>
+            <i class="ri-ticket-2-fill text-warning"></i>
+            <span><%= t('activity.bookings_title', default: "Mis Postulaciones a Eventos") %></span>
+            <small class="text-muted">(<%= @my_bookings.count %>)</small>
+          </h2>
+          <%= link_to events_path, class: "btn-outline-action" do %>
+            <i class="ri-compass-3-line"></i> <%= t('activity.explore_more_events', default: "Explorar más eventos") %>
+          <% end %>
+        </div>
+
+        <% if @my_bookings.any? %>
+          <div class="activity-bookings-grid">
+            <% @my_bookings.each do |booking| %>
+              <% ev = booking.event %>
+              <div class="activity-booking-card <%= booking.status? ? 'confirmed' : 'pending' %>">
+                <div class="booking-card-top">
+                  <span class="booking-status-badge <%= booking.status? ? 'badge-confirmed' : 'badge-pending' %>">
+                    <% if booking.status? %>
+                      <i class="ri-checkbox-circle-fill"></i> <%= t('activity.booking_confirmed', default: "Confirmada") %>
+                    <% else %>
+                      <i class="ri-time-fill"></i> <%= t('activity.booking_pending', default: "En revisión") %>
+                    <% end %>
+                  </span>
+                  <span class="booking-genre-tag"><%= ev.genre %></span>
+                </div>
+
+                <h3 class="booking-event-title">
+                  <%= link_to ev.title, event_path(ev) %>
+                </h3>
+
+                <div class="booking-details-list">
+                  <div class="detail-row">
+                    <i class="ri-calendar-line"></i>
+                    <span><%= ev.datetime&.strftime("%A, %d de %B • %H:%M hrs") || "Fecha por confirmar" %></span>
+                  </div>
+                  <div class="detail-row">
+                    <i class="ri-map-pin-2-line"></i>
+                    <span><%= ev.address %></span>
+                  </div>
+                  <% if ev.user %>
+                    <div class="detail-row">
+                      <i class="ri-user-star-line"></i>
+                      <span>Organizado por: <strong><%= ev.user.first_name %> <%= ev.user.last_name %></strong></span>
+                    </div>
+                  <% end %>
+                </div>
+
+                <div class="booking-card-footer">
+                  <%= link_to event_path(ev), class: "booking-action-btn primary" do %>
+                    <i class="ri-eye-line"></i> <%= t('activity.view_event', default: "Ver Evento") %>
+                  <% end %>
+                  <% if ev.user && ev.user != current_user %>
+                    <%= button_to chatrooms_path(user_id: ev.user.id), method: :post, class: "booking-action-btn secondary" do %>
+                      <i class="ri-chat-3-line"></i> <%= t('activity.chat_with_organizer', default: "Contactar") %>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="activity-empty-card">
+            <div class="empty-icon-circle">
+              <i class="ri-ticket-2-line"></i>
+            </div>
+            <h3><%= t('activity.no_bookings_title', default: "No tienes postulaciones activas aún") %></h3>
+            <p><%= t('activity.no_bookings_desc', default: "Explora la cartelera de eventos disponibles en tu ciudad y postúlate como artista para tocar en vivo.") %></p>
+            <%= link_to events_path, class: "main-app-btn-pri" do %>
+              <i class="ri-compass-3-line"></i> <%= t('activity.browse_events_cta', default: "Explorar Cartelera de Eventos") %>
+            <% end %>
+          </div>
+        <% end %>
+      </section>
+
+    <% else %>
+      <!-- Standard Notifications Feed -->
+      <% if @notifications.any? %>
+        <div class="activity-notifications-list">
+          <% @notifications.each do |notif| %>
+            <%
+              actor = notif.actor
+              actor_name = actor&.artist_dashboard&.artist_name || actor&.full_name || "Radios FBL"
+              avatar_url = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=75&fm=webp"
+              target_link = notif.target_url.presence || root_path
+            %>
+            <article class="activity-notif-card <%= notif.unread? ? 'unread' : 'read' %>">
+              <!-- Actor Avatar & Action Badge -->
+              <div class="notif-avatar-wrapper">
+                <% if actor && actor.profile_picture.attached? %>
+                  <%= cl_image_tag actor.profile_picture.key, class: "notif-avatar-img", alt: actor_name, format: :webp, quality: :auto, width: 90, height: 90, crop: :fill %>
+                <% elsif actor&.artist_dashboard&.avatar&.attached? %>
+                  <%= cl_image_tag actor.artist_dashboard.avatar.key, class: "notif-avatar-img", alt: actor_name, format: :webp, quality: :auto, width: 90, height: 90, crop: :fill %>
+                <% else %>
+                  <div class="notif-avatar-placeholder">
+                    <%= actor_name.first.upcase %>
+                  </div>
+                <% end %>
+
+                <!-- Action Type Badge Icon -->
+                <span class="notif-action-badge <%= notif.action_type %>">
+                  <% case notif.action_type %>
+                  <% when "new_post" %>
+                    <i class="ri-disc-fill"></i>
+                  <% when "new_message" %>
+                    <i class="ri-chat-3-fill"></i>
+                  <% when "new_follower" %>
+                    <i class="ri-user-add-fill"></i>
+                  <% when "new_comment" %>
+                    <i class="ri-chat-quote-fill"></i>
+                  <% when "new_like" %>
+                    <i class="ri-heart-fill"></i>
+                  <% when "booking_status" %>
+                    <i class="ri-ticket-2-fill"></i>
+                  <% else %>
+                    <i class="ri-notification-fill"></i>
+                  <% end %>
+                </span>
+              </div>
+
+              <!-- Notification Information & Body -->
+              <div class="notif-content-area">
+                <div class="notif-header-line">
+                  <div class="notif-title-row">
+                    <% if actor %>
+                      <%= link_to user_id_path(actor), class: "notif-actor-name" do %>
+                        <%= actor_name %>
+                      <% end %>
+                    <% else %>
+                      <strong class="notif-actor-name"><%= actor_name %></strong>
+                    <% end %>
+
+                    <span class="notif-action-text">
+                      <% case notif.action_type %>
+                      <% when "new_post" %>
+                        <%= t('activity.notifications.new_post_text', default: "publicó nueva música:") %>
+                      <% when "new_message" %>
+                        <%= t('activity.notifications.new_message_text', default: "te envió un mensaje en el chat") %>
+                      <% when "new_follower" %>
+                        <%= t('activity.notifications.new_follower_text', default: "comenzó a seguirte") %>
+                      <% when "new_comment" %>
+                        <%= t('activity.notifications.new_comment_text', default: "comentó en tu video:") %>
+                      <% when "new_like" %>
+                        <%= t('activity.notifications.new_like_text', default: "le dio me gusta a tu publicación") %>
+                      <% when "booking_status" %>
+                        <%= t('activity.notifications.booking_status_text', default: "actualizó el estado de tu postulación") %>
+                      <% else %>
+                        <%= t('activity.notifications.default_text', default: "nueva actividad") %>
+                      <% end %>
+                    </span>
+                  </div>
+
+                  <span class="notif-timestamp">
+                    <i class="ri-time-line"></i>
+                    <%= time_ago_in_words(notif.created_at) %>
+                  </span>
+                </div>
+
+                <% if notif.content.present? %>
+                  <div class="notif-content-snippet">
+                    <p><%= notif.content %></p>
+                  </div>
+                <% end %>
+
+                <!-- Action CTA & Mark as read -->
+                <div class="notif-action-footer">
+                  <%= link_to target_link, class: "notif-cta-link" do %>
+                    <% case notif.action_type %>
+                    <% when "new_post" %>
+                      <i class="ri-play-circle-fill"></i> <span><%= t('activity.notifications.listen_cta', default: "Escuchar en Discover") %></span>
+                    <% when "new_message" %>
+                      <i class="ri-chat-3-line"></i> <span><%= t('activity.notifications.chat_cta', default: "Ir al Chat") %></span>
+                    <% when "new_follower" %>
+                      <i class="ri-user-line"></i> <span><%= t('activity.notifications.profile_cta', default: "Ver Perfil") %></span>
+                    <% when "booking_status" %>
+                      <i class="ri-ticket-2-line"></i> <span><%= t('activity.notifications.event_cta', default: "Ver Evento") %></span>
+                    <% else %>
+                      <i class="ri-arrow-right-line"></i> <span><%= t('activity.notifications.detail_cta', default: "Ver Detalle") %></span>
+                    <% end %>
+                  <% end %>
+
+                  <% if notif.unread? %>
+                    <%= button_to mark_as_read_notification_path(notif),
+                                  method: :patch,
+                                  class: "notif-mark-single-btn",
+                                  title: "Marcar como leída" do %>
+                      <i class="ri-check-line"></i> <span><%= t('activity.notifications.read_btn', default: "Leído") %></span>
+                    <% end %>
+                  <% end %>
+                </div>
+              </div>
+
+              <!-- Unread status glow dot -->
+              <% if notif.unread? %>
+                <div class="notif-unread-dot" title="No leído"></div>
+              <% end %>
+            </article>
+          <% end %>
+        </div>
+
+      <% else %>
+        <!-- Empty State for specific category -->
+        <div class="activity-empty-card">
+          <div class="empty-icon-circle">
+            <% case @current_category %>
+            <% when "following" %>
+              <i class="ri-disc-line"></i>
+            <% when "messages" %>
+              <i class="ri-chat-3-line"></i>
+            <% when "interactions" %>
+              <i class="ri-heart-3-line"></i>
+            <% else %>
+              <i class="ri-notification-badge-line"></i>
+            <% end %>
+          </div>
+          <h3><%= t('activity.empty_title', default: "No tienes notificaciones en esta categoría") %></h3>
+          <p><%= t('activity.empty_desc', default: "Sigue a más músicos en Descubrir o participa en eventos para recibir alertas de nuevos lanzamientos e interacciones.") %></p>
+          <div class="empty-actions-row">
+            <%= link_to discovers_path, class: "main-app-btn-pri" do %>
+              <i class="ri-compass-3-line"></i> <%= t('activity.go_to_discover', default: "Explorar Descubrir") %>
+            <% end %>
+            <%= link_to events_path, class: "main-app-btn-sec" do %>
+              <i class="ri-ticket-2-line"></i> <%= t('activity.go_to_events', default: "Ver Eventos") %>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </main>
+</div>

@@ -66,3 +66,6 @@ application.register("user-chat-search", UserChatSearchController)
 
 import ScrollNavController from "./scroll_nav_controller"
 application.register("scroll-nav", ScrollNavController)
+
+import PushNotificationsController from "./push_notifications_controller"
+application.register("push-notifications", PushNotificationsController)

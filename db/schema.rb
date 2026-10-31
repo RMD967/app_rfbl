@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_10_31_043000) do
+ActiveRecord::Schema[7.0].define(version: 2026_10_31_140000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -189,6 +189,25 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_31_043000) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.bigint "recipient_id", null: false
+    t.bigint "actor_id"
+    t.string "action_type", null: false
+    t.string "notifiable_type"
+    t.bigint "notifiable_id"
+    t.string "title"
+    t.text "content"
+    t.string "target_url"
+    t.datetime "read_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_notifications_on_actor_id"
+    t.index ["notifiable_type", "notifiable_id"], name: "index_notifications_on_notifiable"
+    t.index ["recipient_id", "action_type"], name: "index_notifications_on_recipient_id_and_action_type"
+    t.index ["recipient_id", "read_at"], name: "index_notifications_on_recipient_id_and_read_at"
+    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
+  end
+
   create_table "subscriptions", force: :cascade do |t|
     t.string "email"
     t.bigint "user_id", null: false
@@ -243,6 +262,8 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_31_043000) do
   add_foreign_key "likes", "users"
   add_foreign_key "messages", "chatrooms"
   add_foreign_key "messages", "users"
+  add_foreign_key "notifications", "users", column: "actor_id"
+  add_foreign_key "notifications", "users", column: "recipient_id"
   add_foreign_key "subscriptions", "users"
   add_foreign_key "user_dashboards", "dashboards"
   add_foreign_key "user_dashboards", "users"

@@ -58,7 +58,15 @@ Rails.application.routes.draw do
   get '/audio-content', to: 'dashboards#audio'
   get '/video-content', to: 'dashboards#video'
   get '/images-content', to: 'dashboards#images'
-  get 'activity', to: 'messages#index', as: :activity
+  get 'activity', to: 'activities#index', as: :activity
+  resources :notifications, only: [:index, :destroy] do
+    member do
+      patch :mark_as_read
+    end
+    collection do
+      post :mark_all_read
+    end
+  end
   get '/users/:id', to: 'users#show', as: :user_id
   match 'set_language(/:locale)', to: 'application#set_language', via: [:get, :post], as: 'set_language'
 end
