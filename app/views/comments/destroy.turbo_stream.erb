@@ -1,0 +1,3 @@
+<%= turbo_stream.remove dom_id(@comment) %>
+<%= turbo_stream.update "discover_#{@discover.id}_comments_count_badge", @discover.comments.count.to_s %>
+<%= turbo_stream.update "discover_#{@discover.id}_card_comments_count", @discover.comments.count.to_s %>

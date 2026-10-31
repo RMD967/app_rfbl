@@ -1,0 +1,40 @@
+<div id="<%= dom_id(reply) %>" class="tiktok-comment-item reply-item">
+  <div class="comment-avatar">
+    <% if reply.user.profile_picture.attached? %>
+      <%= cl_image_tag reply.user.profile_picture.key, class: "avatar-sm rounded-circle" %>
+    <% else %>
+      <div class="avatar-sm rounded-circle avatar-placeholder">
+        <%= reply.user.first_name&.first&.upcase || "U" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="comment-content-box">
+    <div class="comment-header">
+      <span class="comment-author">
+        <%= reply.user.first_name %> <%= reply.user.last_name %>
+        <% if reply.user.artist? %>
+          <i class="ri-verified-badge-fill text-primary" title="Artista verificado"></i>
+        <% end %>
+      </span>
+      <span class="comment-time"><%= time_ago_in_words(reply.created_at) %></span>
+    </div>
+
+    <p class="comment-text"><%= reply.content %></p>
+
+    <div class="comment-actions">
+      <%= render partial: "likes/comment_like_button", locals: { comment: reply } %>
+      
+      <% if user_signed_in? && (reply.user == current_user || (current_user.respond_to?(:admin?) && current_user.admin?)) %>
+        <%= button_to comment_path(reply),
+                      method: :delete,
+                      data: { turbo_confirm: "¿Eliminar esta respuesta?" },
+                      form: { data: { turbo_stream: true } },
+                      class: "comment-delete-btn",
+                      title: "Eliminar respuesta" do %>
+          <i class="ri-delete-bin-line"></i>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

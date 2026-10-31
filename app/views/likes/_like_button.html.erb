@@ -1,0 +1,23 @@
+<% discover = local_assigns[:discover] || local_assigns[:likeable] %>
+<div id="like_button_discover_<%= discover.id %>" class="tiktok-action-btn-wrapper">
+  <% if user_signed_in? %>
+    <% is_liked = discover.liked_by?(current_user) %>
+    <%= button_to likes_path(likeable_type: "Discover", likeable_id: discover.id),
+                  method: (is_liked ? :delete : :post),
+                  form: { data: { turbo_stream: true } },
+                  class: "tiktok-action-btn #{'liked' if is_liked}",
+                  title: (is_liked ? "Ya no me gusta" : "Me gusta") do %>
+      <div class="tiktok-action-icon">
+        <i class="<%= is_liked ? 'ri-heart-fill heart-active' : 'ri-heart-3-line' %>"></i>
+      </div>
+      <span class="tiktok-action-count"><%= number_to_human(discover.total_likes_count, units: { thousand: 'K', million: 'M' }, format: '%n%u') %></span>
+    <% end %>
+  <% else %>
+    <%= link_to new_user_session_path, class: "tiktok-action-btn" do %>
+      <div class="tiktok-action-icon">
+        <i class="ri-heart-3-line"></i>
+      </div>
+      <span class="tiktok-action-count"><%= number_to_human(discover.total_likes_count, units: { thousand: 'K', million: 'M' }, format: '%n%u') %></span>
+    <% end %>
+  <% end %>
+</div>

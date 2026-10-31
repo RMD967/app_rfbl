@@ -1,0 +1,9 @@
+<% if @likeable.is_a?(Discover) %>
+  <%= turbo_stream.replace "like_button_discover_#{@likeable.id}" do %>
+    <%= render partial: "likes/like_button", locals: { discover: @likeable } %>
+  <% end %>
+<% elsif @likeable.is_a?(Comment) %>
+  <%= turbo_stream.replace "like_button_comment_#{@likeable.id}" do %>
+    <%= render partial: "likes/comment_like_button", locals: { comment: @likeable } %>
+  <% end %>
+<% end %>

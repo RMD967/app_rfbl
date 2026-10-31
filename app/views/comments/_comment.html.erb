@@ -1,0 +1,56 @@
+<div id="<%= dom_id(comment) %>" class="tiktok-comment-item">
+  <div class="comment-avatar">
+    <% if comment.user.profile_picture.attached? %>
+      <%= cl_image_tag comment.user.profile_picture.key, class: "avatar-sm rounded-circle" %>
+    <% else %>
+      <div class="avatar-sm rounded-circle avatar-placeholder">
+        <%= comment.user.first_name&.first&.upcase || "U" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="comment-content-box">
+    <div class="comment-header">
+      <span class="comment-author">
+        <%= comment.user.first_name %> <%= comment.user.last_name %>
+        <% if comment.user.artist? %>
+          <i class="ri-verified-badge-fill text-primary" title="Artista verificado"></i>
+        <% end %>
+      </span>
+      <span class="comment-time"><%= time_ago_in_words(comment.created_at) %></span>
+    </div>
+
+    <p class="comment-text"><%= comment.content %></p>
+
+    <div class="comment-actions">
+      <button type="button" 
+              class="comment-reply-trigger"
+              data-action="click->tiktok-feed#startReply"
+              data-comment-id="<%= comment.id %>"
+              data-author-name="<%= comment.user.first_name %>"
+              data-discover-id="<%= comment.discover_id %>">
+        <i class="ri-reply-line"></i> Responder
+      </button>
+
+      <%= render partial: "likes/comment_like_button", locals: { comment: comment } %>
+
+      <% if user_signed_in? && (comment.user == current_user || (current_user.respond_to?(:admin?) && current_user.admin?)) %>
+        <%= button_to comment_path(comment),
+                      method: :delete,
+                      data: { turbo_confirm: "¿Eliminar este comentario?" },
+                      form: { data: { turbo_stream: true } },
+                      class: "comment-delete-btn",
+                      title: "Eliminar comentario" do %>
+          <i class="ri-delete-bin-line"></i>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Nested replies container -->
+    <div id="comment_<%= comment.id %>_replies" class="comment-replies-list">
+      <% comment.replies.order(created_at: :asc).each do |reply| %>
+        <%= render partial: "comments/reply", locals: { reply: reply } %>
+      <% end %>
+    </div>
+  </div>
+</div>

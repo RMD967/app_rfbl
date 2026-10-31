@@ -1,0 +1,23 @@
+<% comment = local_assigns[:comment] || local_assigns[:likeable] %>
+<div id="like_button_comment_<%= comment.id %>" class="comment-like-wrapper">
+  <% if user_signed_in? %>
+    <% is_liked = comment.liked_by?(current_user) %>
+    <%= button_to likes_path(likeable_type: "Comment", likeable_id: comment.id),
+                  method: (is_liked ? :delete : :post),
+                  form: { data: { turbo_stream: true } },
+                  class: "comment-like-btn #{'liked' if is_liked}",
+                  title: (is_liked ? "Ya no me gusta" : "Me gusta") do %>
+      <i class="<%= is_liked ? 'ri-heart-fill heart-active' : 'ri-heart-3-line' %>"></i>
+      <% if comment.likes.count > 0 %>
+        <span class="comment-like-count"><%= comment.likes.count %></span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <%= link_to new_user_session_path, class: "comment-like-btn" do %>
+      <i class="ri-heart-3-line"></i>
+      <% if comment.likes.count > 0 %>
+        <span class="comment-like-count"><%= comment.likes.count %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

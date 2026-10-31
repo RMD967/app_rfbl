@@ -1,0 +1,166 @@
+<%
+  artist_user = discover.dashboard&.user
+  artist_name = discover.dashboard&.artist_name || "Artista FBL"
+  artist_location = discover.dashboard&.artist_location || "México"
+  artist_price = discover.dashboard&.artist_price
+
+  video_src = if discover.content.present? && (discover.content.start_with?("http") || discover.content.start_with?("/"))
+                discover.content
+              elsif discover.video.attached?
+                url_for(discover.video)
+              else
+                "/main.mp4"
+              end
+%>
+
+<div class="tiktok-card" id="<%= dom_id(discover) %>" data-tiktok-feed-target="card" data-video-id="<%= discover.id %>">
+  <!-- Video Player Element -->
+  <div class="tiktok-video-wrapper">
+    <video class="tiktok-video"
+           loop
+           muted
+           playsinline
+           preload="metadata"
+           data-tiktok-feed-target="video"
+           data-action="click->tiktok-feed#togglePlay">
+      <source src="<%= video_src %>" type="video/mp4">
+    </video>
+
+    <!-- Play/Pause Status Icon Overlay -->
+    <div class="tiktok-play-indicator" data-tiktok-feed-target="playIndicator">
+      <i class="ri-play-fill"></i>
+    </div>
+
+    <!-- Sound Control Floating Pill -->
+    <button type="button" class="tiktok-sound-toggle" data-action="click->tiktok-feed#toggleMute" title="Activar/Silenciar sonido">
+      <i class="ri-volume-mute-fill" data-tiktok-feed-target="volumeIcon"></i>
+    </button>
+  </div>
+
+  <!-- Bottom Metadata Gradient Overlay -->
+  <div class="tiktok-info-overlay">
+    <div class="tiktok-artist-row">
+      <%= link_to dashboard_path(discover.dashboard), class: "tiktok-artist-name" do %>
+        @<%= artist_name %>
+      <% end %>
+
+      <span class="tiktok-location-pill">
+        <i class="ri-map-pin-2-fill"></i> <%= artist_location %>
+      </span>
+    </div>
+
+    <div class="tiktok-title-row">
+      <h3 class="tiktok-song-title">
+        <i class="ri-music-2-fill"></i> <%= discover.title %>
+      </h3>
+      <span class="tiktok-genre-tag"><%= discover.genre %></span>
+    </div>
+
+    <% if discover.dashboard&.artist_description.present? %>
+      <p class="tiktok-caption">
+        <%= truncate(discover.dashboard.artist_description, length: 110) %>
+      </p>
+    <% end %>
+
+    <div class="tiktok-booking-cta">
+      <% if artist_user.present? %>
+        <%= link_to chatrooms_path(artist_id: artist_user.id), class: "tiktok-cta-btn primary" do %>
+          <i class="ri-chat-1-fill"></i> Contactar Artista
+        <% end %>
+      <% end %>
+
+      <%= link_to dashboard_path(discover.dashboard), class: "tiktok-cta-btn secondary" do %>
+        <i class="ri-calendar-check-line"></i> Ver Perfil <%= "$#{artist_price.to_i} MXN" if artist_price %>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Right Floating Action Buttons Column -->
+  <div class="tiktok-actions-column">
+    <!-- Artist Avatar with Follow shortcut -->
+    <div class="tiktok-artist-avatar-container">
+      <%= link_to dashboard_path(discover.dashboard), class: "tiktok-avatar-link" do %>
+        <% if discover.dashboard&.avatar&.attached? %>
+          <%= cl_image_tag discover.dashboard.avatar.key, class: "tiktok-avatar-img" %>
+        <% else %>
+          <div class="tiktok-avatar-placeholder">
+            <%= artist_name.first.upcase %>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% if user_signed_in? && artist_user.present? && current_user != artist_user && !current_user.following?(artist_user) %>
+        <div class="tiktok-avatar-follow-badge">
+          <%= button_to user_follow_path(artist_user),
+                        method: :post,
+                        form: { data: { turbo: true } },
+                        class: "avatar-follow-btn",
+                        title: "Seguir a #{artist_name}" do %>
+            <i class="ri-add-line"></i>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Like (Heart) Button -->
+    <%= render partial: "likes/like_button", locals: { discover: discover } %>
+
+    <!-- Comments Button -->
+    <div class="tiktok-action-btn-wrapper">
+      <button type="button"
+              class="tiktok-action-btn"
+              data-action="click->tiktok-feed#openComments"
+              data-discover-id="<%= discover.id %>"
+              title="Comentarios">
+        <div class="tiktok-action-icon">
+          <i class="ri-chat-3-fill"></i>
+        </div>
+        <span id="discover_<%= discover.id %>_card_comments_count" class="tiktok-action-count">
+          <%= number_to_human(discover.comments.count, units: { thousand: 'K', million: 'M' }, format: '%n%u') %>
+        </span>
+      </button>
+    </div>
+
+    <!-- Favorite / Bookmark Button -->
+    <div class="tiktok-action-btn-wrapper">
+      <%= turbo_frame_tag dom_id(discover.dashboard, :favorite_button) do %>
+        <% is_fav = current_user&.favorited?(discover.dashboard) %>
+        <% if is_fav %>
+          <%= button_to favorite_path(id: 0, favoritable_type: "Dashboard", favoritable_id: discover.dashboard.id),
+                        method: :delete,
+                        class: "tiktok-action-btn liked",
+                        title: "Guardado en favoritos",
+                        form: { data: { turbo: true } } do %>
+            <div class="tiktok-action-icon">
+              <i class="ri-bookmark-fill" style="color: #FFD166;"></i>
+            </div>
+            <span class="tiktok-action-count">Guardado</span>
+          <% end %>
+        <% else %>
+          <%= button_to favorites_path(favoritable_type: "Dashboard", favoritable_id: discover.dashboard.id),
+                        method: :post,
+                        class: "tiktok-action-btn",
+                        title: "Guardar en favoritos",
+                        form: { data: { turbo: true } } do %>
+            <div class="tiktok-action-icon">
+              <i class="ri-bookmark-line"></i>
+            </div>
+            <span class="tiktok-action-count">Favorito</span>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Vinyl Disc Graphic -->
+    <div class="tiktok-vinyl-disc" title="<%= discover.title %>">
+      <div class="vinyl-outer">
+        <div class="vinyl-inner">
+          <i class="ri-music-fill"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slide-up Comments Drawer -->
+  <%= render partial: "comments/comments_drawer", locals: { discover: discover } %>
+</div>

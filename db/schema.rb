@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_10_30_234217) do
+ActiveRecord::Schema[7.0].define(version: 2026_10_31_000648) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -66,6 +66,18 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_30_234217) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "discover_id", null: false
+    t.bigint "parent_id"
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discover_id"], name: "index_comments_on_discover_id"
+    t.index ["parent_id"], name: "index_comments_on_parent_id"
+    t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
   create_table "dashboards", force: :cascade do |t|
@@ -144,6 +156,17 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_30_234217) do
     t.index ["dashboard_id"], name: "index_invitations_on_dashboard_id"
   end
 
+  create_table "likes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "likeable_type", null: false
+    t.bigint "likeable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["likeable_type", "likeable_id"], name: "index_likes_on_likeable"
+    t.index ["user_id", "likeable_type", "likeable_id"], name: "index_likes_unique_user_likeable", unique: true
+    t.index ["user_id"], name: "index_likes_on_user_id"
+  end
+
   create_table "messages", force: :cascade do |t|
     t.string "content"
     t.bigint "chatroom_id", null: false
@@ -202,6 +225,9 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_30_234217) do
   add_foreign_key "bookings", "users"
   add_foreign_key "chat_users", "chatrooms"
   add_foreign_key "chat_users", "users"
+  add_foreign_key "comments", "comments", column: "parent_id"
+  add_foreign_key "comments", "discovers"
+  add_foreign_key "comments", "users"
   add_foreign_key "dashboards", "users"
   add_foreign_key "discovers", "dashboards"
   add_foreign_key "events", "users", on_delete: :cascade
@@ -209,6 +235,7 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_30_234217) do
   add_foreign_key "follows", "users", column: "followed_id"
   add_foreign_key "follows", "users", column: "follower_id"
   add_foreign_key "invitations", "dashboards"
+  add_foreign_key "likes", "users"
   add_foreign_key "messages", "chatrooms"
   add_foreign_key "messages", "users"
   add_foreign_key "subscriptions", "users"

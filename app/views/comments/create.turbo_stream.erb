@@ -1,0 +1,58 @@
+<% if @comment.parent_id.present? %>
+  <%= turbo_stream.append "comment_#{@comment.parent_id}_replies" do %>
+    <%= render partial: "comments/reply", locals: { reply: @comment } %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.remove "discover_#{@discover.id}_empty_comments" %>
+  <%= turbo_stream.prepend "discover_#{@discover.id}_comments_list" do %>
+    <%= render partial: "comments/comment", locals: { comment: @comment } %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.update "discover_#{@discover.id}_comments_count_badge", @discover.comments.count.to_s %>
+<%= turbo_stream.update "discover_#{@discover.id}_card_comments_count", @discover.comments.count.to_s %>
+
+<%= turbo_stream.replace "discover_#{@discover.id}_reply_indicator" do %>
+  <div id="discover_<%= @discover.id %>_reply_indicator" class="reply-indicator d-none">
+    <div class="reply-indicator-text">
+      <i class="ri-reply-fill"></i>
+      <span>Respondiendo a <strong id="discover_<%= @discover.id %>_reply_name"></strong></span>
+    </div>
+    <button type="button" class="reply-cancel-btn" data-action="click->tiktok-feed#cancelReply" data-discover-id="<%= @discover.id %>">
+      <i class="ri-close-line"></i> Cancelar
+    </button>
+  </div>
+<% end %>
+
+<%= turbo_stream.replace "discover_#{@discover.id}_comment_form" do %>
+  <%= form_with(model: [@discover, Comment.new],
+                id: "discover_#{@discover.id}_comment_form",
+                data: {
+                  turbo_stream: true,
+                  action: "turbo:submit-end->tiktok-feed#onCommentSubmitted"
+                },
+                class: "tiktok-comment-form") do |f| %>
+    <%= f.hidden_field :parent_id, id: "discover_#{@discover.id}_parent_id" %>
+
+    <div class="comment-input-row">
+      <% if current_user.profile_picture.attached? %>
+        <%= cl_image_tag current_user.profile_picture.key, class: "avatar-sm rounded-circle me-2 flex-shrink-0" %>
+      <% else %>
+        <div class="avatar-sm rounded-circle avatar-placeholder me-2 flex-shrink-0">
+          <%= current_user.first_name&.first&.upcase || "U" %>
+        </div>
+      <% end %>
+
+      <%= f.text_field :content,
+                       id: "discover_#{@discover.id}_comment_input",
+                       class: "comment-input-field",
+                       placeholder: "Agrega un comentario...",
+                       autocomplete: "off",
+                       required: true %>
+
+      <button type="submit" class="comment-submit-btn" title="Enviar">
+        <i class="ri-send-plane-2-fill"></i>
+      </button>
+    </div>
+  <% end %>
+<% end %>

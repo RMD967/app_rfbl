@@ -1,0 +1,96 @@
+<div id="comments_drawer_<%= discover.id %>" class="tiktok-comments-drawer" data-discover-id="<%= discover.id %>">
+  <!-- Backdrop -->
+  <div class="tiktok-drawer-backdrop" data-action="click->tiktok-feed#closeComments" data-discover-id="<%= discover.id %>"></div>
+
+  <!-- Drawer Bottom Sheet -->
+  <div class="tiktok-drawer-panel">
+    <!-- Handle bar for mobile feel -->
+    <div class="tiktok-drawer-handle" data-action="click->tiktok-feed#closeComments" data-discover-id="<%= discover.id %>">
+      <span></span>
+    </div>
+
+    <!-- Header -->
+    <div class="tiktok-drawer-header">
+      <div class="tiktok-drawer-title">
+        <i class="ri-chat-3-line"></i>
+        <span>Comentarios</span>
+        <span id="discover_<%= discover.id %>_comments_count_badge" class="comments-badge">
+          <%= discover.comments.count %>
+        </span>
+      </div>
+      <button type="button" class="tiktok-drawer-close" data-action="click->tiktok-feed#closeComments" data-discover-id="<%= discover.id %>">
+        <i class="ri-close-line"></i>
+      </button>
+    </div>
+
+    <!-- Scrollable Comments Body -->
+    <div class="tiktok-drawer-body">
+      <div id="discover_<%= discover.id %>_comments_list" class="tiktok-comments-list">
+        <% top_level_comments = discover.comments.top_level.order(created_at: :desc) %>
+        <% if top_level_comments.any? %>
+          <% top_level_comments.each do |c| %>
+            <%= render partial: "comments/comment", locals: { comment: c } %>
+          <% end %>
+        <% else %>
+          <div id="discover_<%= discover.id %>_empty_comments" class="comments-empty-state">
+            <i class="ri-chat-voice-line empty-icon"></i>
+            <p class="empty-title">Sé el primero en comentar</p>
+            <p class="empty-subtitle">Comparte lo que piensas de esta rola y apoya al artista.</p>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Reply Context Bar -->
+    <div id="discover_<%= discover.id %>_reply_indicator" class="reply-indicator d-none">
+      <div class="reply-indicator-text">
+        <i class="ri-reply-fill"></i>
+        <span>Respondiendo a <strong id="discover_<%= discover.id %>_reply_name"></strong></span>
+      </div>
+      <button type="button" class="reply-cancel-btn" data-action="click->tiktok-feed#cancelReply" data-discover-id="<%= discover.id %>">
+        <i class="ri-close-line"></i> Cancelar
+      </button>
+    </div>
+
+    <!-- Drawer Footer Input -->
+    <div class="tiktok-drawer-footer">
+      <% if user_signed_in? %>
+        <%= form_with(model: [discover, Comment.new],
+                      id: "discover_#{discover.id}_comment_form",
+                      data: {
+                        turbo_stream: true,
+                        action: "turbo:submit-end->tiktok-feed#onCommentSubmitted"
+                      },
+                      class: "tiktok-comment-form") do |f| %>
+          <%= f.hidden_field :parent_id, id: "discover_#{discover.id}_parent_id" %>
+
+          <div class="comment-input-row">
+            <% if current_user.profile_picture.attached? %>
+              <%= cl_image_tag current_user.profile_picture.key, class: "avatar-sm rounded-circle me-2 flex-shrink-0" %>
+            <% else %>
+              <div class="avatar-sm rounded-circle avatar-placeholder me-2 flex-shrink-0">
+                <%= current_user.first_name&.first&.upcase || "U" %>
+              </div>
+            <% end %>
+
+            <%= f.text_field :content,
+                             id: "discover_#{discover.id}_comment_input",
+                             class: "comment-input-field",
+                             placeholder: "Agrega un comentario...",
+                             autocomplete: "off",
+                             required: true %>
+
+            <button type="submit" class="comment-submit-btn" title="Enviar">
+              <i class="ri-send-plane-2-fill"></i>
+            </button>
+          </div>
+        <% end %>
+      <% else %>
+        <div class="comments-login-prompt">
+          <p>Inicia sesión para comentar y apoyar al artista.</p>
+          <%= link_to "Iniciar Sesión", new_user_session_path, class: "main-app-btn-pri btn-sm" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

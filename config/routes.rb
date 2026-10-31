@@ -9,7 +9,12 @@ Rails.application.routes.draw do
   get '/my_events', to: 'events#my_events', as: :my_events
   get "my_bookings", to: "bookings#my_bookings", as: :my_bookings
   resources :favorites, only: [:index, :create, :destroy]
-  resources :discovers, except: [:update]
+  resources :likes, only: [:create, :destroy]
+  delete '/likes', to: 'likes#destroy'
+  resources :discovers, except: [:update] do
+    resources :comments, only: [:create, :destroy]
+  end
+  resources :comments, only: [:destroy]
   resources :events do
     resources :bookings, only: %i[index show create destroy]
   end

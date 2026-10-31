@@ -51,3 +51,6 @@ application.register("upload-content", UploadContentController)
 
 import UploadController from "./upload_controller"
 application.register("upload", UploadController)
+
+import TiktokFeedController from "./tiktok_feed_controller"
+application.register("tiktok-feed", TiktokFeedController)

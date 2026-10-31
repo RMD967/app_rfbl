@@ -1,53 +1,62 @@
-<div class="index-discover-page">
-  <div class="index-discover-top-head" >
-    <div class="main-discover-container-header">
-      <div class="discover-container-headline">
-        <div class="index-discover-title">
-          <h1> <%= t('discover.title') %> </h1>
-        </div>
-        <div class="index-discover-subtitle">
-          <p> <%= t('discover.subtitle') %> </p>
-        </div>
-        <div class="discover-info">
-          <div class="discover-info-number">
-            <h2> <%= @dashboards.count %> </h2>
-            <p> <%= t('discover.tracks') %> </p>
-          </div>
-          <div class="discover-info-number">
-            <h2> <%= @event.count %> </h2>
-            <p> <%= t('discover.events') %> </p>
-          </div>
-          <div class="discover-info-number">
-            <h2> <%= @artist_count %> </h2>
-            <p> <%= t('discover.artists') %> </p>
-          </div>
-        </div>
-      </div>
-      <div class="discover-container-card">
-        <% random_dashboard = @dashboards.sample %>
-        <%= render partial: 'dashboards/dashboard_card', locals: { dashboard: random_dashboard } %>
-      </div>
-    </div>
-    <div class="discovery-container-buttons">
-      <% if current_user.artist? %>
-        <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
-        <%= link_to t('discover.upload_music'), dashboards_path, class: "main-app-btn-sec" %>
-        <%= link_to t('discover.see_more'), '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
-      <% else %>
-        <%= link_to t('discover.create_event'), new_event_path, class: "main-app-btn-pri" %>
-        <%= link_to t('discover.see_more'), '#discover-section', class: "main-app-btn-pri", data: { controller: "scroll-to-section" } %>
+<div class="tiktok-experience" data-controller="tiktok-feed">
+  <!-- Floating Top Tabs Navigation -->
+  <header class="tiktok-nav-header">
+    <div class="tiktok-tabs-container">
+      <%= link_to discovers_path(tab: "nearby", location: @selected_location),
+                  class: "tiktok-tab-link #{@current_tab == 'nearby' ? 'active' : ''}" do %>
+        <i class="ri-map-pin-user-fill"></i> Cerca de ti
+      <% end %>
+
+      <span class="tiktok-tabs-divider">|</span>
+
+      <%= link_to discovers_path(tab: "for_you"),
+                  class: "tiktok-tab-link #{@current_tab == 'for_you' ? 'active' : ''}" do %>
+        Para ti
       <% end %>
     </div>
-  </div>
 
-  <div id="discover-section" class="discover-container-trend">
-      <h2><%= t('discover.search_content') %></h2>
-    <div class="search-for-discover">
-      <h1> LOOK FOR ARTIST OR GENRE</h1>
-    </div>
-    <% @dashboards.each do |dashboard| %>
-      <%= render partial: 'dashboards/dashboard_card', locals: { dashboard: dashboard } %>
+    <!-- Location Filter Bar (Shown when 'Cerca de ti' is active) -->
+    <% if @current_tab == "nearby" %>
+      <div class="tiktok-location-bar">
+        <div class="location-bar-label">
+          <i class="ri-compass-3-line"></i>
+          <span>Ubicación:</span>
+        </div>
+        <div class="location-pills-scroll">
+          <% @available_locations.each do |loc| %>
+            <%= link_to discovers_path(tab: "nearby", location: loc),
+                        class: "location-pill #{'active' if @selected_location.downcase == loc.downcase}" do %>
+              <% if @selected_location.downcase == loc.downcase %>
+                <i class="ri-map-pin-fill"></i>
+              <% end %>
+              <%= loc %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
     <% end %>
+  </header>
 
-  </div>
+  <!-- Vertical Snap-Scrolling Feed Container -->
+  <main class="tiktok-feed-viewport" data-tiktok-feed-target="feedViewport">
+    <% if @discovers.any? %>
+      <div class="tiktok-feed-track">
+        <%= render partial: "discovers/tiktok_card", collection: @discovers, as: :discover %>
+      </div>
+    <% else %>
+      <div class="tiktok-empty-feed">
+        <div class="empty-feed-card">
+          <div class="empty-feed-icon">
+            <i class="ri-map-pin-range-line"></i>
+          </div>
+          <h2>No hay videos en <%= @selected_location %> aún</h2>
+          <p>Sé el primero en subir un video o explora el contenido global de artistas en otras ciudades.</p>
+          <div class="empty-feed-actions">
+            <%= link_to "Ver feed 'Para ti'", discovers_path(tab: "for_you"), class: "main-app-btn-pri" %>
+            <%= link_to "Explorar Puebla", discovers_path(tab: "nearby", location: "Puebla"), class: "main-app-btn-sec" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </main>
 </div>

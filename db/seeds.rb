@@ -176,6 +176,28 @@ artists_dataset = [
     video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812806/4_dqztvb.mp4",
     track: "Voices in Harmony",
     avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80"
+  },
+  {
+    name: "Mariachi Angelópolis",
+    first: "Emiliano", last: "Zapata", email: "mariachi.puebla@example.com",
+    genre: "Regional", instrument: "Trumpet", location: "Puebla",
+    cities: "Puebla, Cholula, Atlixco, Tehuacán",
+    price: 650.00, count: 6, radius: 80.0,
+    desc: "El mariachi más emblemático de Puebla. Serenatas, bodas, XV años y festivales con trompetas enérgicas y el auténtico sabor tradicional poblano.",
+    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812806/1_qqcb2j.mp4",
+    track: "Cielito Lindo en Vivo (Puebla)",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80"
+  },
+  {
+    name: "Electro Cumbia Angelopolitana",
+    first: "Rodrigo", last: "Mendoza", email: "rodrigo.cumbia@example.com",
+    genre: "Tropical", instrument: "DJ", location: "Puebla",
+    cities: "Puebla, San Andrés Cholula, San Pedro Cholula",
+    price: 480.00, count: 2, radius: 60.0,
+    desc: "Fusión poblana de cumbia sonidera con beats electrónicos y percusiones en vivo. Poniendo a bailar a todo el centro de Puebla y Cholula.",
+    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812827/7_s5cbyd.mp4",
+    track: "Noche en Cholula Beat",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80"
   }
 ]
 
@@ -209,17 +231,18 @@ artists_dataset.each do |data|
   UserDashboard.create!(user: user, dashboard: dashboard)
 
   # Create Discover song post for each artist
-  Discover.create!(
+  disc = Discover.new(
     dashboard: dashboard,
     title: data[:track],
     content: data[:video],
     genre: data[:genre],
-    likes: rand(1500..85000),
     plays: rand(8000..950000),
     saved: [true, false].sample,
     start_time: 0.0,
     end_time: 45.0
   )
+  disc[:likes] = rand(1500..85000)
+  disc.save!
 end
 
 puts "📅 Creating Live Events across major cities..."
@@ -462,6 +485,59 @@ demo_user.favorite(dashboards[0])
 demo_user.favorite(dashboards[1])
 demo_user.favorite(dashboards[3])
 
+puts "💬 Creating Comments, Replies, and Likes on Discover posts..."
+sample_comments_pool = [
+  "¡Qué nivel de talento! Brutal esa interpretación 🔥🎶",
+  "¿Tocan en eventos privados? Justo busco para una boda en diciembre.",
+  "Ese solo del minuto 0:30 estuvo increíble, se me puso la piel de gallina.",
+  "¡Mucho éxito amigos! Suenan con una calidad de producción de primer nivel.",
+  "¿Tienen canciones completas en Spotify? Quiero agregar esta a mi playlist.",
+  "Tremendo ritmo hermano, los vi en vivo el mes pasado y armaron un fiestón 🎉",
+  "Hermosa vibra, saludos desde Puebla!",
+  "El sonido de las cuerdas está impecable, qué gran arreglo."
+]
+
+sample_replies_pool = [
+  "¡Muchas gracias! Claro que sí, envíanos mensaje directo o contáctanos por el chat aquí.",
+  "¡Mil gracias por el apoyo hermano! Síguenos para no perderte las próximas fechas.",
+  "¡Saludos! Sí, estamos en Spotify y Apple Music con el mismo nombre 🙌",
+  "¡Totalmente de acuerdo! Esta rola es de sus mejores creaciones."
+]
+
+Discover.all.each do |discover|
+  rand(3..5).times do
+    commenter = (organizers + artist_users).sample
+    c = Comment.create!(
+      discover: discover,
+      user: commenter,
+      content: sample_comments_pool.sample
+    )
+
+    rand(1..4).times do
+      liker = (organizers + artist_users).sample
+      liker.like(c)
+    end
+
+    if [true, false].sample
+      replier = [discover.dashboard.user, (organizers + artist_users).sample].sample
+      reply = Comment.create!(
+        discover: discover,
+        parent: c,
+        user: replier,
+        content: sample_replies_pool.sample
+      )
+      if [true, false].sample
+        (organizers + artist_users).sample.like(reply)
+      end
+    end
+  end
+
+  rand(3..8).times do
+    liker = (organizers + artist_users).sample
+    liker.like(discover)
+  end
+end
+
 puts "✨ SEEDING COMPLETE! ✨"
 puts "📊 Total Users: #{User.count}"
 puts "📊 Total Artists: #{Dashboard.count}"
@@ -471,3 +547,5 @@ puts "📊 Total Chatrooms: #{Chatroom.count}"
 puts "📊 Total Messages: #{Message.count}"
 puts "📊 Total Follows: #{Follow.count}"
 puts "📊 Total Favorites: #{Favorite.count}"
+puts "📊 Total Comments: #{Comment.count}"
+puts "📊 Total Likes: #{Like.count}"

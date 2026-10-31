@@ -26,6 +26,10 @@ class User < ApplicationRecord
   has_many :favorite_events, through: :favorites, source: :favoritable, source_type: 'Event'
   has_many :favorite_dashboards, through: :favorites, source: :favoritable, source_type: 'Dashboard'
 
+  # Social / Comments & Likes
+  has_many :comments, dependent: :destroy
+  has_many :likes, dependent: :destroy
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
@@ -41,6 +45,18 @@ class User < ApplicationRecord
     favorites.find_by(favoritable: favoritable)&.destroy
   end
 
+  def likes?(likeable)
+    likes.exists?(likeable: likeable)
+  end
+
+  def like(likeable)
+    likes.find_or_create_by(likeable: likeable)
+  end
+
+  def unlike(likeable)
+    likes.find_by(likeable: likeable)&.destroy
+  end
+
   def follow(other_user)
     following << other_user unless following?(other_user) || other_user == self
   end
@@ -51,10 +67,6 @@ class User < ApplicationRecord
 
   def following?(other_user)
     following.include?(other_user)
-  end
-
-  def likes
-    self.discover.likes
   end
 
   def applied_to?(event)

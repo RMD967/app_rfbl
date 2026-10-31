@@ -2,16 +2,25 @@ class DiscoversController < ApplicationController
   before_action :set_discover, only: %i[show edit destroy]
 
   def index
-    @event = Event.all
-    @artist_count = User.where(artist: true).count
-    @discovers = policy_scope(Discover)
-    @discovers = Discover.all
-    @dashboards = Dashboard.all
-    # @user = current_user
+    @current_tab = params[:tab].presence || "for_you"
+    @available_locations = ["Puebla", "New York", "Miami", "San Francisco", "Los Angeles", "Chicago", "Austin", "Nashville", "Atlanta"]
+    @selected_location = params[:location].presence || "Puebla"
+
+    base_scope = policy_scope(Discover).includes(
+      :likes,
+      comments: [:user, :likes, { replies: [:user, :likes] }],
+      dashboard: [:user, { avatar_attachment: :blob }]
+    )
+
+    if @current_tab == "nearby"
+      matching_dashboards = Dashboard.where("artist_location ILIKE :loc OR artist_cities ILIKE :loc", loc: "%#{@selected_location}%")
+      @discovers = base_scope.where(dashboard: matching_dashboards).order(created_at: :desc)
+    else
+      @discovers = base_scope.order(created_at: :desc)
+    end
   end
 
   def show
-    @discover = Discover.find(params[:id])
     authorize @discover
   end
 
@@ -22,11 +31,11 @@ class DiscoversController < ApplicationController
 
   def create
     @discover = Discover.new(discover_params)
-    @discover.user = current_user
+    @discover.user = current_user if @discover.respond_to?(:user=)
     authorize @discover
 
     if @discover.save
-      redirect_to @discover, notice: "Content was made."
+      redirect_to @discover, notice: "Contenido creado con éxito."
     else
       render :new, status: :unprocessable_entity
     end
@@ -35,18 +44,16 @@ class DiscoversController < ApplicationController
   def destroy
     @discover.destroy
     authorize @discover
-    redirect_to discovers_url, notice: "Content was successfully destroyed.", status: :see_other
+    redirect_to discovers_url, notice: "Contenido eliminado con éxito.", status: :see_other
   end
 
   private
 
-  # Use callbacks to share common setup or constraints between actions.
-  def set_event
+  def set_discover
     @discover = Discover.find(params[:id])
   end
 
-  # Only allow a list of trusted parameters through.
   def discover_params
-    params.require(:discover).permit(:content, :likes, :plays, :saved, :start_time, :end_time, :dashboard_id, :title)
+    params.require(:discover).permit(:content, :likes, :plays, :saved, :start_time, :end_time, :dashboard_id, :title, :genre)
   end
 end
