@@ -63,3 +63,6 @@ application.register("search-autocomplete", SearchAutocompleteController)
 
 import UserChatSearchController from "./user_chat_search_controller"
 application.register("user-chat-search", UserChatSearchController)
+
+import ScrollNavController from "./scroll_nav_controller"
+application.register("scroll-nav", ScrollNavController)

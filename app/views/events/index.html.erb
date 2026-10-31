@@ -57,9 +57,18 @@
       <% end %>
     </div>
 
-    <!-- Genre Filter Pills Carousel -->
-    <div class="genre-filter-wrapper">
-      <div class="genre-filter-scroll">
+    <!-- Genre Filter Pills Carousel with Left/Right Scroll Arrows -->
+    <div class="genre-filter-wrapper scroll-nav-wrapper" data-controller="scroll-nav">
+      <button type="button"
+              class="scroll-arrow-btn left-arrow d-none"
+              data-scroll-nav-target="leftArrow"
+              data-action="click->scroll-nav#scrollLeft"
+              title="Ver anteriores"
+              aria-label="Scroll left">
+        <i class="ri-arrow-left-s-line"></i>
+      </button>
+
+      <div class="genre-filter-scroll" data-scroll-nav-target="scrollable">
         <% @genres.each do |genre| %>
           <% is_active = (params[:genre] == genre) || (genre == 'All' && params[:genre].blank?) %>
           <%= link_to events_path(genre: genre, query: params[:query].presence),
@@ -69,6 +78,15 @@
           <% end %>
         <% end %>
       </div>
+
+      <button type="button"
+              class="scroll-arrow-btn right-arrow d-none"
+              data-scroll-nav-target="rightArrow"
+              data-action="click->scroll-nav#scrollRight"
+              title="Ver más géneros"
+              aria-label="Scroll right">
+        <i class="ri-arrow-right-s-line"></i>
+      </button>
     </div>
   </header>
 

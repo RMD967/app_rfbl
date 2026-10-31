@@ -239,12 +239,13 @@
   align-items: center;
   gap: 8px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 14px;
+  padding: 0 38px 14px 38px;
   margin-bottom: 24px;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
   scrollbar-width: none;
   box-sizing: border-box;
 
@@ -256,15 +257,15 @@
   @media (max-width: 679px) {
     margin-left: -14px;
     margin-right: -14px;
-    padding-left: 14px;
-    padding-right: 14px;
+    padding-left: 36px;
+    padding-right: 36px;
   }
 
   // Desktop: center tabs cleanly when they fit
   @media (min-width: 768px) {
     justify-content: center;
-    padding-left: 0;
-    padding-right: 0;
+    padding-left: 8px;
+    padding-right: 8px;
   }
 }
 

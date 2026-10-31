@@ -1,0 +1,90 @@
+// Reusable Horizontal Scroll Navigation with Left/Right Arrows
+.scroll-nav-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+
+  .scroll-arrow-btn {
+    position: absolute;
+    top: calc(50% - 4px);
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(20, 19, 38, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(162, 89, 255, 0.45);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 15;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6), 0 0 12px rgba(162, 89, 255, 0.25);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
+    padding: 0;
+
+    &:hover {
+      background: #5B42F3;
+      border-color: #A259FF;
+      color: #ffffff;
+      transform: translateY(-50%) scale(1.12);
+      box-shadow: 0 6px 20px rgba(91, 66, 243, 0.7);
+    }
+
+    &:active {
+      transform: translateY(-50%) scale(0.94);
+    }
+
+    &.left-arrow {
+      left: 2px;
+    }
+
+    &.right-arrow {
+      right: 2px;
+    }
+
+    @media (max-width: 480px) {
+      width: 30px;
+      height: 30px;
+      font-size: 1.15rem;
+
+      &.left-arrow {
+        left: 2px;
+      }
+
+      &.right-arrow {
+        right: 2px;
+      }
+    }
+  }
+
+  // Soft gradient fade masks on edges when content overflows
+  &.has-overflow {
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 44px;
+      pointer-events: none;
+      z-index: 8;
+      transition: opacity 0.25s ease;
+    }
+
+    &::before {
+      left: 0;
+      background: linear-gradient(90deg, rgba(13, 12, 29, 0.95) 0%, transparent 100%);
+    }
+
+    &::after {
+      right: 0;
+      background: linear-gradient(270deg, rgba(13, 12, 29, 0.95) 0%, transparent 100%);
+    }
+  }
+}
