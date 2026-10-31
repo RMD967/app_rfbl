@@ -3,7 +3,15 @@ class DiscoversController < ApplicationController
 
   def index
     @current_tab = params[:tab].presence || "for_you"
-    @available_locations = ["Puebla", "New York", "Miami", "San Francisco", "Los Angeles", "Chicago", "Austin", "Nashville", "Atlanta"]
+
+    # Dynamic location recommendations from DB + default major hubs
+    db_locations = Dashboard.where.not(artist_location: [nil, ""]).pluck(:artist_location)
+    @available_locations = (["Puebla", "New York", "Miami", "San Francisco", "Los Angeles", "Chicago", "Austin", "Nashville", "Atlanta"] + db_locations).map(&:strip).uniq
+
+    # Dynamic artist and genre recommendations
+    @recommended_artists = Dashboard.where.not(artist_name: [nil, ""]).order(:artist_name).pluck(:artist_name, :artist_genre).uniq { |a| a[0] }
+    @recommended_genres = ["Cumbia", "Jazz", "Rock", "Electrónica", "Mariachi", "DJ", "Pop", "Salsa", "Acústico", "Instrumental"]
+
     @query = params[:query].to_s.strip
 
     base_scope = policy_scope(Discover).includes(

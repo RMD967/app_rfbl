@@ -54,3 +54,6 @@ application.register("upload", UploadController)
 
 import TiktokFeedController from "./tiktok_feed_controller"
 application.register("tiktok-feed", TiktokFeedController)
+
+import SearchAutocompleteController from "./search_autocomplete_controller"
+application.register("search-autocomplete", SearchAutocompleteController)

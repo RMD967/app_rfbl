@@ -1,5 +1,8 @@
 <div class="tiktok-experience" data-controller="tiktok-feed">
-  <!-- Floating Top Tabs Navigation -->
+  <!-- Toast feedback for sound/actions -->
+  <div class="tiktok-toast-pill d-none" data-tiktok-feed-target="toast"></div>
+
+  <!-- Top Navigation Header (Compact & non-overlapping) -->
   <header class="tiktok-nav-header">
     <div class="tiktok-tabs-container">
       <%= link_to discovers_path(tab: "nearby", location: (@search_location.presence || "Puebla")),
@@ -15,14 +18,22 @@
       <% end %>
     </div>
 
-    <!-- Search bar for "Cerca de ti" (Exact location search + quick pills) -->
+    <!-- Search bar for "Cerca de ti" with Autocomplete & Recommendations -->
     <% if @current_tab == "nearby" %>
-      <div class="tiktok-header-search-container">
-        <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form" do %>
+      <div class="tiktok-header-search-container" data-controller="search-autocomplete">
+        <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form", data: { search_autocomplete_target: "form" } do %>
           <%= hidden_field_tag :tab, "nearby" %>
           <div class="tiktok-search-input-wrapper">
             <i class="ri-map-pin-2-fill search-icon text-danger"></i>
-            <%= text_field_tag :location, @search_location, placeholder: "Buscar ciudad o ubicación...", class: "tiktok-search-input", autocomplete: "off" %>
+            <%= text_field_tag :location,
+                               @search_location,
+                               placeholder: "Buscar ciudad o ubicación...",
+                               class: "tiktok-search-input",
+                               autocomplete: "off",
+                               data: {
+                                 search_autocomplete_target: "input",
+                                 action: "focus->search-autocomplete#onFocus input->search-autocomplete#onInput"
+                               } %>
             <% if params[:location].present? && params[:location] != "Puebla" %>
               <%= link_to discovers_path(tab: "nearby", location: "Puebla"), class: "tiktok-search-clear", title: "Restablecer" do %>
                 <i class="ri-close-circle-fill"></i>
@@ -34,27 +45,45 @@
           </div>
         <% end %>
 
-        <div class="location-pills-scroll">
-          <% @available_locations.each do |loc| %>
-            <%= link_to discovers_path(tab: "nearby", location: loc),
-                        class: "location-pill #{'active' if @search_location.to_s.downcase == loc.downcase}" do %>
-              <% if @search_location.to_s.downcase == loc.downcase %>
-                <i class="ri-map-pin-fill"></i>
-              <% end %>
-              <%= loc %>
+        <!-- Autocomplete Suggestions Dropdown -->
+        <div class="tiktok-search-dropdown d-none" data-search-autocomplete-target="dropdown">
+          <div class="dropdown-header">
+            <i class="ri-compass-3-line text-danger"></i>
+            <span>Ubicaciones recomendadas</span>
+          </div>
+          <div class="dropdown-items-list" data-search-autocomplete-target="list">
+            <% @available_locations.each do |loc| %>
+              <div class="dropdown-item-row"
+                   data-search-autocomplete-target="item"
+                   data-search-value="<%= loc %>"
+                   data-action="click->search-autocomplete#selectItem">
+                <i class="ri-map-pin-2-line item-icon"></i>
+                <span class="item-text"><%= loc %></span>
+                <% if @search_location.to_s.downcase == loc.downcase %>
+                  <span class="item-badge active">Actual</span>
+                <% end %>
+              </div>
             <% end %>
-          <% end %>
+          </div>
         </div>
       </div>
 
-    <!-- Search bar for "Para ti" (Song, Artist, Genre search) -->
+    <!-- Search bar for "Para ti" with Autocomplete & Recommendations for Artists & Music -->
     <% else %>
-      <div class="tiktok-header-search-container">
-        <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form" do %>
+      <div class="tiktok-header-search-container" data-controller="search-autocomplete">
+        <%= form_with url: discovers_path, method: :get, local: true, class: "tiktok-search-form", data: { search_autocomplete_target: "form" } do %>
           <%= hidden_field_tag :tab, "for_you" %>
           <div class="tiktok-search-input-wrapper">
             <i class="ri-search-2-line search-icon text-primary"></i>
-            <%= text_field_tag :query, @query, placeholder: "Buscar canciones, artistas o géneros...", class: "tiktok-search-input", autocomplete: "off" %>
+            <%= text_field_tag :query,
+                               @query,
+                               placeholder: "Buscar canciones, artistas o géneros...",
+                               class: "tiktok-search-input",
+                               autocomplete: "off",
+                               data: {
+                                 search_autocomplete_target: "input",
+                                 action: "focus->search-autocomplete#onFocus input->search-autocomplete#onInput"
+                               } %>
             <% if @query.present? %>
               <%= link_to discovers_path(tab: "for_you"), class: "tiktok-search-clear", title: "Limpiar búsqueda" do %>
                 <i class="ri-close-circle-fill"></i>
@@ -65,6 +94,47 @@
             </button>
           </div>
         <% end %>
+
+        <!-- Autocomplete Suggestions Dropdown for Artists and Genres -->
+        <div class="tiktok-search-dropdown d-none" data-search-autocomplete-target="dropdown">
+          <div class="dropdown-header">
+            <i class="ri-user-star-line text-primary"></i>
+            <span>Artistas recomendados</span>
+          </div>
+          <div class="dropdown-items-list" data-search-autocomplete-target="list">
+            <% @recommended_artists.each do |artist_name, genre| %>
+              <div class="dropdown-item-row"
+                   data-search-autocomplete-target="item"
+                   data-search-value="<%= artist_name %>"
+                   data-action="click->search-autocomplete#selectItem">
+                <div class="artist-icon-circle">
+                  <%= artist_name.first.upcase %>
+                </div>
+                <div class="item-info">
+                  <span class="item-text"><%= artist_name %></span>
+                  <small class="item-sub"><%= genre %></small>
+                </div>
+                <i class="ri-arrow-right-s-line arrow-icon"></i>
+              </div>
+            <% end %>
+          </div>
+
+          <div class="dropdown-header mt-2">
+            <i class="ri-disc-line text-warning"></i>
+            <span>Géneros populares</span>
+          </div>
+          <div class="dropdown-genres-chips">
+            <% @recommended_genres.each do |genre| %>
+              <button type="button"
+                      class="genre-chip-btn"
+                      data-search-autocomplete-target="item"
+                      data-search-value="<%= genre %>"
+                      data-action="click->search-autocomplete#selectItem">
+                <i class="ri-music-2-line"></i> <%= genre %>
+              </button>
+            <% end %>
+          </div>
+        </div>
 
         <% if @query.present? %>
           <div class="tiktok-active-filter-badge">

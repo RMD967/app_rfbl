@@ -1,11 +1,25 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["card", "video", "playIndicator", "volumeIcon", "feedViewport"]
+  static targets = ["card", "video", "playIndicator", "volumeIcon", "feedViewport", "toast"]
 
   connect() {
-    this.isMuted = true
+    this.isMuted = false
+    this.userMutedManually = false
     this.setupIntersectionObserver()
+
+    // Attempt to unmute active videos on user interaction if browser policy deferred audio
+    const firstInteraction = () => {
+      if (!this.userMutedManually) {
+        this.unmuteAll()
+      }
+      window.removeEventListener("click", firstInteraction, true)
+      window.removeEventListener("touchstart", firstInteraction, true)
+      window.removeEventListener("keydown", firstInteraction, true)
+    }
+    window.addEventListener("click", firstInteraction, true)
+    window.addEventListener("touchstart", firstInteraction, true)
+    window.addEventListener("keydown", firstInteraction, true)
 
     // Autoplay the first visible video as soon as the DOM is ready
     setTimeout(() => {
@@ -116,20 +130,61 @@ export default class extends Controller {
   }
 
   toggleMute(event) {
-    event.stopPropagation()
-    this.isMuted = !this.isMuted
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
 
+    if (this.isMuted) {
+      this.unmuteAll()
+      this.showToast("🔊 Sonido activado")
+    } else {
+      this.muteAll()
+      this.showToast("🔇 Sonido silenciado")
+    }
+  }
+
+  unmuteAll() {
+    this.isMuted = false
+    this.userMutedManually = false
     this.videoTargets.forEach((video) => {
-      video.muted = this.isMuted
+      video.muted = false
     })
+    this.updateVolumeIcons()
+  }
 
+  muteAll() {
+    this.isMuted = true
+    this.userMutedManually = true
+    this.videoTargets.forEach((video) => {
+      video.muted = true
+    })
+    this.updateVolumeIcons()
+  }
+
+  updateVolumeIcons() {
     this.volumeIconTargets.forEach((icon) => {
+      const btn = icon.closest(".tiktok-sound-toggle")
       if (this.isMuted) {
         icon.className = "ri-volume-mute-fill"
+        btn?.classList.remove("sound-active")
       } else {
-        icon.className = "ri-volume-up-fill text-warning"
+        icon.className = "ri-volume-up-fill"
+        btn?.classList.add("sound-active")
       }
     })
+  }
+
+  showToast(message) {
+    if (!this.hasToastTarget) return
+    this.toastTarget.textContent = message
+    this.toastTarget.classList.remove("d-none")
+    this.toastTarget.classList.add("visible")
+    clearTimeout(this.toastTimeout)
+    this.toastTimeout = setTimeout(() => {
+      this.toastTarget.classList.remove("visible")
+      setTimeout(() => this.toastTarget.classList.add("d-none"), 300)
+    }, 1400)
   }
 
   openComments(event) {
