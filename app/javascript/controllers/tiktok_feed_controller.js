@@ -6,6 +6,11 @@ export default class extends Controller {
   connect() {
     this.isMuted = true
     this.setupIntersectionObserver()
+
+    // Autoplay the first visible video as soon as the DOM is ready
+    setTimeout(() => {
+      this.playFirstVideo()
+    }, 150)
   }
 
   disconnect() {
@@ -14,10 +19,18 @@ export default class extends Controller {
     }
   }
 
+  playFirstVideo() {
+    if (this.videoTargets.length > 0) {
+      const firstVideo = this.videoTargets[0]
+      this.playVideo(firstVideo)
+    }
+  }
+
   setupIntersectionObserver() {
+    // Low threshold (0.25) so videos reliably trigger autoplay on any screen size
     const options = {
       root: this.hasFeedViewportTarget ? this.feedViewportTarget : null,
-      threshold: 0.65
+      threshold: 0.25
     }
 
     this.observer = new IntersectionObserver((entries) => {
@@ -25,21 +38,10 @@ export default class extends Controller {
         const video = entry.target.querySelector("video")
         if (!video) return
 
-        if (entry.isIntersecting) {
-          // Play current video
-          video.muted = this.isMuted
-          const playPromise = video.play()
-          if (playPromise !== undefined) {
-            playPromise.catch((err) => {
-              // Browser autoplay policy blocked audio, ensure muted
-              video.muted = true
-              video.play().catch(() => {})
-            })
-          }
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          this.playVideo(video)
         } else {
-          // Pause when scrolled away
-          video.pause()
-          video.currentTime = 0
+          this.pauseVideo(video)
         }
       })
     }, options)
@@ -49,21 +51,67 @@ export default class extends Controller {
     })
   }
 
+  playVideo(video) {
+    // Pause other videos
+    this.videoTargets.forEach((v) => {
+      if (v !== video) {
+        v.pause()
+        const card = v.closest(".tiktok-card")
+        const indicator = card?.querySelector(".tiktok-play-indicator")
+        if (indicator) indicator.classList.remove("visible")
+      }
+    })
+
+    video.muted = this.isMuted
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        // Autoplay policy prevented playback, ensure muted and retry
+        video.muted = true
+        video.play().catch(() => {
+          // If still blocked by browser policy without gesture, show play indicator
+          const card = video.closest(".tiktok-card")
+          const indicator = card?.querySelector(".tiktok-play-indicator")
+          if (indicator) indicator.classList.add("visible")
+        })
+      })
+    }
+
+    const card = video.closest(".tiktok-card")
+    const indicator = card?.querySelector(".tiktok-play-indicator")
+    if (indicator) indicator.classList.remove("visible")
+  }
+
+  pauseVideo(video) {
+    video.pause()
+    const card = video.closest(".tiktok-card")
+    const indicator = card?.querySelector(".tiktok-play-indicator")
+    if (indicator) indicator.classList.remove("visible")
+  }
+
   togglePlay(event) {
+    event.preventDefault()
+    event.stopPropagation()
     const video = event.currentTarget
     const card = video.closest(".tiktok-card")
-    const indicator = card.querySelector(".tiktok-play-indicator")
+    const indicator = card?.querySelector(".tiktok-play-indicator")
 
     if (video.paused) {
-      video.play()
-      if (indicator) {
-        indicator.classList.remove("visible")
-      }
+      this.playVideo(video)
+      if (indicator) indicator.classList.remove("visible")
     } else {
       video.pause()
-      if (indicator) {
-        indicator.classList.add("visible")
-      }
+      if (indicator) indicator.classList.add("visible")
+    }
+  }
+
+  onIndicatorClick(event) {
+    event.preventDefault()
+    event.stopPropagation()
+    const card = event.currentTarget.closest(".tiktok-card")
+    const video = card?.querySelector("video")
+    if (video) {
+      this.playVideo(video)
     }
   }
 

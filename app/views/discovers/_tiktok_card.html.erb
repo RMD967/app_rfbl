@@ -4,12 +4,18 @@
   artist_location = discover.dashboard&.artist_location || "México"
   artist_price = discover.dashboard&.artist_price
 
-  video_src = if discover.content.present? && (discover.content.start_with?("http") || discover.content.start_with?("/"))
-                discover.content
-              elsif discover.video.attached?
-                url_for(discover.video)
+  raw_src = if discover.content.present? && (discover.content.start_with?("http") || discover.content.start_with?("/"))
+              discover.content
+            elsif discover.video.attached?
+              url_for(discover.video)
+            else
+              "/main.mp4"
+            end
+
+  video_src = if raw_src.include?("cloudinary.com") && raw_src.include?("/upload/") && !raw_src.include?("q_auto")
+                raw_src.gsub("/upload/", "/upload/q_auto,w_540,vc_h264/")
               else
-                "/main.mp4"
+                raw_src
               end
 %>
 
@@ -17,17 +23,18 @@
   <!-- Video Player Element -->
   <div class="tiktok-video-wrapper">
     <video class="tiktok-video"
-           loop
+           autoplay
            muted
+           loop
            playsinline
-           preload="metadata"
+           preload="auto"
            data-tiktok-feed-target="video"
            data-action="click->tiktok-feed#togglePlay">
       <source src="<%= video_src %>" type="video/mp4">
     </video>
 
     <!-- Play/Pause Status Icon Overlay -->
-    <div class="tiktok-play-indicator" data-tiktok-feed-target="playIndicator">
+    <div class="tiktok-play-indicator" data-tiktok-feed-target="playIndicator" data-action="click->tiktok-feed#onIndicatorClick">
       <i class="ri-play-fill"></i>
     </div>
 
