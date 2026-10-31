@@ -6,10 +6,15 @@
 .navbar {
   position: fixed;
   bottom: 0;
+  left: 0;
+  right: 0;
   width: 100%;
   display: flex;
   justify-content: space-between;
-  background: $blue-80;
+  background: rgba(25, 24, 48, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 9999;
 }
 
@@ -56,15 +61,39 @@
 
 @media (min-width: 680px) {
   .navbar {
-    position: static;
+    position: sticky;
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 1050;
+    background: rgba(25, 24, 48, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     flex-direction: row;
     justify-content: space-between;
-    padding: 20px 30px;
+    padding: 14px 32px;
+  }
+
+  .navbar-item {
+    margin-top: 0;
   }
 
   .navbar-nav {
     width: auto;
-    gap: 40px;
+    gap: 36px;
+  }
+
+  .nav-link {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 500;
   }
 
   .navbar-brand {

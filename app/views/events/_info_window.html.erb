@@ -1,7 +1,8 @@
-<div class="info-window-card-body">
-  <h2><%= event.title %></h2>
-  <p><%= event.description %></p>
-  <p><%= event.datetime %></p>
-  <p><%= event.duration %></p>
-  <p><%= event.address %></p>
+<div class="info-window-card-body p-2" style="color: #191830; max-width: 240px;">
+  <h6 style="font-weight: 700; margin-bottom: 4px; color: #191830;"><%= event.title %></h6>
+  <p style="font-size: 12px; margin-bottom: 6px; color: #555;"><i class="ri-calendar-line"></i> <%= format_event_date(event.datetime) %></p>
+  <p style="font-size: 12px; margin-bottom: 8px; color: #555;"><i class="ri-map-pin-2-fill" style="color: #FF62A5;"></i> <%= event.address %></p>
+  <%= link_to event_path(event), class: "btn btn-sm btn-primary text-white w-100", style: "border-radius: 8px; font-size: 12px; padding: 4px 8px;" do %>
+    Ver Evento
+  <% end %>
 </div>

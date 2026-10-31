@@ -1,82 +1,355 @@
-<%= link_to :back do %>
-  <i class="fas fa-arrow-left"></i>
-<% end %>
-
-<div class="event-show-container">
-  <div class="event-show-image">
-    <% if @event.image.attached? %>
-      <%= cl_image_tag @event.image.key, class: "event-image" %>
-    <% else %>
-      <%= image_tag "https://picsum.photos/seed/picsum/200/200", class: "event-image" %>
+<div class="event-details-page-wrapper">
+  <!-- Top Navigation & Controls Bar -->
+  <div class="event-top-bar d-flex align-items-center justify-content-between mb-4">
+    <%= link_to events_path, class: "event-back-link" do %>
+      <i class="ri-arrow-left-line"></i>
+      <span><%= t('events.back_to_events', default: 'Volver a Eventos') %></span>
     <% end %>
-  </div>
 
-  <div class="event-actions-bar my-3 d-flex flex-wrap align-items-center gap-2">
-    <%= render partial: "favorites/favorite_button", locals: { favoritable: @event, show_label: true } %>
+    <div class="d-flex align-items-center gap-2">
+      <%= render partial: "favorites/favorite_button", locals: { favoritable: @event, show_label: true, extra_class: "event-fav-pill" } %>
 
-    <% if current_user != @event.user %>
-      <%= button_to chatrooms_path(user_id: @event.user_id, event_id: @event.id), method: :post, class: "main-app-btn-pri" do %>
-        <i class="ri-chat-3-line"></i> <%= t('events.chat_with_organizer', default: 'Chat with Organizer') %>
+      <% if policy(@event).edit? %>
+        <%= link_to edit_event_path(@event), class: "event-action-pill-btn secondary" do %>
+          <i class="ri-edit-line"></i>
+          <span><%= t('events.edit_this_event', default: 'Editar') %></span>
+        <% end %>
       <% end %>
 
-      <% if current_user.artist? %>
-        <% if current_user.applied_to?(@event) %>
-          <span class="badge bg-success d-flex align-items-center px-3 py-2">
-            <i class="ri-check-line me-1"></i> <%= t('events.applied', default: 'Applied') %>
-          </span>
-        <% else %>
-          <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "main-app-btn-pri" do %>
-            <p class="m-0"><%= t('events.postulate_position') %></p>
-          <% end %>
+      <% if policy(@event).destroy? %>
+        <%= button_to @event, method: :delete, data: { turbo_confirm: t('events.confirm_delete', default: '¿Eliminar este evento?') }, class: "event-action-pill-btn danger" do %>
+          <i class="ri-delete-bin-line"></i>
+          <span><%= t('events.delete_this_event', default: 'Eliminar') %></span>
         <% end %>
       <% end %>
     </div>
-  <% else %>
-    <% if @event.bookings.any? %>
-      <div class="event-applicants my-4 p-3 rounded" style="background: #2A2A3F;">
-        <h5 class="mb-3 text-white"><i class="ri-user-star-line text-primary"></i> Interested Musicians (<%= @event.bookings.count %>)</h5>
-        <div class="d-flex flex-column gap-2">
-          <% @event.bookings.each do |booking| %>
-            <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background: #1F1F2C;">
-              <div class="d-flex align-items-center gap-2">
-                <% if booking.user.profile_picture.attached? %>
-                  <%= cl_image_tag booking.user.profile_picture.key, class: "chat-avatar", style: "width:36px;height:36px;" %>
-                <% else %>
-                  <img src="https://res.cloudinary.com/djuhjudsb/image/upload/v1687887823/tq49o29k_ofz8ad.png" class="chat-avatar" style="width:36px;height:36px;">
-                <% end %>
-                <span class="text-white"><strong><%= booking.user.full_name %></strong></span>
-              </div>
-              <%= button_to chatrooms_path(user_id: booking.user_id, event_id: @event.id), method: :post, class: "btn btn-sm btn-outline-primary" do %>
-                <i class="ri-chat-3-line"></i> Chat
-              <% end %>
-            </div>
-          <% end %>
-        </div>
-      </div>
-    <% end %>
-  <% end %>
-
-  <div class="event-show-edit">
-    <% if policy(@event).edit? %>
-      <%= link_to edit_event_path(@event), class: "main-app-btn-pri" do %>
-        <p><%= t('events.edit_this_event') %></p>
-      <% end %>
-    <% end %>
-
-    <% if policy(@event).destroy? %>
-      <%= button_to @event, method: :delete, data: { confirm: t('events.confirm_delete') }, class: "main-app-btn-del" do %>
-        <p><%= t('events.delete_this_event') %></p>
-      <% end %>
-    <% end %>
   </div>
 
-  <div class="event-show-content-row">
-    <div class="event-show-details">
-      <%= render @event %>
+  <!-- Hero Header Showcase Banner -->
+  <div class="event-hero-banner">
+    <div class="event-hero-bg">
+      <% if @event.image.attached? %>
+        <%= cl_image_tag @event.image.key, class: "event-hero-img", alt: @event.title %>
+      <% else %>
+        <img src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1600&q=80" class="event-hero-img" alt="<%= @event.title %>">
+      <% end %>
+      <div class="event-hero-overlay"></div>
     </div>
 
-    <div class="event-show-map">
-      <div style="height: 600px;" data-controller="map" data-map-markers-value="<%= @marker.to_json %>" data-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"></div>
+    <div class="event-hero-content">
+      <div class="event-hero-tags">
+        <span class="event-hero-badge genre">
+          <i class="ri-music-2-fill"></i> <%= @event.genre %>
+        </span>
+        <span class="event-hero-badge date">
+          <i class="ri-calendar-event-line"></i> <%= format_event_date(@event.datetime) %>
+        </span>
+        <span class="event-hero-badge time">
+          <i class="ri-time-line"></i> <%= format_event_time(@event.datetime) %>
+        </span>
+      </div>
+
+      <h1 class="event-hero-title"><%= @event.title %></h1>
+
+      <div class="event-hero-meta">
+        <span class="event-hero-location">
+          <i class="ri-map-pin-2-fill text-accent-pink"></i> <%= @event.address %>
+        </span>
+        <span class="event-hero-meta-dot">•</span>
+        <span class="event-hero-duration">
+          <i class="ri-hourglass-2-line"></i> <%= format_event_duration(@event.duration) %>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two-Column Main Layout Grid -->
+  <div class="event-grid-container mt-4">
+    <!-- Left Column: Primary Content -->
+    <div class="event-main-content">
+      <!-- Card: Description -->
+      <div class="event-glass-card mb-4">
+        <div class="event-card-header">
+          <div class="event-card-icon-wrapper">
+            <i class="ri-file-text-line"></i>
+          </div>
+          <h3 class="event-card-title"><%= t('events.event_description', default: 'Acerca de este evento') %></h3>
+        </div>
+        <div class="event-card-body">
+          <div class="event-description-text">
+            <%= simple_format(@event.description) %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Key Specifications Grid -->
+      <div class="event-glass-card mb-4">
+        <div class="event-card-header">
+          <div class="event-card-icon-wrapper">
+            <i class="ri-information-line"></i>
+          </div>
+          <h3 class="event-card-title"><%= t('events.key_details', default: 'Ficha del evento') %></h3>
+        </div>
+        <div class="event-card-body">
+          <div class="event-specs-grid">
+            <div class="event-spec-tile">
+              <div class="spec-tile-icon"><i class="ri-calendar-check-line"></i></div>
+              <div class="spec-tile-info">
+                <span class="spec-label"><%= t('events.date', default: 'Fecha') %></span>
+                <span class="spec-value"><%= format_event_date(@event.datetime) %></span>
+              </div>
+            </div>
+
+            <div class="event-spec-tile">
+              <div class="spec-tile-icon"><i class="ri-time-line"></i></div>
+              <div class="spec-tile-info">
+                <span class="spec-label"><%= t('events.time', default: 'Hora de inicio') %></span>
+                <span class="spec-value"><%= format_event_time(@event.datetime) %></span>
+              </div>
+            </div>
+
+            <div class="event-spec-tile">
+              <div class="spec-tile-icon"><i class="ri-hourglass-fill"></i></div>
+              <div class="spec-tile-info">
+                <span class="spec-label"><%= t('events.duration', default: 'Duración estimada') %></span>
+                <span class="spec-value"><%= format_event_duration(@event.duration) %></span>
+              </div>
+            </div>
+
+            <div class="event-spec-tile">
+              <div class="spec-tile-icon"><i class="ri-disc-line"></i></div>
+              <div class="spec-tile-info">
+                <span class="spec-label"><%= t('events.genre', default: 'Género musical') %></span>
+                <span class="spec-value"><%= @event.genre %></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Organizer Profile -->
+      <div class="event-glass-card mb-4">
+        <div class="event-card-header">
+          <div class="event-card-icon-wrapper">
+            <i class="ri-user-star-line"></i>
+          </div>
+          <h3 class="event-card-title"><%= t('events.organizer', default: 'Organizado por') %></h3>
+        </div>
+        <div class="event-card-body">
+          <div class="event-organizer-profile-row d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+              <div class="organizer-avatar-container">
+                <% if @event.user.profile_picture.attached? %>
+                  <%= cl_image_tag @event.user.profile_picture.key, class: "organizer-avatar", alt: @event.user.full_name %>
+                <% else %>
+                  <div class="organizer-avatar-placeholder">
+                    <%= @event.user.full_name.first&.upcase || "U" %>
+                  </div>
+                <% end %>
+              </div>
+              <div>
+                <h4 class="organizer-name mb-1"><%= @event.user.full_name %></h4>
+                <p class="organizer-role mb-0 text-muted">
+                  <i class="ri-shield-check-line text-success me-1"></i> Anfitrión de Radios FBL
+                </p>
+              </div>
+            </div>
+
+            <% if current_user != @event.user %>
+              <%= button_to chatrooms_path(user_id: @event.user_id, event_id: @event.id), method: :post, class: "event-secondary-action-btn" do %>
+                <i class="ri-chat-3-line"></i>
+                <span><%= t('events.chat_with_organizer', default: 'Enviar mensaje') %></span>
+              <% end %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card: Applied Musicians (Shown if current_user is the event owner) -->
+      <% if current_user == @event.user %>
+        <div class="event-glass-card mb-4">
+          <div class="event-card-header d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-2">
+              <div class="event-card-icon-wrapper">
+                <i class="ri-team-line"></i>
+              </div>
+              <h3 class="event-card-title mb-0">
+                <%= t('events.interested_musicians', default: 'Músicos interesados') %>
+                <span class="badge rounded-pill bg-primary ms-2"><%= @event.bookings.count %></span>
+              </h3>
+            </div>
+          </div>
+          <div class="event-card-body">
+            <% if @event.bookings.any? %>
+              <div class="event-applicants-list d-flex flex-column gap-3">
+                <% @event.bookings.each do |booking| %>
+                  <div class="event-applicant-card d-flex align-items-center justify-content-between p-3 rounded">
+                    <div class="d-flex align-items-center gap-3">
+                      <div class="applicant-avatar-wrap">
+                        <% if booking.user.profile_picture.attached? %>
+                          <%= cl_image_tag booking.user.profile_picture.key, class: "applicant-avatar" %>
+                        <% else %>
+                          <div class="applicant-avatar-placeholder">
+                            <%= booking.user.full_name.first&.upcase || "M" %>
+                          </div>
+                        <% end %>
+                      </div>
+                      <div>
+                        <h5 class="applicant-name mb-0 text-white"><%= booking.user.full_name %></h5>
+                        <% if booking.user.artist_dashboard.present? %>
+                          <span class="applicant-subtext text-muted">
+                            <i class="ri-music-2-line"></i> <%= booking.user.artist_dashboard.artist_name.presence || "Artista" %>
+                          </span>
+                        <% end %>
+                      </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-2">
+                      <% if booking.user.artist_dashboard.present? %>
+                        <%= link_to dashboard_path(booking.user.artist_dashboard), class: "btn btn-sm btn-outline-light" do %>
+                          <i class="ri-user-line"></i> <%= t('events.view_profile', default: 'Ver Perfil') %>
+                        <% end %>
+                      <% end %>
+                      <%= button_to chatrooms_path(user_id: booking.user_id, event_id: @event.id), method: :post, class: "btn btn-sm btn-primary" do %>
+                        <i class="ri-chat-3-line"></i> Chat
+                      <% end %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="event-empty-applicants text-center py-4 text-muted">
+                <i class="ri-user-follow-line ri-2x mb-2 d-block"></i>
+                <p class="mb-0">Aún no hay postulaciones de músicos para este evento. En cuanto los artistas lo descubran, aparecerán aquí.</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Right Column: Sidebar Action & Location Navigator -->
+    <div class="event-sidebar">
+      <div class="event-sidebar-sticky">
+        <!-- Action Card -->
+        <div class="event-glass-card mb-4 event-cta-card">
+          <div class="event-card-body p-4">
+            <% if current_user == @event.user %>
+              <div class="organizer-badge-panel mb-3 text-center">
+                <span class="badge bg-purple-glow px-3 py-2">
+                  <i class="ri-shield-user-fill me-1"></i> Eres el organizador
+                </span>
+                <p class="small text-muted mt-2 mb-0">Gestiona las postulaciones de músicos y detalles de tu evento.</p>
+              </div>
+              <div class="d-flex flex-column gap-2 mt-3">
+                <% if policy(@event).edit? %>
+                  <%= link_to edit_event_path(@event), class: "btn event-btn-gradient w-100" do %>
+                    <i class="ri-edit-line me-1"></i> <%= t('events.edit_this_event', default: 'Editar Evento') %>
+                  <% end %>
+                <% end %>
+              </div>
+            <% else %>
+              <div class="d-flex flex-column gap-3">
+                <% if current_user.artist? %>
+                  <% if current_user.applied_to?(@event) %>
+                    <div class="event-applied-banner p-3 rounded text-center">
+                      <i class="ri-checkbox-circle-fill text-success ri-2x mb-1 d-block"></i>
+                      <h5 class="text-white mb-1">¡Ya estás postulado!</h5>
+                      <p class="small text-muted mb-0">El organizador ha recibido tu interés y te contactará por chat si eres seleccionado.</p>
+                    </div>
+                  <% else %>
+                    <%= link_to event_bookings_path(@event), data: { turbo_method: :post }, class: "btn event-btn-gradient w-100 py-3" do %>
+                      <i class="ri-send-plane-fill me-1"></i>
+                      <strong><%= t('events.postulate_position', default: 'Postularme a este evento') %></strong>
+                    <% end %>
+                    <p class="small text-muted text-center mb-0">Tu perfil artístico será compartido directamente con el anfitrión.</p>
+                  <% end %>
+                <% end %>
+
+                <%= button_to chatrooms_path(user_id: @event.user_id, event_id: @event.id), method: :post, class: "btn event-btn-glass w-100 py-2 d-flex align-items-center justify-content-center gap-2" do %>
+                  <i class="ri-chat-3-line"></i>
+                  <span><%= t('events.chat_with_organizer', default: 'Chatear con el organizador') %></span>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Location & Map Navigator Card -->
+        <div class="event-glass-card mb-4">
+          <div class="event-card-header">
+            <div class="event-card-icon-wrapper">
+              <i class="ri-map-pin-range-line"></i>
+            </div>
+            <h3 class="event-card-title"><%= t('events.location', default: 'Ubicación y Mapa') %></h3>
+          </div>
+          <div class="event-card-body">
+            <!-- Address Pill -->
+            <div class="event-location-box p-3 rounded mb-3">
+              <div class="d-flex align-items-start gap-2">
+                <i class="ri-map-pin-2-fill text-accent-pink mt-1"></i>
+                <div class="flex-grow-1">
+                  <span class="event-address-title d-block text-white fw-bold"><%= @event.address %></span>
+                  <span class="small text-muted">Lugar confirmado del show</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Open in Preferred Map App -->
+            <div class="event-map-apps-container mb-3">
+              <span class="event-map-apps-title d-block mb-2 text-muted small fw-semibold">
+                <i class="ri-direction-line me-1"></i> <%= t('events.open_in_map_preference', default: 'Abrir en tu app de mapas:') %>
+              </span>
+              <div class="event-map-apps-buttons d-grid gap-2">
+                <!-- Google Maps -->
+                <a href="<%= google_maps_url(@event) %>" target="_blank" rel="noopener noreferrer" class="map-choice-btn google-btn">
+                  <div class="map-choice-icon"><i class="ri-google-fill"></i></div>
+                  <div class="map-choice-content">
+                    <span class="map-choice-name">Google Maps</span>
+                    <span class="map-choice-sub">Rutas, tráfico y navegación</span>
+                  </div>
+                  <i class="ri-external-link-line map-choice-ext"></i>
+                </a>
+
+                <!-- Apple Maps -->
+                <a href="<%= apple_maps_url(@event) %>" target="_blank" rel="noopener noreferrer" class="map-choice-btn apple-btn">
+                  <div class="map-choice-icon"><i class="ri-apple-fill"></i></div>
+                  <div class="map-choice-content">
+                    <span class="map-choice-name">Apple Maps</span>
+                    <span class="map-choice-sub">Navegación nativa en iOS y Mac</span>
+                  </div>
+                  <i class="ri-external-link-line map-choice-ext"></i>
+                </a>
+
+                <!-- Waze -->
+                <a href="<%= waze_maps_url(@event) %>" target="_blank" rel="noopener noreferrer" class="map-choice-btn waze-btn">
+                  <div class="map-choice-icon"><i class="ri-navigation-fill"></i></div>
+                  <div class="map-choice-content">
+                    <span class="map-choice-name">Waze</span>
+                    <span class="map-choice-sub">Alertas en tiempo real</span>
+                  </div>
+                  <i class="ri-external-link-line map-choice-ext"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Embedded Interactive Mapbox Map -->
+            <% if @marker.present? && @marker.any? %>
+              <div class="event-embedded-map-wrapper">
+                <div style="height: 280px; width: 100%; border-radius: 14px;"
+                     data-controller="map"
+                     data-map-markers-value="<%= @marker.to_json %>"
+                     data-map-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"></div>
+              </div>
+            <% else %>
+              <div class="event-no-map-notice p-3 rounded text-center text-muted">
+                <i class="ri-map-2-line ri-xl mb-1 d-block"></i>
+                <span class="small">Ubicación: <%= @event.address %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

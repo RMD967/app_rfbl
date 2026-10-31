@@ -49,7 +49,13 @@ class EventsController < ApplicationController
     authorize @event
 
     if @event.geocoded?
-      @marker = [{lat: @event.latitude, lng: @event.longitude}]
+      @marker = [{
+        lat: @event.latitude,
+        lng: @event.longitude,
+        info_window_html: render_to_string(partial: "info_window", locals: { event: @event })
+      }]
+    else
+      @marker = []
     end
   end
 
