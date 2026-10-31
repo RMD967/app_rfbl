@@ -25,6 +25,13 @@
   color: white;
 }
 
+@media (max-width: 679px) {
+  // Give bottom clearance for all normal scrollable pages so the fixed bottom navbar never covers content or buttons
+  body:not(:has(.tiktok-experience)) {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }

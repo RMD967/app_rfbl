@@ -4,6 +4,8 @@
 body:has(.tiktok-experience) {
   overflow: hidden !important;
   height: 100vh !important;
+  height: 100dvh !important;
+  box-sizing: border-box !important;
   display: flex !important;
   flex-direction: column !important;
 
@@ -11,9 +13,18 @@ body:has(.tiktok-experience) {
     display: none !important;
   }
 
-  .navbar {
-    flex-shrink: 0 !important;
-    padding: 8px 24px !important;
+  // On mobile (< 680px), .navbar is fixed at the bottom (~64px).
+  // Pad the bottom of body so the feed and video cards end cleanly above the navbar,
+  // preventing the bottom action buttons, bookmark icon, and caption from being covered!
+  @media (max-width: 679px) {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+
+  @media (min-width: 680px) {
+    .navbar {
+      flex-shrink: 0 !important;
+      padding: 8px 24px !important;
+    }
   }
 }
 
@@ -28,7 +39,7 @@ body:has(.tiktok-experience) {
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-  padding: 0 0 6px 0;
+  padding: 0;
 }
 
 // Toast notification for mute/unmute
