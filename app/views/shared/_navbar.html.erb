@@ -15,31 +15,31 @@
     <ul class="navbar-nav">
       <li class="navbar-item <%= 'active' if current_page?(discovers_path) %>">
         <%= link_to discovers_path, class: "nav-link" do %>
-          <i class="ri-music-line ri-xl"></i> <%= t('navbar.discover') %>
+          <i class="ri-music-line"></i> <span><%= t('navbar.discover') %></span>
         <% end %>
       </li>
 
       <li class="navbar-item <%= 'active' if current_page?(events_path) %>">
         <%= link_to events_path, class: "nav-link" do %>
-          <i class="ri-ticket-2-line ri-xl"></i> <%= t('navbar.events') %>
+          <i class="ri-ticket-2-line"></i> <span><%= t('navbar.events') %></span>
         <% end %>
       </li>
 
       <li class="navbar-item <%= 'active' if current_page?(chatrooms_path) %>">
         <%= link_to chatrooms_path, class: "nav-link" do %>
-          <i class="ri-chat-3-line ri-xl"></i> <%= t('navbar.messages', default: 'Chat') %>
+          <i class="ri-chat-3-line"></i> <span><%= t('navbar.messages', default: 'Chat') %></span>
         <% end %>
       </li>
 
       <li class="navbar-item <%= 'active' if current_page?(my_bookings_path) %>">
         <%= link_to my_bookings_path, class: "nav-link" do %>
-          <i class="ri-calendar-check-line ri-xl"></i> <%= t('navbar.activity') %>
+          <i class="ri-calendar-check-line"></i> <span><%= t('navbar.activity') %></span>
         <% end %>
       </li>
 
       <li class="navbar-item <%= 'active' if current_page?(user_id_path(current_user)) %>">
         <%= link_to user_id_path(current_user), class: "nav-link" do %>
-          <i class="ri-user-line ri-xl"></i> <%= t('navbar.profile') %>
+          <i class="ri-user-line"></i> <span><%= t('navbar.profile') %></span>
         <% end %>
       </li>
     </ul>

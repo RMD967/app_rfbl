@@ -1,3 +1,19 @@
+<%
+  initial_step = 0
+  if @event.errors.any?
+    if @event.errors[:datetime].present? || @event.errors[:duration].present?
+      initial_step = 2
+    elsif @event.errors[:address].present? || @event.errors[:image].present?
+      initial_step = 1
+    else
+      initial_step = 0
+    end
+  end
+
+  event_date = @event.datetime&.strftime('%Y-%m-%d')
+  event_time = @event.datetime&.strftime('%H:%M')
+%>
+
 <div class="new-event-page-wrapper">
   <!-- Back navigation -->
   <div class="new-event-nav">
@@ -7,30 +23,60 @@
     <% end %>
   </div>
 
-  <div class="new-event-card-container" data-controller="new-event-screens">
+  <div class="new-event-card-container"
+    data-controller="new-event-screens"
+    data-new-event-screens-initial-step-value="<%= initial_step %>">
+
     <!-- Header -->
     <div class="wizard-header">
       <h1 class="wizard-main-title"><%= t("events.new_event_title") %></h1>
       <p class="wizard-subtitle"><%= t("events.new_event_subtitle") %></p>
     </div>
 
+    <!-- Error Banner if validation failed -->
+    <% if @event.errors.any? %>
+      <div class="wizard-error-banner">
+        <div class="error-banner-header">
+          <i class="ri-error-warning-fill"></i>
+          <h4>No pudimos publicar el evento (<%= pluralize(@event.errors.count, "error", "errores") %>)</h4>
+        </div>
+        <ul class="error-banner-list">
+          <% @event.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+        <p class="error-banner-guide">
+          Revisa el paso resaltado a continuación para completar la información faltante.
+        </p>
+      </div>
+    <% end %>
+
     <!-- Stepper Progress Tracker -->
     <div class="wizard-stepper-tracker">
-      <div class="step-indicator-item active" data-new-event-screens-target="indicator" data-step-index="0" data-action="click->new-event-screens#goToStep">
+      <div class="step-indicator-item active <%= 'has-error' if %w[title genre description].any? { |k| @event.errors[k].any? } %>"
+        data-new-event-screens-target="indicator"
+        data-step-index="0"
+        data-action="click->new-event-screens#goToStep">
         <div class="step-num"><i class="ri-information-line"></i> 1</div>
         <span class="step-label">Información</span>
       </div>
 
       <div class="step-divider"></div>
 
-      <div class="step-indicator-item" data-new-event-screens-target="indicator" data-step-index="1" data-action="click->new-event-screens#goToStep">
+      <div class="step-indicator-item <%= 'has-error' if %w[address image].any? { |k| @event.errors[k].any? } %>"
+        data-new-event-screens-target="indicator"
+        data-step-index="1"
+        data-action="click->new-event-screens#goToStep">
         <div class="step-num"><i class="ri-map-pin-line"></i> 2</div>
         <span class="step-label">Ubicación y Foto</span>
       </div>
 
       <div class="step-divider"></div>
 
-      <div class="step-indicator-item" data-new-event-screens-target="indicator" data-step-index="2" data-action="click->new-event-screens#goToStep">
+      <div class="step-indicator-item <%= 'has-error' if %w[datetime duration].any? { |k| @event.errors[k].any? } %>"
+        data-new-event-screens-target="indicator"
+        data-step-index="2"
+        data-action="click->new-event-screens#goToStep">
         <div class="step-num"><i class="ri-calendar-event-line"></i> 3</div>
         <span class="step-label">Fecha y Horario</span>
       </div>
@@ -42,39 +88,73 @@
     </div>
 
     <!-- Unified Form -->
-    <%= simple_form_for(@event, url: events_path, html: { class: "wizard-form-body", multipart: true }) do |f| %>
+    <%= simple_form_for(@event, url: events_path, html: { class: "wizard-form-body", multipart: true, data: { new_event_screens_target: "form" } }) do |f| %>
+
+      <!-- Hidden Datetime Field (holds the combined ISO datetime for Rails) -->
+      <%= f.hidden_field :datetime,
+        data: { new_event_screens_target: "datetimeHidden" },
+        value: @event.datetime&.strftime('%Y-%m-%dT%H:%M') %>
+
       <!-- STEP 1: Basic Information -->
       <section class="wizard-step-section" data-new-event-screens-target="step" data-step="1">
         <div class="step-section-header">
           <h3><i class="ri-information-fill"></i> Paso 1: Información Básica</h3>
-          <p>Define el título, género y descripción de tu evento.</p>
+          <p>Define el nombre, estilo musical y descripción de tu evento.</p>
         </div>
 
         <div class="wizard-form-group">
-          <%= f.input :title,
-            label: t('events.event_title'),
-            placeholder: "Ej. Noche de Rock Alternativo en Vivo",
-            required: true,
-            input_html: { class: "wizard-form-input" } %>
+          <label class="wizard-field-label">
+            <i class="ri-music-2-line field-icon"></i> <%= t('events.event_title') %> <span class="required-star">*</span>
+          </label>
+          <p class="field-hint-text">Elige un título claro y atractivo que describa tu evento.</p>
+          <%= f.input_field :title,
+            placeholder: "Ej. Noche de Rock Alternativo en Terraza",
+            class: "wizard-form-input #{'is-invalid' if @event.errors[:title].any?}",
+            data: { new_event_screens_target: "titleInput" } %>
+          <% if @event.errors[:title].any? %>
+            <span class="field-error-msg"><i class="ri-alert-line"></i> <%= @event.errors[:title].first %></span>
+          <% end %>
+          <span class="client-error-msg d-none" data-new-event-screens-target="titleError">
+            <i class="ri-alert-line"></i> Por favor ingresa el título del evento
+          </span>
         </div>
 
         <div class="wizard-form-group">
-          <%= f.input :genre,
+          <label class="wizard-field-label">
+            <i class="ri-disc-line field-icon"></i> <%= t('events.music_genre') %> <span class="required-star">*</span>
+          </label>
+          <p class="field-hint-text">Selecciona el género musical principal para facilitar la búsqueda a los artistas.</p>
+          <%= f.input_field :genre,
             as: :select,
             collection: Event::GENRE,
             prompt: "Selecciona el género musical...",
-            label: t('events.music_genre'),
-            required: true,
-            input_html: { class: "wizard-form-select" } %>
+            class: "wizard-form-select #{'is-invalid' if @event.errors[:genre].any?}",
+            data: { new_event_screens_target: "genreSelect" } %>
+          <% if @event.errors[:genre].any? %>
+            <span class="field-error-msg"><i class="ri-alert-line"></i> <%= @event.errors[:genre].first %></span>
+          <% end %>
+          <span class="client-error-msg d-none" data-new-event-screens-target="genreError">
+            <i class="ri-alert-line"></i> Por favor selecciona un género musical
+          </span>
         </div>
 
         <div class="wizard-form-group">
-          <%= f.input :description,
+          <label class="wizard-field-label">
+            <i class="ri-file-text-line field-icon"></i> <%= t('events.event_description') %> <span class="required-star">*</span>
+          </label>
+          <p class="field-hint-text">Explica la temática, ambiente, requisitos técnicos (ej. equipo de sonido) y lo que buscas en los músicos.</p>
+          <%= f.input_field :description,
             as: :text,
-            label: t('events.event_description'),
-            placeholder: "Describe la experiencia, lo que buscas en los artistas participantes, requisitos de equipo...",
-            required: true,
-            input_html: { rows: 4, class: "wizard-form-textarea" } %>
+            rows: 4,
+            placeholder: "Describe la experiencia para el público y los músicos...",
+            class: "wizard-form-textarea #{'is-invalid' if @event.errors[:description].any?}",
+            data: { new_event_screens_target: "descriptionInput" } %>
+          <% if @event.errors[:description].any? %>
+            <span class="field-error-msg"><i class="ri-alert-line"></i> <%= @event.errors[:description].first %></span>
+          <% end %>
+          <span class="client-error-msg d-none" data-new-event-screens-target="descriptionError">
+            <i class="ri-alert-line"></i> Por favor escribe una descripción para el evento
+          </span>
         </div>
 
         <div class="wizard-actions-footer">
@@ -92,34 +172,61 @@
       <section class="wizard-step-section d-none" data-new-event-screens-target="step" data-step="2">
         <div class="step-section-header">
           <h3><i class="ri-map-pin-fill"></i> Paso 2: Ubicación y Cartel</h3>
-          <p>Indica dónde se llevará a cabo y añade la imagen principal.</p>
+          <p>Indica dónde se llevará a cabo y añade la imagen o cartel principal.</p>
         </div>
 
         <div class="wizard-form-group">
-          <%= f.input :address,
-            label: t('events.event_address'),
-            input_html: {
-              data: { address_autocomplete_target: "address" },
+          <label class="wizard-field-label">
+            <i class="ri-map-pin-2-line field-icon location"></i> <%= t('events.event_address') %> <span class="required-star">*</span>
+          </label>
+          <p class="field-hint-text">Escribe la dirección, bar o local. Aparecerá en el widget de mapa interactivo.</p>
+          <div data-controller="address-autocomplete"
+            data-address-autocomplete-api-key-value="<%= ENV['MAPBOX_API_KEY'] %>"
+            class="address-geocoder-wrapper">
+            <%= f.input_field :address,
               class: "d-none",
-              placeholder: "Escribe la dirección o nombre del local..."
-            },
-            wrapper_html: {
               data: {
-                controller: "address-autocomplete",
-                address_autocomplete_api_key_value: ENV["MAPBOX_API_KEY"]
-              },
-              class: "address-geocoder-wrapper"
-            },
-            required: true %>
+                address_autocomplete_target: "address",
+                new_event_screens_target: "addressInput"
+              } %>
+          </div>
+          <% if @event.errors[:address].any? %>
+            <span class="field-error-msg"><i class="ri-alert-line"></i> <%= @event.errors[:address].first %></span>
+          <% end %>
+          <span class="client-error-msg d-none" data-new-event-screens-target="addressError">
+            <i class="ri-alert-line"></i> Por favor ingresa una dirección para el evento
+          </span>
         </div>
 
         <div class="wizard-form-group">
-          <label class="wizard-field-label"><%= t('events.add_image') %></label>
-          <div class="wizard-file-upload-box">
-            <i class="ri-image-add-line upload-box-icon"></i>
-            <span class="upload-box-title">Seleccionar imagen o cartel</span>
-            <span class="upload-box-subtitle">Formatos soportados: JPG, PNG o WebP (máx. 10MB)</span>
-            <%= f.input_field :image, as: :file, accept: "image/*", class: "wizard-file-input" %>
+          <label class="wizard-field-label">
+            <i class="ri-image-2-line field-icon media"></i> <%= t('events.add_image') %>
+          </label>
+          <p class="field-hint-text">Sube una imagen atractiva o cartel oficial (JPG, PNG o WebP, máx. 10MB). Si no subes una, mostraremos una por defecto.</p>
+
+          <div class="wizard-file-dropzone" data-action="click->new-event-screens#triggerFileInput">
+            <div class="dropzone-unselected" data-new-event-screens-target="unselectedBox">
+              <i class="ri-image-add-line upload-box-icon"></i>
+              <span class="upload-box-title">Seleccionar imagen o cartel</span>
+              <span class="upload-box-subtitle">Haz click aquí para buscar en tu dispositivo</span>
+            </div>
+
+            <div class="dropzone-preview d-none" data-new-event-screens-target="previewBox">
+              <img src="" class="file-preview-img" data-new-event-screens-target="previewImg" alt="Vista previa">
+              <div class="preview-meta">
+                <span class="file-name" data-new-event-screens-target="fileName"></span>
+                <span class="change-file-btn"><i class="ri-refresh-line"></i> Cambiar imagen</span>
+              </div>
+            </div>
+
+            <%= f.input_field :image,
+              as: :file,
+              accept: "image/*",
+              class: "hidden-file-input",
+              data: {
+                new_event_screens_target: "fileInput",
+                action: "change->new-event-screens#previewFile"
+              } %>
           </div>
         </div>
 
@@ -143,26 +250,107 @@
       <section class="wizard-step-section d-none" data-new-event-screens-target="step" data-step="3">
         <div class="step-section-header">
           <h3><i class="ri-calendar-event-fill"></i> Paso 3: Fecha y Duración</h3>
-          <p>Define la fecha y cuánto durará la presentación.</p>
+          <p>Define con claridad el día, la hora de inicio y cuánto durará la presentación.</p>
         </div>
 
+        <!-- Friendly Dual Date and Time -->
         <div class="wizard-form-group">
-          <%= f.input :datetime,
-            as: :datetime,
-            label: t('events.date_and_time'),
-            html5: true,
-            required: true,
-            input_html: { class: "wizard-form-input" } %>
+          <div class="datetime-grid-row">
+            <div class="datetime-col">
+              <label class="wizard-field-label">
+                <i class="ri-calendar-line field-icon date"></i> Fecha del Evento <span class="required-star">*</span>
+              </label>
+              <div class="input-with-icon">
+                <input type="date"
+                  class="wizard-form-input <%= 'is-invalid' if @event.errors[:datetime].any? %>"
+                  min="<%= Date.current.to_s %>"
+                  value="<%= event_date %>"
+                  data-new-event-screens-target="dateInput"
+                  data-action="change->new-event-screens#updateDateTime">
+              </div>
+              <span class="client-error-msg d-none" data-new-event-screens-target="dateError">
+                <i class="ri-alert-line"></i> Selecciona la fecha del evento
+              </span>
+            </div>
+
+            <div class="datetime-col">
+              <label class="wizard-field-label">
+                <i class="ri-time-line field-icon time"></i> Hora de Inicio <span class="required-star">*</span>
+              </label>
+              <div class="input-with-icon">
+                <input type="time"
+                  class="wizard-form-input <%= 'is-invalid' if @event.errors[:datetime].any? %>"
+                  value="<%= event_time %>"
+                  data-new-event-screens-target="timeInput"
+                  data-action="change->new-event-screens#updateDateTime">
+              </div>
+              <span class="client-error-msg d-none" data-new-event-screens-target="timeError">
+                <i class="ri-alert-line"></i> Selecciona la hora de inicio
+              </span>
+            </div>
+          </div>
+
+          <!-- Quick Time Presets -->
+          <div class="time-presets-row">
+            <span class="presets-label"><i class="ri-magic-line"></i> Horarios comunes:</span>
+            <div class="presets-pills">
+              <button type="button" class="preset-pill" data-action="click->new-event-screens#setTimePreset" data-time="18:00">06:00 PM</button>
+              <button type="button" class="preset-pill" data-action="click->new-event-screens#setTimePreset" data-time="19:00">07:00 PM</button>
+              <button type="button" class="preset-pill" data-action="click->new-event-screens#setTimePreset" data-time="20:00">08:00 PM</button>
+              <button type="button" class="preset-pill" data-action="click->new-event-screens#setTimePreset" data-time="21:00">09:00 PM</button>
+              <button type="button" class="preset-pill" data-action="click->new-event-screens#setTimePreset" data-time="22:00">10:00 PM</button>
+            </div>
+          </div>
+
+          <% if @event.errors[:datetime].any? %>
+            <span class="field-error-msg mt-2"><i class="ri-alert-line"></i> <%= @event.errors[:datetime].first %></span>
+          <% end %>
         </div>
 
+        <!-- Duration Section with Preset Pills -->
         <div class="wizard-form-group">
-          <%= f.input :duration,
-            as: :integer,
-            label: "#{t('events.show_duration')} (en minutos)",
-            hint: "Mínimo 30 minutos (ej. 60 para 1 hora, 120 para 2 horas)",
-            placeholder: "120",
-            required: true,
-            input_html: { min: 30, class: "wizard-form-input" } %>
+          <label class="wizard-field-label">
+            <i class="ri-timer-line field-icon duration"></i> <%= t('events.show_duration') %> <span class="required-star">*</span>
+          </label>
+          <p class="field-hint-text">Elige una duración estimada de la presentación o escribe los minutos exactos (mínimo 30 minutos).</p>
+
+          <!-- Duration Presets -->
+          <div class="duration-presets-grid">
+            <button type="button" class="duration-pill" data-action="click->new-event-screens#setDurationPreset" data-minutes="45">45 min</button>
+            <button type="button" class="duration-pill" data-action="click->new-event-screens#setDurationPreset" data-minutes="60">1 hora</button>
+            <button type="button" class="duration-pill" data-action="click->new-event-screens#setDurationPreset" data-minutes="90">1.5 horas</button>
+            <button type="button" class="duration-pill active" data-action="click->new-event-screens#setDurationPreset" data-minutes="120">2 horas</button>
+            <button type="button" class="duration-pill" data-action="click->new-event-screens#setDurationPreset" data-minutes="180">3 horas</button>
+            <button type="button" class="duration-pill" data-action="click->new-event-screens#setDurationPreset" data-minutes="240">4 horas</button>
+          </div>
+
+          <!-- Custom Minutes Input with helper badge -->
+          <div class="duration-custom-row mt-3">
+            <div class="duration-input-wrapper">
+              <span class="input-prefix-icon"><i class="ri-hourglass-2-line"></i></span>
+              <%= f.input_field :duration,
+                type: "number",
+                min: 30,
+                value: @event.duration || 120,
+                class: "wizard-form-input with-prefix #{'is-invalid' if @event.errors[:duration].any?}",
+                data: {
+                  new_event_screens_target: "durationInput",
+                  action: "input->new-event-screens#onDurationInput"
+                } %>
+              <span class="input-suffix-tag">minutos</span>
+            </div>
+
+            <div class="duration-summary-pill" data-new-event-screens-target="durationSummary">
+              <i class="ri-check-line"></i> <span>2 horas de show</span>
+            </div>
+          </div>
+
+          <% if @event.errors[:duration].any? %>
+            <span class="field-error-msg"><i class="ri-alert-line"></i> <%= @event.errors[:duration].first %></span>
+          <% end %>
+          <span class="client-error-msg d-none" data-new-event-screens-target="durationError">
+            <i class="ri-alert-line"></i> La duración debe ser de al menos 30 minutos
+          </span>
         </div>
 
         <div class="wizard-actions-footer">
@@ -172,7 +360,9 @@
             <i class="ri-arrow-left-line"></i>
             <span>Anterior</span>
           </button>
-          <button type="submit" class="wizard-btn-submit">
+          <button type="button"
+            class="wizard-btn-submit"
+            data-action="click->new-event-screens#submitWizard">
             <i class="ri-check-line"></i>
             <span>Publicar Evento</span>
           </button>
