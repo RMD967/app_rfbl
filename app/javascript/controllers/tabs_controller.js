@@ -4,6 +4,9 @@ export default class extends Controller {
   static targets = ["tab", "button"]
 
   shiftTab(event) {
+    if (event) {
+      event.preventDefault()
+    }
     const clickedButton = event.currentTarget
     const tabName = clickedButton.dataset.tabName || clickedButton.id
 

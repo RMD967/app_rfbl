@@ -14,7 +14,7 @@ class DashboardsController < ApplicationController
     @general_posts = @dashboard.general_discovers.includes(:likes, comments: :user)
     @new_discover = Discover.new(dashboard: @dashboard, genre: @dashboard.artist_genre)
 
-    if current_user.admin_of_dashboard?(@dashboard)
+    if current_user&.admin_of_dashboard?(@dashboard)
       @invitation = Invitation.new(dashboard: @dashboard)
       @invited_users = @dashboard.users - [@dashboard.admin]
       flash.now[:success] = "User successfully invited!" if params[:invitation_success]

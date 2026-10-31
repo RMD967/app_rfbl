@@ -135,7 +135,8 @@ export default class extends Controller {
   openComments(event) {
     event.preventDefault()
     event.stopPropagation()
-    const discoverId = event.currentTarget.dataset.discoverId
+    const target = event.currentTarget
+    const discoverId = target.dataset.discoverId || target.closest("[data-discover-id]")?.dataset.discoverId
     const drawer = document.getElementById(`comments_drawer_${discoverId}`)
     if (drawer) {
       drawer.classList.add("open")
@@ -145,7 +146,8 @@ export default class extends Controller {
   closeComments(event) {
     event.preventDefault()
     event.stopPropagation()
-    const discoverId = event.currentTarget.dataset.discoverId
+    const target = event.currentTarget
+    const discoverId = target.dataset.discoverId || target.closest("[data-discover-id]")?.dataset.discoverId
     if (discoverId) {
       const drawer = document.getElementById(`comments_drawer_${discoverId}`)
       if (drawer) drawer.classList.remove("open")
@@ -162,7 +164,7 @@ export default class extends Controller {
     const btn = event.currentTarget
     const commentId = btn.dataset.commentId
     const authorName = btn.dataset.authorName
-    const discoverId = btn.dataset.discoverId
+    const discoverId = btn.dataset.discoverId || btn.closest("[data-discover-id]")?.dataset.discoverId
 
     const parentInput = document.getElementById(`discover_${discoverId}_parent_id`)
     const replyIndicator = document.getElementById(`discover_${discoverId}_reply_indicator`)
@@ -182,7 +184,8 @@ export default class extends Controller {
     event.preventDefault()
     event.stopPropagation()
 
-    const discoverId = event.currentTarget.dataset.discoverId
+    const target = event.currentTarget
+    const discoverId = target.dataset.discoverId || target.closest("[data-discover-id]")?.dataset.discoverId
     const parentInput = document.getElementById(`discover_${discoverId}_parent_id`)
     const replyIndicator = document.getElementById(`discover_${discoverId}_reply_indicator`)
     const commentInput = document.getElementById(`discover_${discoverId}_comment_input`)
@@ -197,18 +200,19 @@ export default class extends Controller {
   onCommentSubmitted(event) {
     const form = event.currentTarget
     const card = form.closest(".tiktok-card")
-    if (!card) return
-    const discoverId = card.dataset.videoId
+    const discoverId = card?.dataset.discoverId || card?.dataset.videoId || form.id.match(/\d+/)?.[0]
 
-    const parentInput = document.getElementById(`discover_${discoverId}_parent_id`)
-    const replyIndicator = document.getElementById(`discover_${discoverId}_reply_indicator`)
-    const commentInput = document.getElementById(`discover_${discoverId}_comment_input`)
+    if (discoverId) {
+      const parentInput = document.getElementById(`discover_${discoverId}_parent_id`)
+      const replyIndicator = document.getElementById(`discover_${discoverId}_reply_indicator`)
+      const commentInput = document.getElementById(`discover_${discoverId}_comment_input`)
 
-    if (parentInput) parentInput.value = ""
-    if (replyIndicator) replyIndicator.classList.add("d-none")
-    if (commentInput) {
-      commentInput.value = ""
-      commentInput.placeholder = "Agrega un comentario..."
+      if (parentInput) parentInput.value = ""
+      if (replyIndicator) replyIndicator.classList.add("d-none")
+      if (commentInput) {
+        commentInput.value = ""
+        commentInput.placeholder = "Agrega un comentario..."
+      }
     }
   }
 }
