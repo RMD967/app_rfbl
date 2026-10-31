@@ -303,6 +303,7 @@
   transition: transform 0.25s ease, border-color 0.25s ease;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 
   &:hover {
     transform: translateY(-3px);
@@ -336,6 +337,9 @@
     align-items: center;
     text-align: center;
     flex: 1;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .artist-card-avatar-wrapper {
@@ -415,27 +419,202 @@
   }
 
   .artist-card-footer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
     width: 100%;
     margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    align-items: center;
+    box-sizing: border-box;
 
-    .btn-artist-view {
-      padding: 6px 14px;
-      border-radius: 18px;
+    turbo-frame {
+      display: contents;
+    }
+
+    .follow-action-wrapper {
+      display: contents !important;
+    }
+
+    // 1. Followers Pill (Centered top row across both columns)
+    .followers-pill {
+      grid-column: 1 / -1;
+      order: 1;
+      justify-self: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 4px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.75);
       font-size: 0.76rem;
+      font-weight: 500;
+      white-space: nowrap;
+      margin-bottom: 2px;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+
+      i.ri-heart-3-fill {
+        color: #FD1015;
+        font-size: 0.82rem;
+      }
+
+      strong {
+        color: #ffffff;
+        font-weight: 700;
+      }
+
+      span {
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      &.cursor-pointer:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+      }
+    }
+
+    // 2. View Profile Button (Bottom row, column 1)
+    .btn-artist-view {
+      grid-column: 1;
+      order: 2;
+      width: 100%;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 0 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
       font-weight: 700;
-      color: white;
-      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       text-decoration: none;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: background 0.2s;
+      white-space: nowrap;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      box-sizing: border-box;
+      min-width: 0;
+
+      i {
+        font-size: 0.95rem;
+        color: #A259FF;
+      }
 
       &:hover {
-        background: rgba(255, 255, 255, 0.22);
-        color: white;
+        background: rgba(162, 89, 255, 0.25);
+        border-color: #A259FF;
+        color: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(162, 89, 255, 0.3);
+
+        i {
+          color: #ffffff;
+        }
+      }
+    }
+
+    // 3. Follow / Following Form & Button (Bottom row, column 2)
+    form.button_to {
+      grid-column: 2;
+      order: 3;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+      display: block;
+
+      .btn-follow {
+        width: 100%;
+        height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 0 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        box-sizing: border-box;
+        min-width: 0;
+
+        i {
+          font-size: 0.95rem;
+        }
+
+        .btn-follow-text {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        &.following {
+          background: rgba(30, 221, 136, 0.12);
+          color: #1EDD88;
+          border: 1px solid rgba(30, 221, 136, 0.35);
+
+          i {
+            color: #1EDD88;
+          }
+
+          &:hover {
+            background: rgba(253, 16, 21, 0.18);
+            color: #ff6b6e;
+            border-color: rgba(253, 16, 21, 0.45);
+
+            i {
+              color: #ff6b6e;
+            }
+          }
+        }
+
+        &.not-following {
+          background: linear-gradient(135deg, #A259FF 0%, #FF62A5 100%);
+          color: #ffffff;
+          border: none;
+          box-shadow: 0 4px 12px rgba(162, 89, 255, 0.35);
+
+          &:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(162, 89, 255, 0.55);
+            color: #ffffff;
+          }
+        }
+      }
+    }
+
+    // When there is no follow button, Perfil spans full width
+    &:not(:has(form.button_to)) {
+      .btn-artist-view {
+        grid-column: 1 / -1;
+      }
+    }
+
+    // When there is no Perfil button, Follow button spans full width
+    &:not(:has(.btn-artist-view)) {
+      form.button_to {
+        grid-column: 1 / -1;
+      }
+    }
+
+    // Ultra-narrow card responsiveness (< 250px)
+    @media (max-width: 280px) {
+      grid-template-columns: 1fr;
+
+      .btn-artist-view {
+        grid-column: 1;
+      }
+
+      form.button_to {
+        grid-column: 1;
       }
     }
   }
