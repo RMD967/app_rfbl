@@ -32,17 +32,31 @@ class DiscoversController < ApplicationController
     if @current_tab == "nearby"
       @search_location = params[:location].presence || params[:location_query].presence || "Puebla"
       matching_dashboards = Dashboard.where("artist_location ILIKE :loc OR artist_cities ILIKE :loc", loc: "%#{@search_location}%")
-      @discovers = base_scope.where(dashboard: matching_dashboards).order(created_at: :desc).limit(40)
+      scope = base_scope.where(dashboard: matching_dashboards)
+      if params[:refresh].present?
+        @discovers = scope.order(Arel.sql("RANDOM()")).limit(40)
+      else
+        @discovers = scope.order(created_at: :desc).limit(40)
+      end
     elsif @current_tab == "genre"
       if @current_genre.present? && !["All", "Todos", "all", "todos"].include?(@current_genre)
         matching_dashboards = Dashboard.where("artist_genre ILIKE :g", g: "%#{@current_genre}%")
-        @discovers = base_scope.where(
+        scope = base_scope.where(
           "discovers.genre ILIKE :g OR discovers.dashboard_id IN (:dash_ids)",
           g: "%#{@current_genre}%",
           dash_ids: matching_dashboards.select(:id)
-        ).order(created_at: :desc).limit(40)
+        )
+        if params[:refresh].present?
+          @discovers = scope.order(Arel.sql("RANDOM()")).limit(40)
+        else
+          @discovers = scope.order(created_at: :desc).limit(40)
+        end
       else
-        @discovers = base_scope.order(created_at: :desc).limit(40)
+        if params[:refresh].present?
+          @discovers = base_scope.order(Arel.sql("RANDOM()")).limit(40)
+        else
+          @discovers = base_scope.order(created_at: :desc).limit(40)
+        end
       end
     else
       if @query.present?
@@ -53,7 +67,8 @@ class DiscoversController < ApplicationController
           dash_ids: matching_dashboards.select(:id)
         ).order(created_at: :desc).limit(40)
       else
-        @discovers = base_scope.order(created_at: :desc).limit(40)
+        # Smart personalized recommendation algorithm for "For You"
+        @discovers = fetch_for_you_recommendations(base_scope)
       end
     end
   end
@@ -87,6 +102,63 @@ class DiscoversController < ApplicationController
   end
 
   private
+
+  def fetch_for_you_recommendations(base_scope)
+    # Pull a candidate pool (up to 160 items)
+    candidates = base_scope.order(created_at: :desc).limit(160).to_a
+
+    if current_user
+      # 1. Behavior affinity: genres user has liked and commented on
+      user_liked_ids = current_user.likes.where(likeable_type: "Discover").pluck(:likeable_id).to_set
+      liked_genres = Discover.where(id: user_liked_ids.to_a).where.not(genre: [nil, ""]).pluck(:genre)
+      commented_genres = Discover.where(id: current_user.comments.pluck(:discover_id)).where.not(genre: [nil, ""]).pluck(:genre)
+
+      affinity_counts = (liked_genres + commented_genres).each_with_object(Hash.new(0)) { |g, h| h[g.downcase] += 1 }
+      top_genres = affinity_counts.sort_by { |_, count| -count }.map(&:first)
+
+      # 2. Artists the user follows
+      followed_artist_ids = current_user.following.pluck(:id).to_set rescue Set.new
+      followed_dashboards = Dashboard.where(user_id: followed_artist_ids.to_a).pluck(:id).to_set
+
+      # 3. Score each candidate
+      scored = candidates.map do |disc|
+        score = 0
+        g = disc.genre.to_s.strip.downcase
+
+        # A. Followed artists prioritized
+        score += 50 if followed_dashboards.include?(disc.dashboard_id)
+
+        # B. User taste genre match
+        if top_genres[0..1].include?(g)
+          score += 35
+        elsif top_genres[2..4].include?(g)
+          score += 20
+        elsif top_genres.include?(g)
+          score += 10
+        end
+
+        # C. Fresh unliked content prioritized
+        score += 15 unless user_liked_ids.include?(disc.id)
+
+        # D. Social proof / engagement
+        score += [disc.likes.size, 15].min
+
+        # E. Serendipity / Freshness jitter (ensures feed refreshes dynamically on every visit)
+        score += rand(0..25)
+
+        [disc, score]
+      end
+
+      scored.sort_by { |_, score| -score }.first(40).map(&:first)
+    else
+      # Guest user: rank by engagement, variety across genres, plus random freshness jitter
+      scored = candidates.map do |disc|
+        score = [disc.likes.size * 2, 25].min + rand(0..35)
+        [disc, score]
+      end
+      scored.sort_by { |_, score| -score }.first(40).map(&:first)
+    end
+  end
 
   def set_discover
     @discover = Discover.find(params[:id])

@@ -13,12 +13,24 @@ export default class extends Controller {
     "clearScreenSwitch",
     "autoScrollSwitch",
     "speedPill",
-    "exitClearScreenBtn"
+    "exitClearScreenBtn",
+    "pullRefreshIndicator",
+    "pullRefreshSpinner",
+    "pullRefreshIcon",
+    "pullRefreshText",
+    "headerRefreshIcon"
   ]
 
   connect() {
     this.isMuted = false
     this.userMutedManually = false
+
+    // Pull to refresh tracking
+    this.pullStartY = 0
+    this.pullDistance = 0
+    this.isPullRefreshing = false
+    this.isEligibleForPull = false
+    this.pullThreshold = 75
 
     // Load persisted video preferences
     this.isClearScreen = localStorage.getItem("rfbl_clear_screen") === "true"
@@ -38,6 +50,16 @@ export default class extends Controller {
     this.applySpeedUI(this.savedSpeed)
 
     this.setupIntersectionObserver()
+
+    // Desktop mouse wheel scroll-up at top of feed to refresh
+    if (this.hasFeedViewportTarget) {
+      this.onWheelHandler = (e) => {
+        if (this.feedViewportTarget.scrollTop <= 0 && e.deltaY < -45 && !this.isPullRefreshing) {
+          this.triggerPullRefresh()
+        }
+      }
+      this.feedViewportTarget.addEventListener("wheel", this.onWheelHandler, { passive: true })
+    }
 
     // Attempt to unmute active videos on user interaction if browser policy deferred audio
     const firstInteraction = () => {
@@ -64,6 +86,9 @@ export default class extends Controller {
     }
     if (this.longPressTimeout) {
       clearTimeout(this.longPressTimeout)
+    }
+    if (this.hasFeedViewportTarget && this.onWheelHandler) {
+      this.feedViewportTarget.removeEventListener("wheel", this.onWheelHandler)
     }
     document.body.classList.remove("clear-screen-active")
   }
@@ -254,6 +279,11 @@ export default class extends Controller {
     this.touchStartY = event.touches[0].clientY
     this.isLongPressTriggered = false
 
+    // Check if user is at the top of the feed to allow pull-to-refresh
+    const scrollTop = this.hasFeedViewportTarget ? this.feedViewportTarget.scrollTop : 0
+    this.isEligibleForPull = scrollTop <= 8
+    this.pullStartY = event.touches[0].clientY
+
     clearTimeout(this.longPressTimeout)
     this.longPressTimeout = setTimeout(() => {
       this.isLongPressTriggered = true
@@ -263,25 +293,110 @@ export default class extends Controller {
   }
 
   onTouchMove(event) {
-    if (!this.longPressTimeout) return
     const touch = event.touches[0]
     const deltaX = Math.abs(touch.clientX - this.touchStartX)
-    const deltaY = Math.abs(touch.clientY - this.touchStartY)
+    const diffY = touch.clientY - this.pullStartY
+    const deltaY = Math.abs(diffY)
+
     // If finger moves more than 10px, it's a scroll gesture, cancel long press
     if (deltaX > 10 || deltaY > 10) {
       clearTimeout(this.longPressTimeout)
       this.longPressTimeout = null
+    }
+
+    // Pull-to-refresh gesture tracking when pulling down at the top of the feed
+    if (this.isEligibleForPull && diffY > 8 && !this.isPullRefreshing) {
+      this.pullDistance = Math.min(diffY * 0.45, 110)
+
+      if (this.hasPullRefreshIndicatorTarget) {
+        this.pullRefreshIndicatorTarget.classList.add("visible")
+        this.pullRefreshIndicatorTarget.style.transform = `translate(-50%, ${this.pullDistance}px)`
+
+        if (diffY >= this.pullThreshold) {
+          if (this.hasPullRefreshTextTarget) {
+            this.pullRefreshTextTarget.textContent = "Suelta para actualizar"
+          }
+          if (this.hasPullRefreshIconTarget) {
+            this.pullRefreshIconTarget.className = "ri-refresh-line pull-refresh-icon rotating-ready"
+          }
+        } else {
+          if (this.hasPullRefreshTextTarget) {
+            this.pullRefreshTextTarget.textContent = "Desliza para actualizar"
+          }
+          if (this.hasPullRefreshIconTarget) {
+            this.pullRefreshIconTarget.className = "ri-arrow-down-line pull-refresh-icon"
+          }
+        }
+      }
     }
   }
 
   onTouchEnd(event) {
     clearTimeout(this.longPressTimeout)
     this.longPressTimeout = null
+
+    if (this.isEligibleForPull && !this.isPullRefreshing) {
+      const touchEnd = event.changedTouches[0]
+      const diffY = touchEnd ? (touchEnd.clientY - this.pullStartY) : 0
+
+      if (diffY >= this.pullThreshold) {
+        this.triggerPullRefresh()
+      } else {
+        this.resetPullIndicator()
+      }
+    }
+    this.isEligibleForPull = false
   }
 
   onTouchCancel(event) {
     clearTimeout(this.longPressTimeout)
     this.longPressTimeout = null
+    this.resetPullIndicator()
+    this.isEligibleForPull = false
+  }
+
+  triggerPullRefresh() {
+    if (this.isPullRefreshing) return
+    this.isPullRefreshing = true
+
+    if (this.hasPullRefreshIndicatorTarget) {
+      this.pullRefreshIndicatorTarget.classList.add("visible", "refreshing")
+      this.pullRefreshIndicatorTarget.style.transform = "translate(-50%, 65px)"
+    }
+    if (this.hasPullRefreshTextTarget) {
+      this.pullRefreshTextTarget.textContent = "Actualizando videos..."
+    }
+    if (this.hasPullRefreshIconTarget) {
+      this.pullRefreshIconTarget.className = "ri-refresh-line pull-refresh-icon is-spinning"
+    }
+    if (this.hasHeaderRefreshIconTarget) {
+      this.headerRefreshIconTarget.classList.add("is-spinning")
+    }
+    if (navigator.vibrate) {
+      navigator.vibrate(50)
+    }
+
+    setTimeout(() => {
+      const url = new URL(window.location.href)
+      url.searchParams.set("refresh", Date.now())
+      window.location.href = url.toString()
+    }, 400)
+  }
+
+  resetPullIndicator() {
+    if (!this.hasPullRefreshIndicatorTarget || this.isPullRefreshing) return
+    this.pullRefreshIndicatorTarget.style.transform = "translate(-50%, -60px)"
+    setTimeout(() => {
+      if (!this.isPullRefreshing && this.hasPullRefreshIndicatorTarget) {
+        this.pullRefreshIndicatorTarget.classList.remove("visible", "refreshing")
+      }
+    }, 220)
+  }
+
+  onRefreshClick(event) {
+    if (this.hasHeaderRefreshIconTarget) {
+      this.headerRefreshIconTarget.classList.add("is-spinning")
+    }
   }
 
   openOptionsMenu(card = null) {

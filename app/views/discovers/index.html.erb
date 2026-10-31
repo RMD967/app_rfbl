@@ -48,6 +48,16 @@
         <i class="ri-global-line"></i>
         <span class="lang-code-text"><%= I18n.locale.to_s == 'es' ? 'EN' : 'ES' %></span>
       <% end %>
+
+      <span class="tiktok-tabs-divider">|</span>
+
+      <!-- 5th Small Action: Refresh Feed Button -->
+      <%= link_to discovers_path(tab: @current_tab, genre: @current_genre, location: @search_location, refresh: Time.current.to_i),
+                  class: "tiktok-tab-link tiktok-tab-refresh",
+                  data: { action: "click->tiktok-feed#onRefreshClick" },
+                  title: (I18n.locale.to_s == 'es' ? "Actualizar feed de videos" : "Refresh video feed") do %>
+        <i class="ri-refresh-line refresh-icon" data-tiktok-feed-target="headerRefreshIcon"></i>
+      <% end %>
     </div>
 
     <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->
@@ -266,6 +276,16 @@
 
   <!-- Vertical Snap-Scrolling Feed Container -->
   <main class="tiktok-feed-viewport" data-tiktok-feed-target="feedViewport">
+    <!-- Pull To Refresh Indicator -->
+    <div class="tiktok-pull-refresh-indicator" data-tiktok-feed-target="pullRefreshIndicator">
+      <div class="pull-refresh-spinner" data-tiktok-feed-target="pullRefreshSpinner">
+        <i class="ri-arrow-down-line pull-refresh-icon" data-tiktok-feed-target="pullRefreshIcon"></i>
+      </div>
+      <span class="pull-refresh-text" data-tiktok-feed-target="pullRefreshText">
+        <%= t('discover.pull_to_refresh', default: "Desliza hacia abajo para actualizar") %>
+      </span>
+    </div>
+
     <% if @discovers.any? %>
       <div class="tiktok-feed-track">
         <%= render partial: "discovers/tiktok_card", collection: @discovers, as: :discover %>
