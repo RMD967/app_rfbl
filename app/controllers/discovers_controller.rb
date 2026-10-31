@@ -32,7 +32,7 @@ class DiscoversController < ApplicationController
     if @current_tab == "nearby"
       @search_location = params[:location].presence || params[:location_query].presence || "Puebla"
       matching_dashboards = Dashboard.where("artist_location ILIKE :loc OR artist_cities ILIKE :loc", loc: "%#{@search_location}%")
-      @discovers = base_scope.where(dashboard: matching_dashboards).order(created_at: :desc)
+      @discovers = base_scope.where(dashboard: matching_dashboards).order(created_at: :desc).limit(40)
     elsif @current_tab == "genre"
       if @current_genre.present? && !["All", "Todos", "all", "todos"].include?(@current_genre)
         matching_dashboards = Dashboard.where("artist_genre ILIKE :g", g: "%#{@current_genre}%")
@@ -40,9 +40,9 @@ class DiscoversController < ApplicationController
           "discovers.genre ILIKE :g OR discovers.dashboard_id IN (:dash_ids)",
           g: "%#{@current_genre}%",
           dash_ids: matching_dashboards.select(:id)
-        ).order(created_at: :desc)
+        ).order(created_at: :desc).limit(40)
       else
-        @discovers = base_scope.order(created_at: :desc)
+        @discovers = base_scope.order(created_at: :desc).limit(40)
       end
     else
       if @query.present?
@@ -51,9 +51,9 @@ class DiscoversController < ApplicationController
           "discovers.title ILIKE :q OR discovers.genre ILIKE :q OR discovers.dashboard_id IN (:dash_ids)",
           q: "%#{@query}%",
           dash_ids: matching_dashboards.select(:id)
-        ).order(created_at: :desc)
+        ).order(created_at: :desc).limit(40)
       else
-        @discovers = base_scope.order(created_at: :desc)
+        @discovers = base_scope.order(created_at: :desc).limit(40)
       end
     end
   end

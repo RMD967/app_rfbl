@@ -1,19 +1,60 @@
-# db/seeds.rb - Realistic dataset for Radios FBL
+# db/seeds.rb - High-performance, realistic & WebP-optimized dataset for Radios FBL
 
-puts "🧹 Cleaning old database records..."
+puts "🧹 Cleaning existing database records..."
 Favorite.destroy_all if defined?(Favorite)
 Follow.destroy_all if defined?(Follow)
 Message.destroy_all
 ChatUser.destroy_all
 Chatroom.destroy_all
 Booking.destroy_all
+Comment.destroy_all
+Like.destroy_all
 Discover.destroy_all
+UserDashboard.destroy_all if defined?(UserDashboard)
 Dashboard.destroy_all
 Event.destroy_all
 User.destroy_all
 
+# Optimized video streams with Cloudinary auto-compression & 480p mobile width
+CLD_VIDEOS = [
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812814/main_nari6s.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812793/2_bldgkm.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812806/1_qqcb2j.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812797/6_jrd8xr.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812817/3_qu4iul.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812801/5_jjdgww.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812827/7_s5cbyd.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812802/8_se9d9t.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812838/9_ylmvbr.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812794/10_jgfbdr.mp4",
+  "https://res.cloudinary.com/djuhjudsb/video/upload/q_auto:good,w_480,vc_h264/v1687812806/4_dqztvb.mp4"
+].freeze
+
+# High-efficiency WebP portrait avatars
+WEBP_AVATARS = [
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1463453091185-61582044d556?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1517256673644-36ad11246d21?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?auto=format&fit=crop&w=400&q=75&fm=webp",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=75&fm=webp"
+].freeze
+
 puts "👤 Creating demo user..."
-# Default demo user for instant login
 demo_user = User.create!(
   email: "user0@example.com",
   password: "12345678",
@@ -24,16 +65,22 @@ demo_user = User.create!(
 )
 
 puts "🎭 Creating Event Organizers / Venues..."
-organizers_data = [
+organizers_catalog = [
   { first: "Sarah", last: "Jenkins", email: "sarah.rooftop@example.com", venue: "The Skyline Rooftop Lounge" },
-  { first: "Diego", last: "Morales", email: "diego.fiesta@example.com", venue: "Casa de la Salsa" },
+  { first: "Diego", last: "Morales", email: "diego.fiesta@example.com", venue: "Casa de la Salsa Puebla" },
   { first: "Olivia", last: "Chen", email: "olivia.weddings@example.com", venue: "Bliss Wedding Planners" },
   { first: "Marcus", last: "Vance", email: "marcus.lounge@example.com", venue: "Blue Note Jazz Cellar" },
   { first: "Elena", last: "Gomez", email: "elena.festival@example.com", venue: "Sunset Music Festivals" },
-  { first: "Lucas", last: "Rossi", email: "lucas.beach@example.com", venue: "Paradise Beach Club" }
+  { first: "Lucas", last: "Rossi", email: "lucas.beach@example.com", venue: "Paradise Beach Club" },
+  { first: "Mateo", last: "Campos", email: "mateo.puebla@example.com", venue: "Terraza Cholula Live" },
+  { first: "Valeria", last: "Cruz", email: "valeria.cdmx@example.com", venue: "Foro Condesa Underground" },
+  { first: "Fernando", last: "Soto", email: "fernando.gdl@example.com", venue: "Palacio de la Música Zapopan" },
+  { first: "Camila", last: "Rios", email: "camila.mty@example.com", venue: "Arena San Pedro Music" },
+  { first: "Javier", last: "Lara", email: "javier.cancun@example.com", venue: "Riviera Beach Stage" },
+  { first: "Sofia", last: "Mendoza", email: "sofia.oaxaca@example.com", venue: "Centro Cultural Oaxaca" }
 ]
 
-organizers = organizers_data.map do |data|
+organizers = organizers_catalog.map do |data|
   User.create!(
     email: data[:email],
     password: "12345678",
@@ -43,532 +90,435 @@ organizers = organizers_data.map do |data|
   )
 end
 
-puts "🎸 Creating Musicians & Artist Dashboards..."
-artists_dataset = [
-  {
-    name: "Luna & The Midnight Grooves",
-    first: "Luna", last: "Valdez", email: "luna.grooves@example.com",
-    genre: "Jazz", instrument: "Vocals", location: "New York",
-    cities: "New York, Philadelphia, Boston",
-    price: 650.00, count: 4, radius: 60.0,
-    desc: "Smooth modern jazz quartet blending soulful vocals with upright bass, saxophone, and vintage Rhodes piano. Perfect for upscale lounges and cocktail receptions.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812814/main_nari6s.mp4",
-    track: "Midnight Boulevard",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80"
+puts "🎸 Generating ~100 Musicians & Dashboards across Puebla, CDMX, Miami, NY and key hubs..."
+
+GENRES = %w[Tropical Regional Rock Pop Urban DJ Jazz Ballads Instrumental Choir Country].freeze
+
+LOCATIONS_CONFIG = {
+  "Puebla" => {
+    cities: "Puebla, San Andrés Cholula, Atlixco, Tehuacán",
+    venues: ["Zócalo de Puebla", "San Andrés Cholula", "Angelópolis", "La Paz", "Teatro Principal Puebla"]
   },
-  {
-    name: "DJ Alex Pulse",
-    first: "Alex", last: "Pulse", email: "alex.pulse@example.com",
-    genre: "DJ", instrument: "DJ", location: "Miami",
-    cities: "Miami, Fort Lauderdale, Orlando",
-    price: 550.00, count: 1, radius: 80.0,
-    desc: "High-energy club and festival DJ specializing in Deep House, Tech-House, and Tropical Latin beats. Full sound system and Pioneer CDJ setup included.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812793/2_bldgkm.mp4",
-    track: "Neon Horizons (Live Mix)",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80"
+  "Ciudad de México" => {
+    cities: "Ciudad de México, Naucalpan, Tlalnepantla",
+    venues: ["Roma Norte", "Condesa", "Polanco", "Coyoacán", "Centro Histórico CDMX"]
   },
-  {
-    name: "Mariachi Los Gavilanes",
-    first: "Javier", last: "Mendoza", email: "mariachi.gavilanes@example.com",
-    genre: "Regional", instrument: "Trumpet", location: "Los Angeles",
-    cities: "Los Angeles, San Diego, Anaheim",
-    price: 850.00, count: 7, radius: 75.0,
-    desc: "Authentic 7-piece Mexican Mariachi ensemble with trumpets, violins, vihuela, and guitarrón. Traditional rancheras, boleros, and festive serenades.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812806/1_qqcb2j.mp4",
-    track: "El Son de la Madrugada",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80"
+  "Guadalajara" => {
+    cities: "Guadalajara, Zapopan, Tlaquepaque",
+    venues: ["Chapultepec GDL", "Providencia", "Teatro Degollado"]
   },
-  {
-    name: "Carlos Santana Tribute Trio",
-    first: "Mateo", last: "Santana", email: "mateo.guitar@example.com",
-    genre: "Rock", instrument: "Guitar", location: "San Francisco",
-    cities: "San Francisco, Oakland, San Jose",
-    price: 500.00, count: 3, radius: 50.0,
-    desc: "Latin rock fusion trio featuring electrifying guitar solos, congas, and driving basslines that will keep crowds dancing all night.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812797/6_jrd8xr.mp4",
-    track: "Black Magic Samba",
-    avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=80"
+  "Monterrey" => {
+    cities: "Monterrey, San Pedro Garza García, Santa Catarina",
+    venues: ["Barrio Antiguo MTY", "San Pedro Garza García", "Parque Fundidora"]
   },
-  {
-    name: "Elena Rostova",
-    first: "Elena", last: "Rostova", email: "elena.violin@example.com",
-    genre: "Instrumental", instrument: "Violin", location: "Chicago",
-    cities: "Chicago, Milwaukee, Evanston",
-    price: 380.00, count: 1, radius: 45.0,
-    desc: "Classically trained concert violinist performing classical masterworks as well as contemporary pop/rock arrangements on acoustic and electric violin.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812817/3_qu4iul.mp4",
-    track: "Czardas & Modern Strings",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=500&auto=format&fit=crop&q=80"
+  "Cancún" => {
+    cities: "Cancún, Playa del Carmen, Tulum",
+    venues: ["Zona Hotelera Cancún", "Quinta Avenida Playa", "Tulum Jungle Stage"]
   },
-  {
-    name: "The Neon Vibe",
-    first: "Liam", last: "Brooks", email: "liam.vibe@example.com",
-    genre: "Pop", instrument: "Bass Guitar", location: "Austin",
-    cities: "Austin, San Antonio, Houston",
-    price: 600.00, count: 4, radius: 70.0,
-    desc: "Modern indie-pop band delivering upbeat festival anthems, synth hooks, and top-40 hits with energetic live performance presence.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812801/5_jjdgww.mp4",
-    track: "Summer Electric",
-    avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=500&auto=format&fit=crop&q=80"
+  "Oaxaca" => {
+    cities: "Oaxaca de Juárez, Santa Cruz Xoxocotlán",
+    venues: ["Andador Turístico Oaxaca", "Jardín Etnobotánico"]
   },
-  {
-    name: "Salsa & Cumbia Kings",
-    first: "Andres", last: "Castillo", email: "andres.cumbia@example.com",
-    genre: "Tropical", instrument: "Drums", location: "Miami",
-    cities: "Miami, Fort Lauderdale, Tampa",
-    price: 750.00, count: 5, radius: 65.0,
-    desc: "Dynamic tropical orchestra playing the best of classic salsa dura, Colombian cumbia, and Caribbean bachata guaranteed to fill any dancefloor.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812827/7_s5cbyd.mp4",
-    track: "Baila Conmigo",
-    avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=500&auto=format&fit=crop&q=80"
+  "Miami" => {
+    cities: "Miami, Miami Beach, Fort Lauderdale",
+    venues: ["Ocean Drive Miami Beach", "Wynwood Arts District", "Brickell Avenue"]
   },
-  {
-    name: "Sophia Acoustic Sunset",
-    first: "Sophia", last: "Taylor", email: "sophia.acoustic@example.com",
-    genre: "Ballads", instrument: "Guitar", location: "San Francisco",
-    cities: "San Francisco, Berkeley, Palo Alto",
-    price: 320.00, count: 1, radius: 35.0,
-    desc: "Intimate fingerstyle acoustic guitarist and singer-songwriter performing heartfelt acoustic ballads, folk classics, and romantic wedding serenades.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812802/8_se9d9t.mp4",
-    track: "Golden Gate Sunset",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=500&auto=format&fit=crop&q=80"
+  "New York" => {
+    cities: "New York, Brooklyn, Queens",
+    venues: ["5th Avenue Manhattan", "Williamsburg Brooklyn", "Greenwich Village"]
   },
-  {
-    name: "Echoes of Nashville",
-    first: "Caleb", last: "Harris", email: "caleb.country@example.com",
-    genre: "Country", instrument: "Guitar", location: "Nashville",
+  "Los Angeles" => {
+    cities: "Los Angeles, Santa Monica, Pasadena",
+    venues: ["Hollywood Blvd", "Sunset Strip West Hollywood", "Santa Monica Pier"]
+  },
+  "Austin" => {
+    cities: "Austin, San Antonio, Round Rock",
+    venues: ["6th Street Austin", "Rainey Street", "Zilker Park"]
+  },
+  "Nashville" => {
     cities: "Nashville, Franklin, Murfreesboro",
-    price: 450.00, count: 3, radius: 55.0,
-    desc: "Honky-tonk country trio playing timeless country standards, Outlaw country, and contemporary southern rock hits with slide guitar and banjo.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812838/9_ylmvbr.mp4",
-    track: "Tennessee Highway Road",
-    avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=500&auto=format&fit=crop&q=80"
-  },
-  {
-    name: "Urban Beats Collective",
-    first: "Tariq", last: "Johnson", email: "tariq.urban@example.com",
-    genre: "Urban", instrument: "DJ", location: "Atlanta",
-    cities: "Atlanta, Athens, Savannah",
-    price: 520.00, count: 2, radius: 50.0,
-    desc: "Hip-Hop, Trap, and R&B producer/DJ duo with live MPC percussion and custom remixed beats for parties, album releases, and corporate events.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812794/10_jgfbdr.mp4",
-    track: "City Lights & 808s",
-    avatar: "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=500&auto=format&fit=crop&q=80"
-  },
-  {
-    name: "Velvet String Quartet",
-    first: "Giselle", last: "Monet", email: "giselle.strings@example.com",
-    genre: "Instrumental", instrument: "Cello", location: "Boston",
-    cities: "Boston, Cambridge, Providence",
-    price: 800.00, count: 4, radius: 60.0,
-    desc: "Elite string quartet specializing in luxury gala ceremonies, cocktail hours, Bridgerton-style pop covers, and baroque masterworks.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812814/main_nari6s.mp4",
-    track: "Bridgerton Serenade",
-    avatar: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80"
-  },
-  {
-    name: "Coro Polifónico Armonía",
-    first: "Gabriel", last: "Ortiz", email: "gabriel.choir@example.com",
-    genre: "Choir", instrument: "Choir", location: "Philadelphia",
-    cities: "Philadelphia, Camden, Trenton",
-    price: 700.00, count: 12, radius: 40.0,
-    desc: "Acclaimed vocal ensemble delivering breathtaking choral harmony, gospel spirituals, sacred ceremonies, and seasonal holiday concerts.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812806/4_dqztvb.mp4",
-    track: "Voices in Harmony",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80"
-  },
-  {
-    name: "Mariachi Angelópolis",
-    first: "Emiliano", last: "Zapata", email: "mariachi.puebla@example.com",
-    genre: "Regional", instrument: "Trumpet", location: "Puebla",
-    cities: "Puebla, Cholula, Atlixco, Tehuacán",
-    price: 650.00, count: 6, radius: 80.0,
-    desc: "El mariachi más emblemático de Puebla. Serenatas, bodas, XV años y festivales con trompetas enérgicas y el auténtico sabor tradicional poblano.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812806/1_qqcb2j.mp4",
-    track: "Cielito Lindo en Vivo (Puebla)",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80"
-  },
-  {
-    name: "Electro Cumbia Angelopolitana",
-    first: "Rodrigo", last: "Mendoza", email: "rodrigo.cumbia@example.com",
-    genre: "Tropical", instrument: "DJ", location: "Puebla",
-    cities: "Puebla, San Andrés Cholula, San Pedro Cholula",
-    price: 480.00, count: 2, radius: 60.0,
-    desc: "Fusión poblana de cumbia sonidera con beats electrónicos y percusiones en vivo. Poniendo a bailar a todo el centro de Puebla y Cholula.",
-    video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812827/7_s5cbyd.mp4",
-    track: "Noche en Cholula Beat",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80"
+    venues: ["Broadway Nashville", "Music Row", "Ryman Auditorium"]
   }
-]
+}.freeze
 
-artist_users = []
-dashboards = []
-
-artists_dataset.each do |data|
-  user = User.create!(
-    email: data[:email],
-    password: "12345678",
-    first_name: data[:first],
-    last_name: data[:last],
-    artist: true
-  )
-  artist_users << user
-
-  dashboard = Dashboard.create!(
-    user: user,
-    artist_name: data[:name],
-    artist_genre: data[:genre],
-    artist_instrument: data[:instrument],
-    artist_location: data[:location],
-    artist_travel: true,
-    artist_radius: data[:radius],
-    artist_cities: data[:cities],
-    artist_description: data[:desc],
-    artist_price: data[:price],
-    artist_count: data[:count]
-  )
-  dashboards << dashboard
-  UserDashboard.create!(user: user, dashboard: dashboard)
-
-  # Create Discover song post for each artist (MÚSICA)
-  disc = Discover.new(
-    dashboard: dashboard,
-    title: data[:track],
-    content: data[:video],
-    genre: data[:genre],
-    post_type: "music",
-    plays: rand(8000..950000),
-    saved: [true, false].sample,
-    start_time: 0.0,
-    end_time: 45.0
-  )
-  disc[:likes] = rand(1500..85000)
-  disc.save!
-
-  # Create Discover general post for each artist (PUBLICACIONES GENERALES)
-  general_posts_samples = [
-    { title: "Detrás de cámaras ensayando para el festival de fin de semana 🎸🔥", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812797/6_jrd8xr.mp4" },
-    { title: "Probando nuevo equipo y arreglos en el estudio de grabación 🎛️🎧", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812793/2_bldgkm.mp4" },
-    { title: "¡Gracias a toda la banda por una noche inolvidable en vivo! Nos vemos pronto 🙌✨", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812827/7_s5cbyd.mp4" },
-    { title: "Calentando voces y cuerdas antes de subir al escenario 🎶 backstage vibe", video: "https://res.cloudinary.com/djuhjudsb/video/upload/v1687812802/8_se9d9t.mp4" }
+# Specific high-profile seed artists
+ARTIST_NAMES_BY_GENRE = {
+  "Tropical" => [
+    "Sonora Tropical Angelópolis", "Cumbia Sonidera Fantasma", "Salsa Candela Puebla",
+    "Los Reyes de la Cumbia 90s", "Orquesta Rumba del Sol", "Sabor Caribe Ensamble",
+    "Sonidero Mayor de Cholula", "Bachatéame Mucho", "Ritmo & Melao", "La Clave Tropical",
+    "Cumbia & Brass All Stars", "Guaracha Soundsystem", "Tumbao de Barrio", "Salsa Brava Band"
+  ],
+  "Regional" => [
+    "Mariachi Angelópolis Imperial", "Mariachi Los Gavilanes", "Banda Sinaloense La Poblana",
+    "Trío Huasteco Raíces", "Norteño Los Hermanos Vega", "Mariachi Clásico de Puebla",
+    "Grupo Sabor de la Sierra", "Los Bravos del Bajío"
+  ],
+  "Rock" => [
+    "Carlos Santana Tribute Band", "Los Hijos del Volcán", "Distorsión Poblana",
+    "Retro Rock 80s & 90s", "Furia & Cuerdas", "Electric Shadow Band",
+    "Rock Urbano 5 de Mayo", "The Neon Voltage"
+  ],
+  "Pop" => [
+    "The Neon Vibe", "Luna Pop Acústico", "Synthwave Avenue", "Aurora & The Echoes",
+    "Velvet Sunset Pop", "Modern Melodies Co.", "Prisma Pop Trío"
+  ],
+  "Urban" => [
+    "Urban Beats Collective", "Flow Angelopolitano", "Trap Latino Puebla",
+    "Rhythm & Rhymes CDMX", "La Manada Urbana", "Bassline Warriors"
+  ],
+  "DJ" => [
+    "DJ Alex Pulse", "Electro Cumbia Angelopolitana", "DJ Solarise Melodic",
+    "Deep House Cholula Session", "Tech House Project MTY", "DJ Maya Tropical Beat"
+  ],
+  "Jazz" => [
+    "Luna & The Midnight Grooves", "Puebla Jazz Quartet", "Blue Note Trio",
+    "Smooth Sax & Rhodes", "Bossa Nova Sessions GDL", "Latin Jazz Ensamble"
+  ],
+  "Ballads" => [
+    "Sophia Acoustic Sunset", "Noches Románticas en Cholula", "Cuerdas del Alma",
+    "Acoustic Duo Romance", "Voz & Guitarra Íntima", "Serenatas de Luna"
+  ],
+  "Instrumental" => [
+    "Elena Rostova Strings", "Velvet String Quartet", "Guitarras Clásicas Angelópolis",
+    "Piano & Cello Serenade", "Solistas de Puebla Ensemble"
+  ],
+  "Choir" => [
+    "Coro Polifónico Armonía", "Coro Monumental de Puebla", "Voces en Armonía Angelópolis",
+    "Ensamble Coral Filadelfia"
+  ],
+  "Country" => [
+    "Echoes of Nashville", "Texas Lone Star Band", "Bluegrass & Banjo Riders",
+    "Country Highway Road"
   ]
-  gen_sample = general_posts_samples.sample
-  gen_post = Discover.new(
-    dashboard: dashboard,
-    title: gen_sample[:title],
-    content: gen_sample[:video],
-    genre: data[:genre],
-    post_type: "general",
-    plays: rand(2000..120000),
-    saved: [true, false].sample,
-    start_time: 0.0,
-    end_time: 30.0
-  )
-  gen_post[:likes] = rand(500..32000)
-  gen_post.save!
-end
+}.freeze
 
-puts "📅 Creating Live Events across major cities..."
-events_data = [
-  {
-    title: "Sunset Rooftop DJ Session",
-    desc: "Seeking an energetic DJ to deliver melodic deep house and downtempo beats as the sun sets over the skyline.",
-    genre: "DJ", duration: 180,
-    address: "350 5th Ave, New York, NY 10118, USA",
-    lat: 40.7484, lng: -73.9857,
-    date: Time.current + 2.days + 19.hours
-  },
-  {
-    title: "Saturday Night Live Jazz Night @ The Blue Note",
-    desc: "Intimate jazz dinner performance. Looking for a quartet or trio capable of playing classic standards and smooth improvisations.",
-    genre: "Jazz", duration: 120,
-    address: "131 W 3rd St, New York, NY 10012, USA",
-    lat: 40.7308, lng: -74.0007,
-    date: Time.current + 4.days + 20.hours
-  },
-  {
-    title: "Noche de Salsa y Cumbia Fiesta",
-    desc: "Vibrant Latin dance night at Casa de la Musica. We need a live tropical orchestra to keep 300+ guests moving all night!",
-    genre: "Tropical", duration: 240,
-    address: "1601 Ocean Dr, Miami Beach, FL 33139, USA",
-    lat: 25.7891, lng: -80.1301,
-    date: Time.current + 5.days + 21.hours
-  },
-  {
-    title: "Luxury Vineyard Wedding Reception",
-    desc: "Looking for an elegant string quartet or acoustic guitar/vocal duo for guest arrival, ceremony, and cocktail hour.",
-    genre: "Instrumental", duration: 150,
-    address: "1000 Main St, Napa, CA 94559, USA",
-    lat: 38.2975, lng: -122.2869,
-    date: Time.current + 12.days + 16.hours
-  },
-  {
-    title: "Acoustic Coffeehouse Jam Session",
-    desc: "Cozy weekend morning showcase for an authentic acoustic singer-songwriter. Tips and flat fee guaranteed.",
-    genre: "Ballads", duration: 90,
-    address: "123 Main St, San Francisco, CA 94105, USA",
-    lat: 37.7915, lng: -122.3965,
-    date: Time.current + 1.day + 11.hours
-  },
-  {
-    title: "Classic Rock Tribute Night @ Electric Lounge",
-    desc: "Loud, high-voltage rock show! Need an experienced guitar-driven rock band to headline our Friday stage.",
-    genre: "Rock", duration: 150,
-    address: "1154 N Western Ave, Chicago, IL 60622, USA",
-    lat: 41.9028, lng: -87.6873,
-    date: Time.current + 6.days + 21.hours
-  },
-  {
-    title: "Grand Fiesta de Mariachi - 50th Anniversary",
-    desc: "Traditional family celebration requiring a top-tier Mariachi group to serenade guests and perform classic rancheras.",
-    genre: "Regional", duration: 120,
-    address: "6801 Hollywood Blvd, Los Angeles, CA 90028, USA",
-    lat: 34.1016, lng: -118.3411,
-    date: Time.current + 8.days + 18.hours
-  },
-  {
-    title: "Neon Pop Rooftop Party",
-    desc: "Trendy hotel pool deck searching for an upbeat indie-pop or synth-pop act to perform modern hits and originals.",
-    genre: "Pop", duration: 120,
-    address: "111 E Cesar Chavez St, Austin, TX 78701, USA",
-    lat: 30.2629, lng: -97.7431,
-    date: Time.current + 7.days + 20.hours
-  },
-  {
-    title: "Country Hoedown & BBQ Festival",
-    desc: "Outdoor country festival seeking authentic Nashville country / bluegrass band with fiddles and slide guitar.",
-    genre: "Country", duration: 210,
-    address: "419 Broadway, Nashville, TN 37203, USA",
-    lat: 36.1609, lng: -86.7774,
-    date: Time.current + 14.days + 15.hours
-  },
-  {
-    title: "Urban Showcase & Block Party",
-    desc: "Outdoor hip-hop and trap showcase for live DJ, beatmakers, and vocal performers. Huge crowd expected.",
-    genre: "Urban", duration: 180,
-    address: "680 Murphy Ave SW, Atlanta, GA 30310, USA",
-    lat: 33.7259, lng: -84.4172,
-    date: Time.current + 9.days + 19.hours
-  },
-  {
-    title: "Choral Christmas Gala & Cathedral Symphony",
-    desc: "Holiday concert series at historic cathedral. Need a talented 10+ person choir for sacred polyphonic pieces.",
-    genre: "Choir", duration: 120,
-    address: "1723 Race St, Philadelphia, PA 19103, USA",
-    lat: 39.9575, lng: -75.1691,
-    date: Time.current + 20.days + 19.hours
-  },
-  {
-    title: "Corporate Innovation Summit Cocktail Gala",
-    desc: "Tech summit VIP networking reception requiring an elite instrumental soloist or classical ensemble.",
-    genre: "Instrumental", duration: 120,
-    address: "650 Townsend St, San Francisco, CA 94103, USA",
-    lat: 37.7712, lng: -122.4042,
-    date: Time.current + 10.days + 18.hours
-  }
-]
+instruments_by_genre = {
+  "Tropical" => ["Drums", "Congas", "Vocals", "Trumpet", "Bass", "Timbales", "Keyboard"],
+  "Regional" => ["Trumpet", "Violin", "Guitar", "Guitarrón", "Accordion", "Vocals"],
+  "Rock" => ["Guitar", "Bass", "Drums", "Vocals", "Keyboard"],
+  "Pop" => ["Vocals", "Synthesizer", "Guitar", "Bass", "Drums"],
+  "Urban" => ["DJ", "MPC", "Vocals", "Synthesizer"],
+  "DJ" => ["DJ", "Pioneer CDJ", "Turntables", "Synthesizer"],
+  "Jazz" => ["Saxophone", "Trumpet", "Upright Bass", "Piano", "Drums", "Guitar"],
+  "Ballads" => ["Acoustic Guitar", "Piano", "Vocals"],
+  "Instrumental" => ["Violin", "Cello", "Classical Guitar", "Piano"],
+  "Choir" => ["Vocals", "Choral", "Piano"],
+  "Country" => ["Guitar", "Banjo", "Fiddle", "Pedal Steel"]
+}
 
-created_events = []
-events_data.each_with_index do |ev, i|
-  organizer = organizers[i % organizers.length]
-  event = Event.new(
-    user: organizer,
-    title: ev[:title],
-    description: ev[:desc],
-    genre: ev[:genre],
-    duration: ev[:duration],
-    address: ev[:address],
-    latitude: ev[:lat],
-    longitude: ev[:lng],
-    datetime: ev[:date]
-  )
-  # Save without re-triggering network geocode
-  event.save!(validate: false)
-  created_events << event
-end
+artist_index = 0
+all_artist_records = []
 
-puts "🤝 Creating Bookings and Gig Requests..."
-# Connect some musicians to events with confirmed & pending bookings
-booking_pairs = [
-  { artist_idx: 0, event_idx: 1, status: true },   # Luna booked for Blue Note Jazz Night
-  { artist_idx: 1, event_idx: 0, status: true },   # Alex Pulse booked for Rooftop DJ
-  { artist_idx: 2, event_idx: 6, status: true },   # Mariachi booked for 50th Fiesta
-  { artist_idx: 6, event_idx: 2, status: true },   # Salsa Kings booked for Casa de la Salsa
-  { artist_idx: 3, event_idx: 5, status: false },  # Carlos Santana applied to Rock Night
-  { artist_idx: 4, event_idx: 3, status: false },  # Elena applied to Vineyard Wedding
-  { artist_idx: 5, event_idx: 7, status: false },  # The Neon Vibe applied to Neon Pop
-  { artist_idx: 7, event_idx: 4, status: false },  # Sophia applied to Coffeehouse Jam
-  { artist_idx: 8, event_idx: 8, status: false },  # Caleb applied to Country Hoedown
-  { artist_idx: 9, event_idx: 9, status: false }   # Tariq applied to Urban Showcase
-]
+# Generate ~100 distinct artists (heavily featuring Puebla and Tropical as requested)
+GENRES.each do |genre|
+  artist_names = ARTIST_NAMES_BY_GENRE[genre] || ["#{genre} Ensamble"]
+  
+  artist_names.each do |artist_name|
+    artist_index += 1
+    
+    # Prioritize Puebla for 30%+ of the artists, otherwise rotate key hubs
+    location = if artist_index % 3 == 0 || artist_name.downcase.include?("puebla") || artist_name.downcase.include?("cholula") || artist_name.downcase.include?("angelópolis")
+                 "Puebla"
+               else
+                 LOCATIONS_CONFIG.keys.sample
+               end
 
-booking_pairs.each do |bp|
-  artist_user = artist_users[bp[:artist_idx]]
-  target_event = created_events[bp[:event_idx]]
+    loc_data = LOCATIONS_CONFIG[location]
+    first_name = artist_name.split.first
+    last_name = "Artista_#{artist_index}"
+    email = "artist_#{artist_index}@rfbl-music.com"
 
-  Booking.create!(
-    user: artist_user,
-    event: target_event,
-    date: target_event.datetime.to_date,
-    status: bp[:status]
-  )
-end
-
-# Also give demo_user (Damian) an active booking as organizer
-Booking.create!(
-  user: artist_users[3],
-  event: created_events.first,
-  date: created_events.first.datetime.to_date,
-  status: true
-)
-
-puts "💬 Creating Active Real-Time Chatrooms & Messages..."
-chat_conversations = [
-  {
-    organizer: organizers[0], # Sarah Jenkins (Rooftop Lounge)
-    artist: artist_users[1],   # DJ Alex Pulse
-    event: created_events[0],
-    messages: [
-      { sender: :organizer, text: "Hey Alex! Thanks for accepting the booking for Friday's Sunset Session." },
-      { sender: :artist,    text: "Hey Sarah! Really excited. What time can I load in my gear and do soundcheck?" },
-      { sender: :organizer, text: "Load-in starts at 4:30 PM. We have standard XLR outputs to the house system." },
-      { sender: :artist,    text: "Perfect! I will bring my Pioneer controllers and laptop. See you at 4:30!" }
-    ]
-  },
-  {
-    organizer: organizers[3], # Marcus Vance (Blue Note)
-    artist: artist_users[0],   # Luna & Midnight Grooves
-    event: created_events[1],
-    messages: [
-      { sender: :organizer, text: "Hi Luna, the Blue Note stage is ready for your quartet next Saturday." },
-      { sender: :artist,    text: "Wonderful, Marcus! Does the venue provide the grand piano or should we bring keyboards?" },
-      { sender: :organizer, text: "We have a freshly tuned Yamaha C7 grand piano right on stage ready for you." },
-      { sender: :artist,    text: "That is a dream! Our pianist is going to love it. We will be there at 6:00 PM." }
-    ]
-  },
-  {
-    organizer: organizers[1], # Diego Morales (Casa de la Salsa)
-    artist: artist_users[6],   # Salsa & Cumbia Kings
-    event: created_events[2],
-    messages: [
-      { sender: :organizer, text: "Andres hermano! We have over 250 tickets sold for the Fiesta de Salsa!" },
-      { sender: :artist,    text: "Que bueno Diego! We prepared a special 90-minute tribute set of classic Fania hits." },
-      { sender: :organizer, text: "The crowd will go crazy! Make sure you bring the extra percussionists." },
-      { sender: :artist,    text: "Count on it! Full 6-piece band ready to burn the house down." }
-    ]
-  },
-  {
-    organizer: demo_user,     # Damian Reyes (demo user)
-    artist: artist_users[3],   # Mateo Santana (Carlos Santana Tribute)
-    event: created_events[5],
-    messages: [
-      { sender: :organizer, text: "Hey Mateo, saw your video for Black Magic Samba, incredible guitar work!" },
-      { sender: :artist,    text: "Thanks Damian! Appreciate that a lot. We love playing live shows." },
-      { sender: :organizer, text: "Would you be able to play a 2-hour set for our rock showcase?" },
-      { sender: :artist,    text: "Definitely. We have a setlist of over 25 classic Latin rock songs ready." }
-    ]
-  }
-]
-
-chat_conversations.each do |conv|
-  room_name = "#{conv[:event].title}: #{conv[:organizer].first_name} & #{conv[:artist].first_name}"
-  chatroom = Chatroom.create!(name: room_name)
-  ChatUser.create!(user: conv[:organizer], chatroom: chatroom)
-  ChatUser.create!(user: conv[:artist], chatroom: chatroom)
-
-  conv[:messages].each do |msg|
-    sender_user = msg[:sender] == :organizer ? conv[:organizer] : conv[:artist]
-    Message.create!(
-      chatroom: chatroom,
-      user: sender_user,
-      content: msg[:text]
+    user = User.create!(
+      email: email,
+      password: "12345678",
+      first_name: first_name,
+      last_name: last_name,
+      artist: true
     )
+
+    inst = (instruments_by_genre[genre] || ["Instruments"]).sample
+    price = rand(300..1200)
+
+    desc = "#{artist_name} presenta su propuesta musical única en vivo. Especialistas en eventos privados, festivales y presentaciones de primer nivel en #{location} y alrededores."
+
+    dash = Dashboard.create!(
+      user: user,
+      artist_name: artist_name,
+      artist_genre: genre,
+      artist_instrument: inst,
+      artist_location: location,
+      artist_travel: true,
+      artist_radius: rand(40..100),
+      artist_cities: loc_data[:cities],
+      artist_description: desc,
+      artist_price: price,
+      artist_count: rand(1..8)
+    )
+
+    UserDashboard.create!(user: user, dashboard: dash) if defined?(UserDashboard)
+    all_artist_records << { user: user, dashboard: dash, genre: genre, location: location, name: artist_name }
   end
 end
 
-puts "❤️ Creating Followers & Favorites for realistic stats..."
-# Demo user follows several artists
-[0, 1, 2, 3, 4, 6].each do |idx|
-  demo_user.follow(artist_users[idx])
-end
+puts "✅ Created #{all_artist_records.size} Artist Dashboards."
 
-# Cross-following between artists & organizers
-artist_users.each_with_index do |artist, i|
-  rand(3..8).times do
-    follower = (organizers + artist_users).sample
-    follower.follow(artist) unless follower == artist
+puts "🎵 Generating ~550 Discover Videos with WebP & Cloudinary optimization..."
+
+MUSIC_TRACK_PREFIXES = {
+  "Tropical" => ["Cumbia Sabrosa", "Noche de Salsa Dura", "Ritmo de Cholula", "Sabor Costeño", "Baila Sin Parar", "El Sonidero", "Fuego & Clave", "La Cumbia de los Recuerdos"],
+  "Regional" => ["El Son de la Madrugada", "Cielito Lindo en Vivo", "Serenata Poblana", "El Mariachi Loco", "El Rey en Concierto", "Mi Lindo México"],
+  "Rock" => ["Black Magic Samba", "Distorsión & Fuego", "Noche Eléctrica", "Guitarras al Límite", "Bajo el Volcán", "Rock City Beats"],
+  "Pop" => ["Summer Electric", "Luces de Neón", "Ecos de Ti", "Melodías en la Noche", "Vuelo Alto", "Latidos Pop"],
+  "Urban" => ["City Lights & 808s", "Fuego Callejero", "Ritmo Pesado", "Flow del Barrio", "Noche de Trap", "Urbano Style"],
+  "DJ" => ["Neon Horizons", "Cholula Sunset Mix", "Deep Pulse Sessions", "Club Euphoria", "Techno Groove", "Sunrise Melodic Drop"],
+  "Jazz" => ["Midnight Boulevard", "Blue Note Serenade", "Café de Noche", "Sax & Moon", "Rhythm & Brass", "Autumn Leaves Solo"],
+  "Ballads" => ["Golden Gate Sunset", "Promesa al Corazón", "Bajo las Estrellas", "Aroma de Café", "Tu Mirada", "Acústico en Silencio"],
+  "Instrumental" => ["Czardas & Modern Strings", "Bridgerton Serenade", "Sinfonía Angelopolitana", "Cuerdas del Viento", "Piano Nocturno"],
+  "Choir" => ["Voices in Harmony", "Canto Sacro", "Polifonía Celestial", "Aleluya en Concierto"],
+  "Country" => ["Tennessee Highway Road", "Country Hoedown", "Southern Sunset", "Dusty Boots"]
+}.freeze
+
+GENERAL_POST_TITLES = [
+  "Detrás de cámaras ensayando para el festival de fin de semana 🎸🔥",
+  "Probando nuevo equipo y arreglos en el estudio de grabación 🎛️🎧",
+  "¡Gracias a toda la banda por una noche inolvidable en vivo! Nos vemos pronto 🙌✨",
+  "Calentando voces y cuerdas antes de subir al escenario 🎶 backstage vibe",
+  "Soundcheck listo antes de reventar el escenario esta noche 🚀🎤",
+  "Componiendo nuevas melodías frente al volcán Popocatépetl 🌋🎼",
+  "En vivo desde la prueba de audio, la acústica de este foro está tremenda 🔊🎵"
+].freeze
+
+discover_count = 0
+
+all_artist_records.each do |art|
+  # Create 4 to 6 discover items per artist to reach ~550 total
+  track_pool = MUSIC_TRACK_PREFIXES[art[:genre]] || ["Track en Vivo"]
+  
+  num_posts = rand(4..6)
+  num_posts.times do |p_idx|
+    is_general = (p_idx == num_posts - 1)
+    
+    title = if is_general
+              GENERAL_POST_TITLES.sample
+            else
+              "#{track_pool.sample} - #{art[:name]}"
+            end
+
+    post_type = is_general ? "general" : "music"
+    video_url = CLD_VIDEOS.sample
+
+    disc = Discover.new(
+      dashboard: art[:dashboard],
+      title: title,
+      content: video_url,
+      genre: art[:genre],
+      post_type: post_type,
+      plays: rand(4500..890000),
+      saved: [true, false].sample,
+      start_time: 0.0,
+      end_time: is_general ? 30.0 : 45.0
+    )
+    disc[:likes] = rand(400..65000)
+    disc.save!
+    discover_count += 1
   end
 end
 
-# Demo user favorites some events and musicians
-demo_user.favorite(created_events[0])
-demo_user.favorite(created_events[1])
-demo_user.favorite(created_events[2])
-demo_user.favorite(dashboards[0])
-demo_user.favorite(dashboards[1])
-demo_user.favorite(dashboards[3])
+puts "✅ Created #{discover_count} Discover Video Posts."
 
-puts "💬 Creating Comments, Replies, and Likes on Discover posts..."
-sample_comments_pool = [
-  "¡Qué nivel de talento! Brutal esa interpretación 🔥🎶",
-  "¿Tocan en eventos privados? Justo busco para una boda en diciembre.",
-  "Ese solo del minuto 0:30 estuvo increíble, se me puso la piel de gallina.",
-  "¡Mucho éxito amigos! Suenan con una calidad de producción de primer nivel.",
-  "¿Tienen canciones completas en Spotify? Quiero agregar esta a mi playlist.",
-  "Tremendo ritmo hermano, los vi en vivo el mes pasado y armaron un fiestón 🎉",
-  "Hermosa vibra, saludos desde Puebla!",
-  "El sonido de las cuerdas está impecable, qué gran arreglo."
-]
+puts "📅 Generating ~220 Geolocated Live Events across Puebla, CDMX, Miami, etc..."
 
-sample_replies_pool = [
-  "¡Muchas gracias! Claro que sí, envíanos mensaje directo o contáctanos por el chat aquí.",
-  "¡Mil gracias por el apoyo hermano! Síguenos para no perderte las próximas fechas.",
-  "¡Saludos! Sí, estamos en Spotify y Apple Music con el mismo nombre 🙌",
-  "¡Totalmente de acuerdo! Esta rola es de sus mejores creaciones."
-]
+EVENT_TEMPLATES_BY_GENRE = {
+  "Tropical" => [
+    { title: "Noche de Salsa & Cumbia Caliente", desc: "Gran baile con orquesta en vivo, pista de baile techada y ambiente festivo." },
+    { title: "Festival de Cumbia Sonidera Angelópolis", desc: "El mejor cartel de cumbia y sonidero en vivo para bailar toda la noche." },
+    { title: "Fiesta Latina & Noche Tropical", desc: "Show en vivo de música tropical, coctelería caribeña y DJ de apoyo." }
+  ],
+  "Regional" => [
+    { title: "Gran Noche Mexicana & Mariachi Show", desc: "Serenatas tradicionales, trompetas enérgicas y fiesta con mariachi completo." },
+    { title: "Tardeada Ranchera & Fiesta Patronal", desc: "Música vernácula y regional en vivo para toda la familia." }
+  ],
+  "Rock" => [
+    { title: "Classic Rock Fest en Vivo", desc: "Guitarras potentes, tributos a los grandes del rock y sonido de alto voltaje." },
+    { title: "Noche de Indie Rock & Alternativo", desc: "Bandas emergentes y consolidadas en el mejor foro de música en directo." }
+  ],
+  "Pop" => [
+    { title: "Pop & Synth Sunset Party", desc: "Hits contemporáneos, sintetizadores y fiesta en terraza con vista panorámica." },
+    { title: "Acoustic Pop Showcase", desc: "Voces y melodías pop en un formato íntimo para amantes de la buena música." }
+  ],
+  "Urban" => [
+    { title: "Urban Block Party & Trap Sessions", desc: "Showcase urbano con los mejores exponentes de rap, trap y reggaetón." },
+    { title: "Freestyle & Beatmakers Night", desc: "Competencia de rimas, productores en vivo y ambiente 100% urbano." }
+  ],
+  "DJ" => [
+    { title: "Sunset Rooftop Melodic DJ Set", desc: "Deep house, progressive y electrónica melódica para despedir la puesta de sol." },
+    { title: "Club Night Tech House Sessions", desc: "Bajos profundos y pista encendida hasta el amanecer." }
+  ],
+  "Jazz" => [
+    { title: "Saturday Night Jazz & Wine Cellar", desc: "Cena maridaje con cuarteto de jazz en vivo y estándares clásicos." },
+    { title: "Latin Jazz & Bossa Nova Evening", desc: "Fusión de jazz y ritmos caribeños en un espacio exclusivo." }
+  ],
+  "Ballads" => [
+    { title: "Noche de Baladas & Boleros Bajo las Estrellas", desc: "Serenata romántica a la luz de las velas con guitarra y piano acústico." },
+    { title: "Acoustic Singer-Songwriter Showcase", desc: "Historias y canciones a corazón abierto en formato acústico." }
+  ],
+  "Instrumental" => [
+    { title: "Concierto de Cuerdas Clásicas & Pop Covers", desc: "Arreglos orquestales modernos estilo Bridgerton para una noche elegante." },
+    { title: "Recital de Guitarra Clásica & Violín", desc: "Virtuosismo instrumental en un marco acústico de primera calidad." }
+  ],
+  "Choir" => [
+    { title: "Gala Coral Monumental", desc: "Polifonía vocal y armonías corales con más de 15 intérpretes en escena." }
+  ],
+  "Country" => [
+    { title: "Country BBQ & Honky Tonk Jamboree", desc: "Guitarras con slide, violines y el mejor ambiente country en vivo." }
+  ]
+}.freeze
 
-Discover.all.each do |discover|
-  rand(3..5).times do
-    commenter = (organizers + artist_users).sample
-    c = Comment.create!(
-      discover: discover,
+PUEBLA_EVENT_LOCATIONS = [
+  { addr: "Portal Hidalgo 14, Centro Histórico, 72000 Puebla, Pue., México", lat: 19.0433, lng: -98.1983 },
+  { addr: "Calle 14 Oriente 801, San Andrés Cholula, 72810 Puebla, Pue., México", lat: 19.0621, lng: -98.3075 },
+  { addr: "Blvd. del Niño Poblano 2510, Reserva Territorial Atlixcáyotl, 72197 Puebla, Pue., México", lat: 19.0305, lng: -98.2325 },
+  { addr: "Av. Juárez 2108, La Paz, 72160 Puebla, Pue., México", lat: 19.0520, lng: -98.2160 },
+  { addr: "Blvd. Atlixco 3156, Las Ánimas, 72400 Puebla, Pue., México", lat: 19.0380, lng: -98.2310 },
+  { addr: "Calle 6 Norte 402, Barrio del Artista, 72000 Puebla, Pue., México", lat: 19.0440, lng: -98.1945 },
+  { addr: "Av. 5 Poniente 308, Centro, 72000 Puebla, Pue., México", lat: 19.0425, lng: -98.2010 }
+].freeze
+
+CDMX_EVENT_LOCATIONS = [
+  { addr: "Av. Álvaro Obregón 160, Roma Norte, 06700 Ciudad de México, CDMX, México", lat: 19.4180, lng: -99.1610 },
+  { addr: "Av. Tamaulipas 130, Condesa, 06140 Ciudad de México, CDMX, México", lat: 19.4110, lng: -99.1750 },
+  { addr: "Campos Elíseos 204, Polanco, 11560 Ciudad de México, CDMX, México", lat: 19.4290, lng: -99.1920 },
+  { addr: "Jardín Centenario 1, Coyoacán, 04000 Ciudad de México, CDMX, México", lat: 19.3490, lng: -99.1620 }
+].freeze
+
+MIAMI_EVENT_LOCATIONS = [
+  { addr: "1601 Ocean Dr, Miami Beach, FL 33139, USA", lat: 25.7891, lng: -80.1301 },
+  { addr: "2550 NW 2nd Ave, Miami, FL 33127, USA", lat: 25.8015, lng: -80.1990 },
+  { addr: "1421 S Miami Ave, Miami, FL 33130, USA", lat: 25.7600, lng: -80.1930 }
+].freeze
+
+NEW_YORK_EVENT_LOCATIONS = [
+  { addr: "131 W 3rd St, New York, NY 10012, USA", lat: 40.7308, lng: -74.0007 },
+  { addr: "350 5th Ave, New York, NY 10118, USA", lat: 40.7484, lng: -73.9857 },
+  { addr: "260 Bedford Ave, Brooklyn, NY 11211, USA", lat: 40.7140, lng: -73.9600 }
+].freeze
+
+event_count = 0
+organizers_cycle = organizers.cycle
+
+GENRES.each do |genre|
+  templates = EVENT_TEMPLATES_BY_GENRE[genre] || [{ title: "Noche Musical de #{genre}", desc: "Gran presentación en vivo." }]
+  
+  # Generate 18 to 24 events per genre = ~220 events total
+  rand(18..24).times do |e_idx|
+    tmpl = templates.sample
+    organizer = organizers_cycle.next
+
+    # Prioritize Puebla locations (at least 40% of all events in Puebla)
+    loc_sample = if e_idx % 2 == 0
+                   PUEBLA_EVENT_LOCATIONS.sample
+                 elsif e_idx % 3 == 0
+                   CDMX_EVENT_LOCATIONS.sample
+                 elsif e_idx % 5 == 0
+                   MIAMI_EVENT_LOCATIONS.sample
+                 else
+                   NEW_YORK_EVENT_LOCATIONS.sample
+                 end
+
+    city_tag = if loc_sample[:addr].include?("Puebla")
+                 "Puebla"
+               elsif loc_sample[:addr].include?("Ciudad de México")
+                 "CDMX"
+               elsif loc_sample[:addr].include?("Miami")
+                 "Miami"
+               else
+                 "New York"
+               end
+
+    event_date = Time.current + rand(1..85).days + rand(10..23).hours
+
+    ev = Event.new(
+      user: organizer,
+      title: "#{tmpl[:title]} (#{city_tag})",
+      description: "#{tmpl[:desc]} Organizado en #{loc_sample[:addr].split(',').first}. ¡No te lo pierdas!",
+      genre: genre,
+      duration: [90, 120, 150, 180, 240].sample,
+      address: loc_sample[:addr],
+      latitude: loc_sample[:lat] + (rand(-10..10) * 0.0008),
+      longitude: loc_sample[:lng] + (rand(-10..10) * 0.0008),
+      datetime: event_date
+    )
+    # Save without triggering geocoding network calls
+    ev.save!(validate: false)
+    event_count += 1
+  end
+end
+
+puts "✅ Created #{event_count} Live Events."
+
+puts "💬 Adding realistic social engagement (Comments & Likes)..."
+
+SAMPLE_COMMENTS = [
+  "¡Qué talento hermano! Sonando con una energía tremenda 🔥",
+  "Ese ritmo se siente hasta acá en Puebla, ¡felicidades!",
+  "¿En qué parte de Cholula se van a presentar este fin de semana?",
+  "¡Qué buena rola! Ya la agregué a mi lista de favoritos 🎵",
+  "Impresionante la calidad de sonido y la voz, mis respetos.",
+  "¡Mucho éxito amigos! Tienen que tocar en el Zócalo pronto 🙌",
+  "Pura sabrosura tropical, ¡esto sí es música para bailar!",
+  "La producción y los arreglos están de otro nivel ✨",
+  "El solo del minuto 0:30 me dejó con la boca abierta 🎸",
+  "Saludos desde Puebla capital, ¡suenen con todo!",
+  "¡Venga esa cumbia! Me hicieron el día con este video 🎉",
+  "Recomendadísimos para cualquier evento privado, suenan genial."
+].freeze
+
+SAMPLE_REPLIES = [
+  "¡Muchas gracias por la buena vibra! Saludos a toda la gente de Puebla 🙌",
+  "¡Mil gracias amigo! Nos vemos en el próximo concierto en vivo 🎶",
+  "¡Claro que sí! Escríbenos por mensaje directo para contrataciones o fechas.",
+  "¡Gracias por escuchar! Vienen muchas canciones nuevas pronto 🔥"
+].freeze
+
+all_discovers = Discover.all.to_a
+users_pool = User.all.to_a
+
+all_discovers.sample(150).each do |disc|
+  rand(2..5).times do
+    commenter = users_pool.sample
+    comm = Comment.create!(
+      discover: disc,
       user: commenter,
-      content: sample_comments_pool.sample
+      content: SAMPLE_COMMENTS.sample
     )
 
+    # Likes on comments
     rand(1..4).times do
-      liker = (organizers + artist_users).sample
-      liker.like(c)
+      users_pool.sample.like(comm)
     end
 
+    # Reply to comment
     if [true, false].sample
-      replier = [discover.dashboard.user, (organizers + artist_users).sample].sample
-      reply = Comment.create!(
-        discover: discover,
-        parent: c,
-        user: replier,
-        content: sample_replies_pool.sample
+      Comment.create!(
+        discover: disc,
+        parent: comm,
+        user: disc.dashboard.user,
+        content: SAMPLE_REPLIES.sample
       )
-      if [true, false].sample
-        (organizers + artist_users).sample.like(reply)
-      end
     end
   end
 
-  rand(3..8).times do
-    liker = (organizers + artist_users).sample
-    liker.like(discover)
+  # Likes on discover video
+  rand(3..9).times do
+    users_pool.sample.like(disc)
   end
 end
 
 puts "✨ SEEDING COMPLETE! ✨"
 puts "📊 Total Users: #{User.count}"
-puts "📊 Total Artists: #{Dashboard.count}"
+puts "📊 Total Artists / Dashboards: #{Dashboard.count}"
+puts "📊 Total Discover Videos: #{Discover.count}"
 puts "📊 Total Events: #{Event.count}"
-puts "📊 Total Bookings: #{Booking.count}"
-puts "📊 Total Chatrooms: #{Chatroom.count}"
-puts "📊 Total Messages: #{Message.count}"
-puts "📊 Total Follows: #{Follow.count}"
-puts "📊 Total Favorites: #{Favorite.count}"
 puts "📊 Total Comments: #{Comment.count}"
 puts "📊 Total Likes: #{Like.count}"

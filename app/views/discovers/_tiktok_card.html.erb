@@ -12,8 +12,12 @@
               "/main.mp4"
             end
 
-  video_src = if raw_src.include?("cloudinary.com") && raw_src.include?("/upload/") && !raw_src.include?("q_auto")
-                raw_src.gsub("/upload/", "/upload/q_auto,w_540,vc_h264/")
+  video_src = if raw_src.include?("cloudinary.com") && raw_src.include?("/upload/")
+                if raw_src.include?("q_auto")
+                  raw_src
+                else
+                  raw_src.gsub("/upload/", "/upload/q_auto:good,w_480,vc_h264/")
+                end
               else
                 raw_src
               end
@@ -123,7 +127,7 @@
         <div class="tiktok-artist-avatar-container">
           <%= link_to dashboard_path(discover.dashboard), class: "tiktok-avatar-link", title: "Ver perfil de #{artist_name}" do %>
             <% if discover.dashboard&.avatar&.attached? %>
-              <%= cl_image_tag discover.dashboard.avatar.key, class: "tiktok-avatar-img", alt: artist_name %>
+              <%= cl_image_tag discover.dashboard.avatar.key, class: "tiktok-avatar-img", alt: artist_name, format: :webp, quality: :auto, width: 80, height: 80, crop: :fill, loading: "lazy" %>
             <% else %>
               <div class="tiktok-avatar-placeholder">
                 <%= artist_name.first.upcase %>

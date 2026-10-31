@@ -22,6 +22,7 @@ class EventsController < ApplicationController
     end
 
     @events = @events.where(genre: params[:genre]) if params[:genre].present? && params[:genre] != "All"
+    @events = @events.order(Arel.sql("COALESCE(datetime, created_at) ASC")).limit(60)
 
     @markers = @events.geocoded.map do |event|
       {
