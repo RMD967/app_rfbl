@@ -26,9 +26,10 @@ class User < ApplicationRecord
   has_many :favorite_events, through: :favorites, source: :favoritable, source_type: 'Event'
   has_many :favorite_dashboards, through: :favorites, source: :favoritable, source_type: 'Dashboard'
 
-  # Social / Comments & Likes
+  # Social / Comments & Likes & Plays
   has_many :comments, dependent: :destroy
   has_many :likes, dependent: :destroy
+  has_many :video_plays, dependent: :destroy
 
   # Notifications / Activity Hub
   has_many :received_notifications, class_name: "Notification", foreign_key: "recipient_id", dependent: :destroy

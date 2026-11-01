@@ -14,6 +14,10 @@ class DiscoverPolicy < ApplicationPolicy
     true
   end
 
+  def track_play?
+    true
+  end
+
   def create?
     true
   end

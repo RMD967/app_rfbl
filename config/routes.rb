@@ -12,6 +12,9 @@ Rails.application.routes.draw do
   resources :likes, only: [:create, :destroy]
   delete '/likes', to: 'likes#destroy'
   resources :discovers, except: [:update] do
+    member do
+      post :track_play
+    end
     resources :comments, only: [:create, :destroy]
   end
   resources :comments, only: [:destroy]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2026_10_31_140000) do
+ActiveRecord::Schema[7.0].define(version: 2026_10_31_230000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -243,6 +243,19 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_31_140000) do
     t.index ["username"], name: "index_users_on_username", unique: true
   end
 
+  create_table "video_plays", force: :cascade do |t|
+    t.bigint "discover_id", null: false
+    t.bigint "user_id"
+    t.string "ip_address"
+    t.float "duration", default: 0.0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discover_id", "ip_address"], name: "idx_unique_guest_video_play", unique: true, where: "(user_id IS NULL)"
+    t.index ["discover_id", "user_id"], name: "idx_unique_user_video_play", unique: true, where: "(user_id IS NOT NULL)"
+    t.index ["discover_id"], name: "index_video_plays_on_discover_id"
+    t.index ["user_id"], name: "index_video_plays_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "bookings", "events"
@@ -267,4 +280,6 @@ ActiveRecord::Schema[7.0].define(version: 2026_10_31_140000) do
   add_foreign_key "subscriptions", "users"
   add_foreign_key "user_dashboards", "dashboards"
   add_foreign_key "user_dashboards", "users"
+  add_foreign_key "video_plays", "discovers"
+  add_foreign_key "video_plays", "users"
 end

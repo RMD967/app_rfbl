@@ -3,6 +3,7 @@ class Discover < ApplicationRecord
   belongs_to :dashboard, foreign_key: "dashboard_id"
   has_many :comments, dependent: :destroy
   has_many :likes, as: :likeable, dependent: :destroy
+  has_many :video_plays, dependent: :destroy
 
   POST_TYPES = %w[music general].freeze
 
@@ -34,6 +35,35 @@ class Discover < ApplicationRecord
   end
 
   def total_likes_count
-    (likes.count) + (self[:likes] || 0)
+    likes.count
+  end
+
+  # Real play count (strictly unique plays where viewer watched > 5 seconds)
+  def unique_plays_count
+    video_plays.count
+  end
+
+  def youtube_id
+    return nil if content.blank?
+    if content =~ /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+      $1
+    elsif content.start_with?("yt:")
+      content.sub("yt:", "")
+    elsif content =~ /^[a-zA-Z0-9_-]{11}$/
+      content
+    end
+  end
+
+  def youtube?
+    youtube_id.present?
+  end
+
+  def raw_video_source
+    if video.attached?
+      url = Rails.application.routes.url_helpers.url_for(video)
+      url.include?("cloudinary.com") && url.include?("/upload/") && !url.include?("q_auto") ? url.gsub("/upload/", "/upload/q_auto,vc_h264/") : url
+    else
+      content.presence || "/main.mp4"
+    end
   end
 end

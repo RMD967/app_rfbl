@@ -69,3 +69,6 @@ application.register("scroll-nav", ScrollNavController)
 
 import PushNotificationsController from "./push_notifications_controller"
 application.register("push-notifications", PushNotificationsController)
+
+import VideoTrackerController from "./video_tracker_controller"
+application.register("video-tracker", VideoTrackerController)

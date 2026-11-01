@@ -1,5 +1,6 @@
 class DiscoversController < ApplicationController
-  before_action :set_discover, only: %i[show edit destroy]
+  skip_before_action :verify_authenticity_token, only: [:track_play]
+  before_action :set_discover, only: %i[show edit destroy track_play]
 
   def index
     @current_tab = params[:tab].presence || "for_you"
@@ -115,6 +116,30 @@ class DiscoversController < ApplicationController
     @discover.destroy
     authorize @discover
     redirect_back fallback_location: dashboard_path(dashboard), notice: "Contenido eliminado con éxito.", status: :see_other
+  end
+
+  def track_play
+    authorize @discover, :track_play?
+    duration = params[:duration].to_f
+
+    if duration >= 5.0
+      play = if user_signed_in?
+               @discover.video_plays.find_or_initialize_by(user: current_user)
+             else
+               @discover.video_plays.find_or_initialize_by(ip_address: request.remote_ip, user_id: nil)
+             end
+
+      is_new = play.new_record?
+      if is_new
+        play.duration = duration
+        play.save
+        @discover.update_column(:plays, @discover.video_plays.count)
+      end
+
+      render json: { success: true, plays: @discover.video_plays.count, counted: is_new }
+    else
+      render json: { success: false, message: "La duración debe ser de al menos 5 segundos" }, status: :unprocessable_entity
+    end
   end
 
   private

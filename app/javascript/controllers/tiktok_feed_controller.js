@@ -123,8 +123,10 @@ export default class extends Controller {
 
         if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
           if (video) this.playVideo(video)
+          if (iframe) this.startIframePlayTracking(entry.target)
         } else if (!entry.isIntersecting || entry.intersectionRatio < 0.25) {
           if (video) this.pauseVideo(video)
+          if (iframe) this.stopIframePlayTracking(entry.target)
           if (iframe && iframe.contentWindow) {
             try {
               iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', "*")
@@ -525,8 +527,19 @@ export default class extends Controller {
   }
 
   onTimeUpdate(event) {
-    if (!this.isAutoScroll) return
     const video = event.currentTarget
+
+    // Real play tracking (> 5 seconds watched, 1 per user/guest IP)
+    if (!video._playTracked && video.currentTime >= 5.0) {
+      video._playTracked = true
+      const card = video.closest(".tiktok-card")
+      const videoId = card?.dataset.videoId
+      if (videoId) {
+        this.trackVideoPlay(videoId, video.currentTime)
+      }
+    }
+
+    if (!this.isAutoScroll) return
     // Trigger when within 0.4s of video completion and video has valid duration
     if (video.duration && Number.isFinite(video.duration) && video.duration > 0.5) {
       if (video.currentTime >= video.duration - 0.4) {
@@ -536,6 +549,46 @@ export default class extends Controller {
         }
       }
     }
+  }
+
+  startIframePlayTracking(card) {
+    if (card._ytTracked) return
+    if (card._ytTimer) return
+    card._ytSeconds = 0
+    card._ytTimer = setInterval(() => {
+      card._ytSeconds = (card._ytSeconds || 0) + 1
+      if (card._ytSeconds >= 5) {
+        card._ytTracked = true
+        clearInterval(card._ytTimer)
+        card._ytTimer = null
+        const videoId = card.dataset.videoId
+        if (videoId) {
+          this.trackVideoPlay(videoId, card._ytSeconds)
+        }
+      }
+    }, 1000)
+  }
+
+  stopIframePlayTracking(card) {
+    if (card._ytTimer) {
+      clearInterval(card._ytTimer)
+      card._ytTimer = null
+    }
+  }
+
+  trackVideoPlay(videoId, duration) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content")
+    fetch(`/discovers/${videoId}/track_play`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-Token": csrfToken || ""
+      },
+      body: JSON.stringify({ duration: duration })
+    }).catch(err => {
+      // Non-fatal tracking error
+    })
   }
 
   onVideoEnded(event) {

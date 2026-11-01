@@ -170,13 +170,27 @@
       <% if @music_posts.any? || @dashboard.audios.present? %>
         <div class="artist-content-grid">
           <% @music_posts.each do |post| %>
-            <div class="artist-post-card music-card">
+            <div class="artist-post-card music-card" id="post_card_<%= post.id %>">
               <!-- Video / Preview -->
               <div class="post-media-container">
-                <% video_src = post.content.presence || (post.video.attached? ? url_for(post.video) : "/main.mp4") %>
-                <video class="post-card-video" controls preload="metadata">
-                  <source src="<%= video_src %>" type="video/mp4">
-                </video>
+                <% if post.youtube? %>
+                  <div class="post-youtube-wrapper" data-controller="video-tracker" data-video-tracker-url-value="<%= track_play_discover_path(post) %>">
+                    <iframe class="post-card-iframe"
+                            src="https://www.youtube-nocookie.com/embed/<%= post.youtube_id %>?enablejsapi=1&rel=0&playsinline=1"
+                            title="<%= post.title %>"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                    </iframe>
+                  </div>
+                <% else %>
+                  <% video_src = post.raw_video_source %>
+                  <video class="post-card-video" controls preload="metadata" playsinline
+                         data-controller="video-tracker"
+                         data-video-tracker-url-value="<%= track_play_discover_path(post) %>">
+                    <source src="<%= video_src %>" type="video/mp4">
+                  </video>
+                <% end %>
                 <span class="media-type-tag music">
                   <i class="ri-music-fill"></i> Canción Oficial
                 </span>
@@ -196,22 +210,20 @@
                   <div class="post-stats-group">
                     <%= render partial: "likes/like_button", locals: { discover: post } %>
 
-                    <div class="stat-pill">
+                    <div class="stat-pill comments-pill" title="Comentarios">
                       <i class="ri-chat-3-line"></i>
                       <span><%= post.comments.count %></span>
                     </div>
 
-                    <% if post.plays.present? && post.plays > 0 %>
-                      <div class="stat-pill">
-                        <i class="ri-play-line"></i>
-                        <span><%= number_to_human(post.plays, units: { thousand: 'K', million: 'M' }, format: '%n%u') %></span>
-                      </div>
-                    <% end %>
+                    <div class="stat-pill plays-pill" id="plays_count_discover_<%= post.id %>" title="Reproducciones únicas (> 5 segundos)">
+                      <i class="ri-play-circle-line"></i>
+                      <span class="plays-value"><%= post.unique_plays_count %></span>
+                    </div>
                   </div>
 
                   <div class="post-manage-actions">
-                    <%= link_to discovers_path, class: "btn-view-discover", title: "Ver en Descubrir (TikTok feed)" do %>
-                      <i class="ri-fullscreen-line"></i> Feed
+                    <%= link_to discovers_path(new_post_id: post.id), class: "btn-view-discover", title: "Ver en Feed" do %>
+                      <i class="ri-play-fill"></i> Feed
                     <% end %>
 
                     <% if current_user == @dashboard.user %>
@@ -270,13 +282,27 @@
       <% if @general_posts.any? || @dashboard.images.present? %>
         <div class="artist-content-grid">
           <% @general_posts.each do |post| %>
-            <div class="artist-post-card general-card">
+            <div class="artist-post-card general-card" id="post_card_<%= post.id %>">
               <!-- Video / Preview -->
               <div class="post-media-container">
-                <% video_src = post.content.presence || (post.video.attached? ? url_for(post.video) : "/main.mp4") %>
-                <video class="post-card-video" controls preload="metadata">
-                  <source src="<%= video_src %>" type="video/mp4">
-                </video>
+                <% if post.youtube? %>
+                  <div class="post-youtube-wrapper" data-controller="video-tracker" data-video-tracker-url-value="<%= track_play_discover_path(post) %>">
+                    <iframe class="post-card-iframe"
+                            src="https://www.youtube-nocookie.com/embed/<%= post.youtube_id %>?enablejsapi=1&rel=0&playsinline=1"
+                            title="<%= post.title %>"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                    </iframe>
+                  </div>
+                <% else %>
+                  <% video_src = post.raw_video_source %>
+                  <video class="post-card-video" controls preload="metadata" playsinline
+                         data-controller="video-tracker"
+                         data-video-tracker-url-value="<%= track_play_discover_path(post) %>">
+                    <source src="<%= video_src %>" type="video/mp4">
+                  </video>
+                <% end %>
                 <span class="media-type-tag general">
                   <i class="ri-article-line"></i> Publicación General
                 </span>
@@ -298,15 +324,20 @@
                   <div class="post-stats-group">
                     <%= render partial: "likes/like_button", locals: { discover: post } %>
 
-                    <div class="stat-pill">
+                    <div class="stat-pill comments-pill" title="Comentarios">
                       <i class="ri-chat-3-line"></i>
                       <span><%= post.comments.count %></span>
+                    </div>
+
+                    <div class="stat-pill plays-pill" id="plays_count_discover_<%= post.id %>" title="Reproducciones únicas (> 5 segundos)">
+                      <i class="ri-play-circle-line"></i>
+                      <span class="plays-value"><%= post.unique_plays_count %></span>
                     </div>
                   </div>
 
                   <div class="post-manage-actions">
-                    <%= link_to discovers_path, class: "btn-view-discover", title: "Ver en Descubrir (TikTok feed)" do %>
-                      <i class="ri-fullscreen-line"></i> Feed
+                    <%= link_to discovers_path(new_post_id: post.id), class: "btn-view-discover", title: "Ver en Feed" do %>
+                      <i class="ri-play-fill"></i> Feed
                     <% end %>
 
                     <% if current_user == @dashboard.user %>
