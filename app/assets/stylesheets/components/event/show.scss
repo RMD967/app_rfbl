@@ -482,7 +482,7 @@
 }
 
 .event-btn-gradient {
-  background: linear-gradient(135deg, #A259FF 0%, #FF62A5 100%);
+  background: #A259FF;
   border: none;
   color: #fff !important;
   font-weight: 700;
@@ -491,6 +491,7 @@
   transition: all 0.25s ease;
 
   &:hover {
+    background: #8e39f7;
     transform: translateY(-2px);
     box-shadow: 0 12px 28px rgba(162, 89, 255, 0.5);
     color: #fff;

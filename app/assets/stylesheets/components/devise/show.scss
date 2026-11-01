@@ -211,12 +211,12 @@
     }
 
     &.primary, &.artist-link {
-      background: linear-gradient(135deg, #A259FF 0%, #6c35de 100%);
+      background: #A259FF;
       border-color: #A259FF;
       box-shadow: 0 4px 12px rgba(162, 89, 255, 0.35);
 
       &:hover {
-        background: linear-gradient(135deg, #b36fff 0%, #7d44ed 100%);
+        background: #8e39f7;
         box-shadow: 0 6px 16px rgba(162, 89, 255, 0.5);
       }
     }
@@ -296,7 +296,7 @@
   }
 
   &.active {
-    background: linear-gradient(135deg, #A259FF 0%, #6c35de 100%) !important;
+    background: #A259FF !important;
     border-color: rgba(162, 89, 255, 0.5) !important;
     color: #ffffff !important;
     box-shadow: 0 4px 16px rgba(162, 89, 255, 0.35);

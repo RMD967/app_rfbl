@@ -39,25 +39,26 @@
 
       <span class="tiktok-tabs-divider">|</span>
 
-      <!-- 4th Small Tab: Language Switcher -->
-      <% next_locale = (I18n.locale.to_s == 'es' ? :en : :es) %>
-      <%= link_to set_language_path(locale: next_locale),
-                  class: "tiktok-tab-link tiktok-tab-lang",
-                  data: { turbo: false },
-                  title: (I18n.locale.to_s == 'es' ? "Switch to English" : "Cambiar a Español") do %>
-        <i class="ri-global-line"></i>
-        <span class="lang-code-text"><%= I18n.locale.to_s == 'es' ? 'EN' : 'ES' %></span>
-      <% end %>
+      <!-- Grouped Compact Actions: Language Switcher & Refresh Button -->
+      <div class="tiktok-header-actions-group">
+        <% next_locale = (I18n.locale.to_s == 'es' ? :en : :es) %>
+        <%= link_to set_language_path(locale: next_locale),
+                    class: "tiktok-action-btn tiktok-tab-lang",
+                    data: { turbo: false },
+                    title: (I18n.locale.to_s == 'es' ? "Switch to English" : "Cambiar a Español") do %>
+          <i class="ri-global-line"></i>
+          <span class="lang-code-text"><%= I18n.locale.to_s == 'es' ? 'EN' : 'ES' %></span>
+        <% end %>
 
-      <span class="tiktok-tabs-divider">|</span>
+        <span class="actions-inner-divider"></span>
 
-      <!-- 5th Small Action: Refresh Feed Button -->
-      <%= link_to discovers_path(tab: @current_tab, genre: @current_genre, location: @search_location, refresh: Time.current.to_i),
-                  class: "tiktok-tab-link tiktok-tab-refresh",
-                  data: { action: "click->tiktok-feed#onRefreshClick" },
-                  title: (I18n.locale.to_s == 'es' ? "Actualizar feed de videos" : "Refresh video feed") do %>
-        <i class="ri-refresh-line refresh-icon" data-tiktok-feed-target="headerRefreshIcon"></i>
-      <% end %>
+        <%= link_to discovers_path(tab: @current_tab, genre: @current_genre, location: @search_location, refresh: Time.current.to_i),
+                    class: "tiktok-action-btn tiktok-tab-refresh",
+                    data: { action: "click->tiktok-feed#onRefreshClick" },
+                    title: (I18n.locale.to_s == 'es' ? "Actualizar feed de videos" : "Refresh video feed") do %>
+          <i class="ri-refresh-line refresh-icon" data-tiktok-feed-target="headerRefreshIcon"></i>
+        <% end %>
+      </div>
     </div>
 
     <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->

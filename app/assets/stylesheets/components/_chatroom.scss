@@ -50,7 +50,7 @@
   }
 
   .new-chat-btn {
-    background: linear-gradient(135deg, $purple-primary 0%, #FF62A5 100%);
+    background: $purple-primary;
     border: none;
     color: white;
     font-weight: 600;
@@ -61,6 +61,7 @@
     transition: all 0.2s ease;
 
     &:hover {
+      background: #8e39f7;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(162, 89, 255, 0.5);
       color: white;
