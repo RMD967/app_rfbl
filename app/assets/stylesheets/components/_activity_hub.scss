@@ -189,12 +189,12 @@
   .activity-unread-pill {
     font-size: 12px;
     font-weight: 700;
-    background: linear-gradient(135deg, #e52e71 0%, #ff2d78 100%);
+    background: #ff4757;
     color: #ffffff;
     padding: 2px 10px;
     border-radius: 12px;
     letter-spacing: 0.3px;
-    box-shadow: 0 2px 8px rgba(229, 46, 113, 0.5);
+    box-shadow: 0 2px 8px rgba(255, 71, 87, 0.4);
     display: inline-block;
   }
 
@@ -213,8 +213,8 @@
   display: flex;
   align-items: flex-start;
   gap: 18px;
-  background: linear-gradient(135deg, rgba(91, 66, 243, 0.14) 0%, rgba(229, 46, 113, 0.09) 100%), #17162e;
-  border: 1px solid rgba(156, 140, 255, 0.28);
+  background: #181730;
+  border: 1px solid rgba(162, 89, 255, 0.25);
   border-radius: 16px;
   padding: 20px 22px;
   margin-bottom: 24px;
@@ -229,7 +229,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, #9C8CFF, #e52e71);
+    background: #A259FF;
   }
 
   .push-banner-icon-circle {
@@ -237,13 +237,13 @@
     height: 46px;
     min-width: 46px;
     border-radius: 14px;
-    background: linear-gradient(135deg, #5B42F3 0%, #e52e71 100%);
+    background: #A259FF;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
     font-size: 22px;
-    box-shadow: 0 4px 14px rgba(91, 66, 243, 0.4);
+    box-shadow: 0 4px 14px rgba(162, 89, 255, 0.35);
   }
 
   .push-banner-content {
@@ -284,14 +284,16 @@
     transition: all 0.2s ease;
 
     &.primary {
-      background: #5B42F3;
+      background: #A259FF;
+      border: 1px solid #A259FF;
       color: #ffffff;
-      box-shadow: 0 4px 14px rgba(91, 66, 243, 0.35);
+      box-shadow: 0 4px 14px rgba(162, 89, 255, 0.35);
 
       &:hover {
-        background: #4a32e3;
+        background: #8e44eb;
+        border-color: #8e44eb;
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(91, 66, 243, 0.45);
+        box-shadow: 0 6px 18px rgba(162, 89, 255, 0.45);
       }
     }
 
@@ -323,17 +325,61 @@
 }
 
 // ------------------------------------------
-// Segmented Tabs Carousel
+// Segmented Tabs Carousel & Slider Nav
 // ------------------------------------------
+.activity-tabs-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding: 0 4px;
+
+  .activity-section-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #A5A4BD;
+  }
+
+  .activity-slider-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #A259FF;
+    background: rgba(162, 89, 255, 0.12);
+    border: 1px solid rgba(162, 89, 255, 0.25);
+    padding: 3px 9px;
+    border-radius: 12px;
+    letter-spacing: 0.2px;
+
+    i {
+      font-size: 13px;
+    }
+  }
+}
+
+.activity-tabs-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 22px;
+}
+
 .activity-tabs-carousel {
   display: flex;
   align-items: center;
   gap: 10px;
   overflow-x: auto;
-  padding-bottom: 12px;
-  margin-bottom: 22px;
+  padding: 4px 34px 8px 34px;
+  margin-bottom: 0;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+  @media (min-width: 768px) {
+    padding: 4px 2px 8px 2px;
+  }
 
   &::-webkit-scrollbar {
     height: 4px;
@@ -357,6 +403,7 @@
     text-decoration: none;
     white-space: nowrap;
     transition: all 0.2s ease;
+    flex-shrink: 0;
 
     i {
       font-size: 15px;
@@ -379,14 +426,14 @@
     }
 
     &.active {
-      background: linear-gradient(135deg, rgba(91, 66, 243, 0.3) 0%, rgba(229, 46, 113, 0.2) 100%);
-      border: 1px solid rgba(156, 140, 255, 0.6);
+      background: #A259FF;
+      border: 1px solid #A259FF;
       color: #ffffff;
       font-weight: 600;
-      box-shadow: 0 4px 14px rgba(91, 66, 243, 0.2);
+      box-shadow: 0 4px 14px rgba(162, 89, 255, 0.35);
 
       .tab-count {
-        background: #5B42F3;
+        background: #191830;
         color: #ffffff;
       }
     }
@@ -421,9 +468,9 @@
   }
 
   &.unread {
-    background: linear-gradient(180deg, rgba(30, 28, 58, 0.96) 0%, rgba(24, 23, 48, 0.96) 100%);
-    border: 1px solid rgba(156, 140, 255, 0.36);
-    box-shadow: 0 4px 18px rgba(91, 66, 243, 0.14);
+    background: #1c1a38;
+    border: 1px solid rgba(162, 89, 255, 0.36);
+    box-shadow: 0 4px 18px rgba(162, 89, 255, 0.14);
   }
 
   // Avatar wrapper with action badge
@@ -446,7 +493,7 @@
       width: 50px;
       height: 50px;
       border-radius: 14px;
-      background: linear-gradient(135deg, #5B42F3, #8134AF);
+      background: #A259FF;
       color: #ffffff;
       display: flex;
       align-items: center;
@@ -474,7 +521,7 @@
         background: #e52e71;
       }
       &.new_message {
-        background: #5B42F3;
+        background: #A259FF;
       }
       &.new_follower {
         background: #00b894;
@@ -543,7 +590,7 @@
     .notif-content-snippet {
       margin-top: 8px;
       background: rgba(255, 255, 255, 0.04);
-      border-left: 3px solid #5B42F3;
+      border-left: 3px solid #A259FF;
       padding: 8px 12px;
       border-radius: 0 8px 8px 0;
 
@@ -570,8 +617,8 @@
       font-size: 12.5px;
       font-weight: 600;
       color: #9C8CFF;
-      background: rgba(91, 66, 243, 0.12);
-      border: 1px solid rgba(91, 66, 243, 0.25);
+      background: rgba(162, 89, 255, 0.12);
+      border: 1px solid rgba(162, 89, 255, 0.25);
       padding: 5px 12px;
       border-radius: 8px;
       text-decoration: none;
@@ -582,9 +629,9 @@
       }
 
       &:hover {
-        background: #5B42F3;
+        background: #A259FF;
         color: #ffffff;
-        border-color: #5B42F3;
+        border-color: #A259FF;
       }
     }
 
@@ -802,11 +849,11 @@
         transition: all 0.2s ease;
 
         &.primary {
-          background: #5B42F3;
+          background: #A259FF;
           color: #ffffff;
 
           &:hover {
-            background: #4a32e3;
+            background: #8e44eb;
           }
         }
 
@@ -878,18 +925,18 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #5B42F3;
+    background: #A259FF;
     color: #ffffff;
     font-size: 13.5px;
     font-weight: 600;
     padding: 10px 20px;
     border-radius: 10px;
     text-decoration: none;
-    box-shadow: 0 4px 14px rgba(91, 66, 243, 0.35);
+    box-shadow: 0 4px 14px rgba(162, 89, 255, 0.35);
     transition: all 0.2s ease;
 
     &:hover {
-      background: #4a32e3;
+      background: #8e44eb;
       transform: translateY(-1px);
     }
   }

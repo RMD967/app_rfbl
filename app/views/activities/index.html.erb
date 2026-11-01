@@ -88,42 +88,69 @@
     </div>
   </div>
 
-  <!-- Segmented Category Filter Tabs -->
-  <div class="activity-tabs-carousel">
-    <%= link_to activity_path(category: "all"),
-                class: "activity-tab-chip #{@current_category == 'all' ? 'active' : ''}" do %>
-      <i class="ri-apps-2-line"></i>
-      <span><%= t('activity.tabs.all', default: "Todas") %></span>
-      <span class="tab-count"><%= @counts[:all] %></span>
-    <% end %>
+  <!-- Segmented Category Filter Tabs (Slider with Navigation & Visual Indicator) -->
+  <div class="activity-tabs-header-bar">
+    <span class="activity-section-label"><%= t('activity.filter_by_type', default: "Filtrar por tipo") %></span>
+    <span class="activity-slider-hint d-md-none">
+      <i class="ri-arrow-left-right-line"></i> <%= t('activity.swipe_options', default: "Desliza opciones") %>
+    </span>
+  </div>
 
-    <%= link_to activity_path(category: "following"),
-                class: "activity-tab-chip #{@current_category == 'following' ? 'active' : ''}" do %>
-      <i class="ri-disc-fill text-pink"></i>
-      <span><%= t('activity.tabs.following', default: "Nuevos Posts") %></span>
-      <span class="tab-count"><%= @counts[:following] %></span>
-    <% end %>
+  <div class="activity-tabs-wrapper scroll-nav-wrapper" data-controller="scroll-nav">
+    <button type="button"
+            class="scroll-arrow-btn left-arrow d-none"
+            data-scroll-nav-target="leftArrow"
+            data-action="click->scroll-nav#scrollLeft"
+            title="Ver anteriores"
+            aria-label="Scroll left">
+      <i class="ri-arrow-left-s-line"></i>
+    </button>
 
-    <%= link_to activity_path(category: "messages"),
-                class: "activity-tab-chip #{@current_category == 'messages' ? 'active' : ''}" do %>
-      <i class="ri-chat-3-fill text-primary"></i>
-      <span><%= t('activity.tabs.messages', default: "Mensajes") %></span>
-      <span class="tab-count"><%= @counts[:messages] %></span>
-    <% end %>
+    <div class="activity-tabs-carousel" data-scroll-nav-target="scrollable">
+      <%= link_to activity_path(category: "all"),
+                  class: "activity-tab-chip #{@current_category == 'all' ? 'active' : ''}" do %>
+        <i class="ri-apps-2-line"></i>
+        <span><%= t('activity.tabs.all', default: "Todas") %></span>
+        <span class="tab-count"><%= @counts[:all] %></span>
+      <% end %>
 
-    <%= link_to activity_path(category: "interactions"),
-                class: "activity-tab-chip #{@current_category == 'interactions' ? 'active' : ''}" do %>
-      <i class="ri-heart-3-fill text-danger"></i>
-      <span><%= t('activity.tabs.interactions', default: "Interacciones") %></span>
-      <span class="tab-count"><%= @counts[:interactions] %></span>
-    <% end %>
+      <%= link_to activity_path(category: "following"),
+                  class: "activity-tab-chip #{@current_category == 'following' ? 'active' : ''}" do %>
+        <i class="ri-disc-fill text-pink"></i>
+        <span><%= t('activity.tabs.following', default: "Nuevos Posts") %></span>
+        <span class="tab-count"><%= @counts[:following] %></span>
+      <% end %>
 
-    <%= link_to activity_path(category: "bookings"),
-                class: "activity-tab-chip #{@current_category == 'bookings' ? 'active' : ''}" do %>
-      <i class="ri-calendar-check-fill text-warning"></i>
-      <span><%= t('activity.tabs.bookings', default: "Postulaciones & Gigs") %></span>
-      <span class="tab-count"><%= @my_bookings.count %></span>
-    <% end %>
+      <%= link_to activity_path(category: "messages"),
+                  class: "activity-tab-chip #{@current_category == 'messages' ? 'active' : ''}" do %>
+        <i class="ri-chat-3-fill text-primary"></i>
+        <span><%= t('activity.tabs.messages', default: "Mensajes") %></span>
+        <span class="tab-count"><%= @counts[:messages] %></span>
+      <% end %>
+
+      <%= link_to activity_path(category: "interactions"),
+                  class: "activity-tab-chip #{@current_category == 'interactions' ? 'active' : ''}" do %>
+        <i class="ri-heart-3-fill text-danger"></i>
+        <span><%= t('activity.tabs.interactions', default: "Interacciones") %></span>
+        <span class="tab-count"><%= @counts[:interactions] %></span>
+      <% end %>
+
+      <%= link_to activity_path(category: "bookings"),
+                  class: "activity-tab-chip #{@current_category == 'bookings' ? 'active' : ''}" do %>
+        <i class="ri-calendar-check-fill text-warning"></i>
+        <span><%= t('activity.tabs.bookings', default: "Postulaciones & Gigs") %></span>
+        <span class="tab-count"><%= @my_bookings.count %></span>
+      <% end %>
+    </div>
+
+    <button type="button"
+            class="scroll-arrow-btn right-arrow d-none"
+            data-scroll-nav-target="rightArrow"
+            data-action="click->scroll-nav#scrollRight"
+            title="Ver más opciones"
+            aria-label="Scroll right">
+      <i class="ri-arrow-right-s-line"></i>
+    </button>
   </div>
 
   <!-- Main Feed Content Area -->

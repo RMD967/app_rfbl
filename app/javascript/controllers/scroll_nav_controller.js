@@ -17,7 +17,14 @@ export default class extends Controller {
 
       // Initial check after DOM paint
       setTimeout(this.checkScroll, 100)
-      setTimeout(this.checkScroll, 300)
+      setTimeout(() => {
+        this.checkScroll()
+        const activeChip = this.scrollableTarget.querySelector(".active")
+        if (activeChip) {
+          activeChip.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" })
+        }
+      }, 200)
+      setTimeout(this.checkScroll, 400)
     }
   }
 
