@@ -103,48 +103,79 @@
           <% end %>
         <% end %>
 
-        <div class="dropdown d-inline-block">
-          <button class="tiktok-action-btn settings" type="button" id="profileSettingsDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="<%= t('profile.settings', default: 'Settings') %>">
+        <div class="dropdown d-inline-block profile-settings-dropdown-wrapper">
+          <button class="tiktok-action-btn settings" type="button" id="profileSettingsDropdown" data-bs-toggle="dropdown" aria-expanded="false" title="<%= t('profile.settings', default: 'Ajustes') %>">
             <i class="ri-settings-4-line"></i>
           </button>
-          <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileSettingsDropdown">
-            <li>
-              <%= link_to edit_password_user_path(@user), class: "dropdown-item d-flex align-items-center gap-2" do %>
-                <i class="ri-lock-password-line"></i> <%= t('profile.change_password', default: "Change Password") %>
-              <% end %>
-            </li>
-            <% if @user.profile_picture.attached? %>
-              <li>
-                <%= button_to delete_profile_picture_user_path(@user), method: :delete, class: "dropdown-item text-danger d-flex align-items-center gap-2", form: { data: { turbo_confirm: "¿Eliminar foto de perfil?" } } do %>
-                  <i class="ri-delete-bin-line"></i> <%= t('profile.delete_photo', default: "Delete profile photo") %>
-                <% end %>
-              </li>
-            <% end %>
-            <li><hr class="dropdown-divider border-secondary"></li>
-            <li>
-              <span class="dropdown-header text-muted py-1" style="font-size: 0.75rem;">
-                <i class="ri-global-line"></i> <%= t('navbar.language', default: 'Language / Idioma') %>
+          <div class="dropdown-menu dropdown-menu-end profile-settings-menu" aria-labelledby="profileSettingsDropdown">
+            <!-- Account & Security Section -->
+            <div class="settings-menu-group">
+              <span class="settings-group-title">
+                <i class="ri-shield-user-line"></i> <%= t('profile.security', default: 'Seguridad & Cuenta') %>
               </span>
-            </li>
-            <li>
-              <%= link_to set_language_path(locale: :en), class: "dropdown-item d-flex align-items-center justify-content-between #{'active' if I18n.locale == :en}", data: { turbo: false } do %>
-                <span>🇺🇸 English</span>
-                <% if I18n.locale == :en %><i class="ri-check-line text-success"></i><% end %>
+
+              <%= link_to edit_password_user_path(@user), class: "settings-menu-item" do %>
+                <div class="menu-item-icon security">
+                  <i class="ri-lock-password-line"></i>
+                </div>
+                <div class="menu-item-text">
+                  <span class="item-title"><%= t('profile.change_password', default: "Cambiar Contraseña") %></span>
+                </div>
+                <i class="ri-arrow-right-s-line item-arrow"></i>
               <% end %>
-            </li>
-            <li>
-              <%= link_to set_language_path(locale: :es), class: "dropdown-item d-flex align-items-center justify-content-between #{'active' if I18n.locale == :es}", data: { turbo: false } do %>
-                <span>🇲🇽 Español</span>
-                <% if I18n.locale == :es %><i class="ri-check-line text-success"></i><% end %>
+
+              <% if @user.profile_picture.attached? %>
+                <%= button_to delete_profile_picture_user_path(@user), method: :delete, class: "settings-menu-item warning", form: { data: { turbo_confirm: "¿Eliminar foto de perfil actual?" } } do %>
+                  <div class="menu-item-icon danger">
+                    <i class="ri-delete-bin-line"></i>
+                  </div>
+                  <div class="menu-item-text">
+                    <span class="item-title"><%= t('profile.delete_photo', default: "Eliminar Foto de Perfil") %></span>
+                  </div>
+                <% end %>
               <% end %>
-            </li>
-            <li><hr class="dropdown-divider border-secondary"></li>
-            <li>
-              <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item text-danger d-flex align-items-center gap-2" do %>
-                <i class="ri-logout-box-r-line"></i> <%= t('profile.log_out', default: "Log out") %>
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <!-- Language Section -->
+            <div class="settings-menu-group">
+              <span class="settings-group-title">
+                <i class="ri-global-line"></i> <%= t('navbar.language', default: 'Idioma') %>
+              </span>
+              <div class="settings-lang-switcher">
+                <%= link_to set_language_path(locale: :en), class: "lang-pill-btn #{'active' if I18n.locale == :en}", data: { turbo: false } do %>
+                  <span class="lang-flag">🇺🇸</span>
+                  <span class="lang-name">English</span>
+                  <% if I18n.locale == :en %>
+                    <i class="ri-check-line lang-check"></i>
+                  <% end %>
+                <% end %>
+
+                <%= link_to set_language_path(locale: :es), class: "lang-pill-btn #{'active' if I18n.locale == :es}", data: { turbo: false } do %>
+                  <span class="lang-flag">🇲🇽</span>
+                  <span class="lang-name">Español</span>
+                  <% if I18n.locale == :es %>
+                    <i class="ri-check-line lang-check"></i>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+
+            <div class="settings-divider"></div>
+
+            <!-- Log Out -->
+            <div class="settings-menu-group">
+              <%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "settings-menu-item logout" do %>
+                <div class="menu-item-icon logout">
+                  <i class="ri-logout-box-r-line"></i>
+                </div>
+                <div class="menu-item-text">
+                  <span class="item-title"><%= t('profile.log_out', default: "Cerrar Sesión") %></span>
+                </div>
               <% end %>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       <% end %>
     </div>
