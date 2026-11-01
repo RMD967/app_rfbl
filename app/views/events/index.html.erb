@@ -1,6 +1,6 @@
-<div class="events-main-wrapper">
-  <!-- Top Header with Actions -->
-  <header class="events-header-section">
+<div class="events-main-wrapper" data-controller="events-view">
+  <!-- STICKY TOP CONTROLS (Title, Actions, Search, Genres, View Switcher) -->
+  <header class="events-sticky-header">
     <div class="events-header-content">
       <div class="events-title-block">
         <h1 class="events-page-title"><%= t('events.browse_events') %></h1>
@@ -88,9 +88,42 @@
         <i class="ri-arrow-right-s-line"></i>
       </button>
     </div>
+
+    <!-- View Switcher Toolbar (Inside Sticky Header!) -->
+    <div class="events-view-toolbar">
+      <div class="view-switch-group" role="tablist">
+        <button type="button"
+          class="view-switch-btn active"
+          data-events-view-target="listBtn"
+          data-action="click->events-view#showList"
+          role="tab"
+          aria-selected="true">
+          <i class="ri-grid-fill"></i>
+          <span>Lista de Eventos</span>
+          <span class="view-count-badge"><%= @events.count %></span>
+        </button>
+
+        <button type="button"
+          class="view-switch-btn"
+          data-events-view-target="mapBtn"
+          data-action="click->events-view#showMap"
+          role="tab"
+          aria-selected="false">
+          <i class="ri-map-2-line"></i>
+          <span>Mapa Interactivo</span>
+          <span class="view-count-badge"><%= @markers.count %></span>
+        </button>
+      </div>
+
+      <% if params[:query].present? || (params[:genre].present? && params[:genre] != "All") %>
+        <%= link_to events_path, class: "clear-filters-link" do %>
+          <i class="ri-refresh-line"></i> Limpiar filtros
+        <% end %>
+      <% end %>
+    </div>
   </header>
 
-  <!-- Events Content (List and Map Widget) -->
+  <!-- Non-Sticky Events Content (List and Map Widget) -->
   <main class="events-content-area">
     <%= render "events/events", events: @events, markers: @markers %>
   </main>

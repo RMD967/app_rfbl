@@ -72,3 +72,6 @@ application.register("push-notifications", PushNotificationsController)
 
 import VideoTrackerController from "./video_tracker_controller"
 application.register("video-tracker", VideoTrackerController)
+
+import EventsSliderController from "./events_slider_controller"
+application.register("events-slider", EventsSliderController)
