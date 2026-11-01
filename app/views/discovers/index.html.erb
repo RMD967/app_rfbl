@@ -58,17 +58,6 @@
                   title: (I18n.locale.to_s == 'es' ? "Actualizar feed de videos" : "Refresh video feed") do %>
         <i class="ri-refresh-line refresh-icon" data-tiktok-feed-target="headerRefreshIcon"></i>
       <% end %>
-
-      <span class="tiktok-tabs-divider">|</span>
-
-      <!-- 6th Action: Upload to Feed Button -->
-      <button type="button"
-              class="tiktok-tab-link tiktok-tab-upload-btn"
-              data-action="click->tiktok-feed#openUploadModal"
-              title="<%= t('discover.upload_btn', default: 'Subir video o enlace') %>">
-        <i class="ri-add-circle-fill upload-icon text-success"></i>
-        <span class="upload-label"><%= t('discover.upload', default: 'Subir') %></span>
-      </button>
     </div>
 
     <!-- Sub-bar for "Cerca de ti": Location Search + Events Cross-link -->
@@ -471,13 +460,13 @@
     </div>
   </div>
 
-  <!-- Floating Upload Button for quick access anywhere on feed -->
+  <!-- Floating Upload Button (Just a '+' bubble, no gradient, #A259FF) -->
   <button type="button"
           class="tiktok-floating-upload-btn"
           data-action="click->tiktok-feed#openUploadModal"
-          title="Subir video o enlace al feed">
+          title="<%= t('discover.upload_btn', default: 'Subir video o enlace') %>"
+          aria-label="Subir video">
     <i class="ri-add-line"></i>
-    <span>Subir</span>
   </button>
 
   <!-- Upload to Feed Modal -->
