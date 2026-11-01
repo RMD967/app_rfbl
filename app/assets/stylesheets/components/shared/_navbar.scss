@@ -2,23 +2,28 @@
 // Modern Responsive Navbar
 // ==========================================
 
-// Mobile Base (Fixed to bottom)
+// Mobile Base (Floating Pill Island)
 .navbar {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: calc(64px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  width: calc(100% - 24px);
+  max-width: 440px;
+  height: 58px;
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background: rgba(25, 24, 48, 0.96);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 0 10px env(safe-area-inset-bottom, 0px);
+  background: rgba(18, 17, 36, 0.88);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 36px;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65), 0 2px 10px rgba(162, 89, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  padding: 4px 10px;
   z-index: 9999;
+  box-sizing: border-box;
 }
 
 .navbar-brand {
@@ -29,6 +34,7 @@
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 100%;
   justify-content: space-around;
   align-items: center;
   margin: 0;
@@ -38,10 +44,12 @@
 
 .navbar-item {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 0;
+  height: 100%;
 }
 
 .nav-link {
@@ -50,29 +58,48 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 3px;
-  font-size: 10.5px;
-  font-weight: 500;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 600;
   text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 8px;
-  transition: all 0.2s ease;
+  padding: 4px 8px;
+  border-radius: 20px;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  white-space: nowrap;
 
   i {
     font-size: 19px;
     line-height: 1;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
 
   &:hover {
     color: #ffffff;
+    i {
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+  }
+
+  &:active {
+    transform: scale(0.94);
   }
 }
 
 .navbar-item.active .nav-link {
   color: #ffffff;
+  background: rgba(162, 89, 255, 0.18);
+  border-radius: 20px;
+  padding: 4px 10px;
 
   i {
-    color: #9C8CFF;
+    color: #A259FF;
+  }
+
+  span {
+    color: #ffffff;
+    font-weight: 700;
   }
 }
 
@@ -84,7 +111,10 @@
     bottom: auto;
     left: 0;
     right: 0;
+    transform: none;
     width: 100%;
+    max-width: 100%;
+    border-radius: 0;
     height: 70px !important;
     min-height: 70px !important;
     max-height: 70px !important;
@@ -92,7 +122,7 @@
     background: rgba(25, 24, 48, 0.94);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-top: none;
+    border: none;
     border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     flex-direction: row;

@@ -13,11 +13,11 @@ body:has(.tiktok-experience) {
     display: none !important;
   }
 
-  // On mobile (< 680px), .navbar is fixed at the bottom (~64px).
-  // Pad the bottom of body so the feed and video cards end cleanly above the navbar,
+  // On mobile (< 680px), .navbar is a floating pill island (~58px at bottom: 12px).
+  // Pad the bottom of body so the feed and video cards end cleanly above the island,
   // preventing the bottom action buttons, bookmark icon, and caption from being covered!
   @media (max-width: 679px) {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)) !important;
+    padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)) !important;
   }
 
   &.clear-screen-active {
@@ -2289,7 +2289,7 @@ body:has(.tiktok-experience) {
   }
 
   @media (max-width: 679px) {
-    bottom: calc(74px + env(safe-area-inset-bottom, 0px));
+    bottom: calc(82px + env(safe-area-inset-bottom, 0px));
     right: 16px;
     width: 46px;
     height: 46px;
