@@ -1,34 +1,197 @@
-<%= link_to :back do %>
-  <i class="fas fa-arrow-left"></i>
-  <%= t('links.back') %>
-<% end %>
+<div class="edit-profile-wrapper">
+  <!-- Top Navigation Link -->
+  <div class="edit-profile-top-nav">
+    <%= link_to user_id_path(current_user), class: "edit-back-btn" do %>
+      <i class="ri-arrow-left-line"></i>
+      <span><%= t('profile.back_to_profile', default: 'Volver a mi perfil') %></span>
+    <% end %>
+  </div>
 
-<div class="edit-profile-container">
-  <h2><%= t('account_information') %></h2>
+  <div class="edit-profile-card">
+    <!-- Header with Avatar and User Info -->
+    <div class="edit-card-header">
+      <div class="edit-avatar-container">
+        <% if current_user.profile_picture.attached? %>
+          <%= cl_image_tag current_user.profile_picture.key, alt: current_user.full_name, class: "edit-avatar-img" %>
+        <% else %>
+          <div class="edit-avatar-placeholder">
+            <%= current_user.first_name&.first&.upcase || "U" %>
+          </div>
+        <% end %>
+      </div>
+      <div class="edit-header-text">
+        <h1 class="edit-title"><%= t('account.edit_profile_title', default: 'Editar Perfil') %></h1>
+        <p class="edit-subtitle">
+          <span class="user-handle-pill">@<%= current_user.display_handle %></span>
+          <span class="user-role-pill <%= current_user.artist? ? 'artist' : 'fan' %>">
+            <i class="<%= current_user.artist? ? 'ri-music-2-fill' : 'ri-user-smile-line' %>"></i>
+            <%= current_user.artist? ? 'Músico / Artista' : 'Fan de la Música' %>
+          </span>
+        </p>
+      </div>
+    </div>
 
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
-    <%= f.error_notification %>
+    <!-- Main Edit Profile Form -->
+    <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put, class: "edit-profile-form" }) do |f| %>
+      <%= f.error_notification %>
 
-    <div class="mb-3">
-      <%= f.input :first_name, required: true, input_html: { class: 'form-control' } %>
-      <%= f.input :last_name, required: true, input_html: { class: 'form-control' } %>
-      <%= f.input :username, required: false, label: t('account.username', default: 'Username (@nombre_de_usuario)'), hint: t('account.username_hint', default: 'Personaliza tu @username único para que otros puedan buscarte y enviarte mensajes directos.'), input_html: { class: 'form-control', placeholder: 'ej. rodrigocumbia' }, hint_html: { class: 'text-white-50' } %>
-      <%= f.input :email, required: true, autofocus: true, label_html: { class: 'form-label' }, input_html: { class: 'form-control' } %>
-      <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
-        <p class="mb-3 text-white"><%= t('account.confirmation_pending', email: resource.unconfirmed_email) %></p>
-      <% end %>
-      <%= f.input :current_password,
-                  hint: t('account.current_password_hint'),
-                  required: true,
-                  input_html: { class: 'form-control', autocomplete: 'current-password' },
-                  hint_html: { class: 'text-white' } %>
-      <%= f.input :artist, as: :boolean, label: t('account.are_you_an_artist'), wrapper_html: { class: 'artist-toggle-edit' } %>
+      <!-- Section 1: Personal Details -->
+      <div class="edit-form-section">
+        <h3 class="section-heading">
+          <i class="ri-user-3-line"></i> <%= t('account.personal_info', default: 'Información Personal') %>
+        </h3>
+
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-sm-6">
+            <label class="edit-field-label" for="user_first_name"><%= t('account.first_name', default: 'Nombre') %> *</label>
+            <%= f.input_field :first_name, required: true, class: 'edit-field-input', id: 'user_first_name', placeholder: 'Tu nombre' %>
+          </div>
+          <div class="col-12 col-sm-6">
+            <label class="edit-field-label" for="user_last_name"><%= t('account.last_name', default: 'Apellido') %> *</label>
+            <%= f.input_field :last_name, required: true, class: 'edit-field-input', id: 'user_last_name', placeholder: 'Tu apellido' %>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="edit-field-label" for="user_username">
+            <%= t('account.username', default: 'Nombre de usuario (@username)') %>
+          </label>
+          <div class="edit-input-group">
+            <span class="input-group-prefix">@</span>
+            <%= f.input_field :username, required: false, class: 'edit-field-input with-prefix', id: 'user_username', placeholder: 'nombre_de_usuario' %>
+          </div>
+          <p class="edit-field-hint">
+            <i class="ri-information-line"></i> <%= t('account.username_hint', default: 'Tu identificador único para que otros puedan buscarte, etiquetarte y enviarte mensajes.') %>
+          </p>
+        </div>
+
+        <div class="mb-3">
+          <label class="edit-field-label" for="user_email"><%= t('account.email', default: 'Correo Electrónico') %> *</label>
+          <%= f.input_field :email, required: true, class: 'edit-field-input', id: 'user_email', placeholder: 'correo@ejemplo.com' %>
+          <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+            <p class="edit-field-warning">
+              <i class="ri-time-line"></i> <%= t('account.confirmation_pending', email: resource.unconfirmed_email) %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Section 2: Account Type / Role -->
+      <div class="edit-form-section">
+        <h3 class="section-heading">
+          <i class="ri-shield-user-line"></i> <%= t('account.account_type', default: 'Tipo de Cuenta') %>
+        </h3>
+
+        <div class="edit-artist-toggle-box">
+          <div class="toggle-info">
+            <div class="toggle-title-row">
+              <i class="ri-mic-line text-primary"></i>
+              <strong><%= t('account.are_you_an_artist', default: '¿Eres músico o artista?') %></strong>
+            </div>
+            <p class="toggle-desc">
+              <%= t('account.artist_benefit_desc', default: 'Al activar el modo artista podrás gestionar tu perfil musical, lanzar videos en Descubrir y recibir solicitudes de contratación.') %>
+            </p>
+          </div>
+          <div class="toggle-switch-wrapper">
+            <div class="form-check form-switch m-0">
+              <%= f.check_box :artist, class: 'form-check-input artist-switch-input', id: 'user_artist_toggle' %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Confirm Changes with Password -->
+      <div class="edit-form-section">
+        <h3 class="section-heading">
+          <i class="ri-lock-2-line"></i> <%= t('account.security_confirm', default: 'Confirmar con tu Contraseña') %>
+        </h3>
+
+        <div class="mb-3">
+          <label class="edit-field-label" for="user_current_password">
+            <%= t('account.current_password', default: 'Contraseña Actual') %> *
+          </label>
+          <%= f.input_field :current_password,
+                            required: true,
+                            autocomplete: 'current-password',
+                            class: 'edit-field-input',
+                            id: 'user_current_password',
+                            placeholder: 'Ingresa tu contraseña actual para guardar cambios' %>
+          <p class="edit-field-hint">
+            <i class="ri-shield-keyhole-line"></i> <%= t('account.current_password_hint', default: 'Necesitamos tu contraseña actual para verificar y aplicar las modificaciones.') %>
+          </p>
+        </div>
+
+        <div class="d-flex justify-content-end">
+          <%= link_to edit_password_user_path(current_user), class: "edit-change-pwd-link" do %>
+            <i class="ri-key-2-line"></i> <%= t('profile.change_password', default: '¿Deseas cambiar tu contraseña?') %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="edit-form-actions">
+        <%= f.button :button, class: 'btn-save-profile' do %>
+          <i class="ri-check-line"></i>
+          <span><%= t('account.save_changes', default: 'Guardar Cambios') %></span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <!-- Section 4: Danger Zone (Delete Account Flow) - OUTSIDE the simple_form_for -->
+    <div class="edit-danger-zone">
+      <div class="danger-zone-header">
+        <div class="danger-zone-icon">
+          <i class="ri-error-warning-fill"></i>
+        </div>
+        <div class="danger-zone-text">
+          <h4 class="danger-zone-title"><%= t('account.danger_zone_title', default: 'Zona de Peligro: Eliminar Cuenta') %></h4>
+          <p class="danger-zone-desc">
+            <%= t('account.danger_zone_desc', default: 'Una vez eliminada tu cuenta, se borrarán todos tus datos, favoritos, mensajes y contenido permanentemente. Esta acción no se puede deshacer.') %>
+          </p>
+        </div>
+      </div>
+
+      <div class="danger-zone-action">
+        <button type="button" class="btn-delete-account-trigger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+          <i class="ri-delete-bin-2-line"></i>
+          <span><%= t('account.delete_account_btn', default: 'Eliminar mi cuenta...') %></span>
+        </button>
+      </div>
     </div>
-    <div class="form-actions">
-      <%= f.button :submit, t('account.update'), class: 'update-button-edit' %>
+  </div>
+</div>
+
+<!-- Modern Delete Account Confirmation Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content delete-modal-content">
+      <div class="modal-header border-0 pb-0">
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body text-center pt-0 px-4 pb-4">
+        <div class="delete-modal-warning-icon">
+          <i class="ri-alert-fill"></i>
+        </div>
+        <h3 class="delete-modal-title" id="deleteAccountModalLabel">
+          <%= t('account.modal_delete_title', default: '¿Estás absolutamente seguro?') %>
+        </h3>
+        <p class="delete-modal-desc">
+          <%= t('account.modal_delete_desc', default: 'Esta acción es irreversible. Se eliminará tu cuenta, tu perfil, tus canciones en Descubrir y todas tus interacciones en Radios FBL.') %>
+        </p>
+
+        <div class="delete-modal-actions">
+          <button type="button" class="btn btn-secondary delete-modal-btn cancel" data-bs-dismiss="modal">
+            <%= t('account.cancel', default: 'Cancelar') %>
+          </button>
+          <%= button_to registration_path(resource_name),
+                         method: :delete,
+                         class: "btn btn-danger delete-modal-btn confirm",
+                         data: { turbo: false } do %>
+            <i class="ri-delete-bin-fill"></i>
+            <span><%= t('account.confirm_delete_btn', default: 'Sí, eliminar mi cuenta') %></span>
+          <% end %>
+        </div>
+      </div>
     </div>
-    <div>
-      <%= button_to t('account.delete_my_account'), registration_path(resource_name), data: { confirm: t('account.confirm_delete') }, method: :delete, class: 'delete-button-edit' %>
-    </div>
-  <% end %>
+  </div>
 </div>

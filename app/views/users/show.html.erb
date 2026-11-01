@@ -268,11 +268,14 @@
           <div class="empty-tab-icon">
             <i class="ri-user-heart-line"></i>
           </div>
-          <h3><%= t('profile.no_following_title', default: "You are not following any artists yet") %></h3>
-          <p><%= t('profile.no_following_desc', default: "Explore Discover feed and follow musicians to see their latest releases and exclusive content.") %></p>
-          <%= link_to discovers_path, class: "main-app-btn-pri" do %>
-            <i class="ri-compass-3-line"></i> <%= t('profile.explore_discover', default: "Explore Artists in Discover") %>
-          <% end %>
+          <h3><%= t('profile.no_following_title', default: "Aún no sigues a ningún artista") %></h3>
+          <p><%= t('profile.no_following_desc', default: "Explora el feed de Descubrir y sigue a músicos para ver sus lanzamientos y contenido exclusivo.") %></p>
+          <div class="profile-empty-actions">
+            <%= link_to discovers_path, class: "profile-cta-btn primary" do %>
+              <i class="ri-compass-3-line"></i>
+              <span><%= t('profile.explore_discover', default: "Explorar Artistas en Descubrir") %></span>
+            <% end %>
+          </div>
         </div>
       <% end %>
     </div>
@@ -296,14 +299,16 @@
           <div class="empty-tab-icon">
             <i class="ri-bookmark-3-line"></i>
           </div>
-          <h3><%= t('profile.no_favorites_title', default: "You have no saved favorites") %></h3>
-          <p><%= t('profile.no_favorites_desc', default: "Save events and musicians with the bookmark icon to easily hire them later.") %></p>
-          <div class="d-flex justify-content-center gap-3 mt-3">
-            <%= link_to discovers_path, class: "main-app-btn-pri" do %>
-              <i class="ri-music-2-line"></i> <%= t('profile.discover_musicians', default: "Discover Musicians") %>
+          <h3><%= t('profile.no_favorites_title', default: "No tienes favoritos guardados") %></h3>
+          <p><%= t('profile.no_favorites_desc', default: "Guarda eventos y músicos con el icono de marcador para tenerlos a la mano y contratarlos fácilmente.") %></p>
+          <div class="profile-empty-actions">
+            <%= link_to discovers_path, class: "profile-cta-btn primary" do %>
+              <i class="ri-music-2-line"></i>
+              <span><%= t('profile.discover_musicians', default: "Descubrir Músicos") %></span>
             <% end %>
-            <%= link_to events_path, class: "main-app-btn-sec" do %>
-              <i class="ri-ticket-2-line"></i> <%= t('profile.explore_events', default: "Explore Events") %>
+            <%= link_to events_path, class: "profile-cta-btn secondary" do %>
+              <i class="ri-ticket-2-line"></i>
+              <span><%= t('profile.explore_events', default: "Explorar Eventos") %></span>
             <% end %>
           </div>
         </div>
@@ -338,11 +343,14 @@
           <div class="empty-tab-icon">
             <i class="ri-heart-3-line"></i>
           </div>
-          <h3><%= t('profile.no_likes_title', default: "You haven't liked any videos yet") %></h3>
-          <p><%= t('profile.no_likes_desc', default: "Go to Discover and like videos of the artists you enjoy most.") %></p>
-          <%= link_to discovers_path, class: "main-app-btn-pri" do %>
-            <i class="ri-play-circle-line"></i> <%= t('profile.go_to_discover', default: "Go to Discover") %>
-          <% end %>
+          <h3><%= t('profile.no_likes_title', default: "Aún no has dado Me gusta") %></h3>
+          <p><%= t('profile.no_likes_desc', default: "Entra a Descubrir y dale Me gusta a los videos de los artistas que más te gusten.") %></p>
+          <div class="profile-empty-actions">
+            <%= link_to discovers_path, class: "profile-cta-btn primary" do %>
+              <i class="ri-play-circle-line"></i>
+              <span><%= t('profile.go_to_discover', default: "Ir a Descubrir") %></span>
+            <% end %>
+          </div>
         </div>
       <% end %>
     </div>

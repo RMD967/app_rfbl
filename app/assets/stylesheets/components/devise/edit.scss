@@ -1,37 +1,514 @@
-.edit-profile-container {
-  margin: 40px;
+// Modern Edit Profile & Danger Zone Styles
+@import "config/colors";
+
+.edit-profile-wrapper {
+  width: 100%;
+  max-width: 620px;
+  margin: 24px auto 60px auto;
+  padding: 0 16px;
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    margin: 16px auto 50px auto;
+    padding: 0 12px;
+  }
+}
+
+.edit-profile-top-nav {
+  margin-bottom: 16px;
+
+  .edit-back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease, transform 0.2s ease;
+
+    i {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    &:hover {
+      color: #ffffff;
+      transform: translateX(-3px);
+    }
+  }
+}
+
+.edit-profile-card {
+  background: #1E1D36;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
+
+  @media (max-width: 480px) {
+    padding: 22px 16px;
+    border-radius: 16px;
+  }
+}
+
+// Header
+.edit-card-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 24px;
+
+  .edit-avatar-container {
+    flex-shrink: 0;
+
+    .edit-avatar-img {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid rgba(162, 89, 255, 0.5);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    }
+
+    .edit-avatar-placeholder {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #A259FF;
+      color: #ffffff;
+      font-size: 1.8rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+  }
+
+  .edit-header-text {
+    flex: 1;
+    min-width: 0;
+
+    .edit-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px 0;
+    }
+
+    .edit-subtitle {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.6);
+
+      .user-handle-pill {
+        color: #A259FF;
+        font-weight: 700;
+      }
+
+      .user-role-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 0.72rem;
+        font-weight: 700;
+
+        &.artist {
+          background: rgba(162, 89, 255, 0.15);
+          color: #A259FF;
+          border: 1px solid rgba(162, 89, 255, 0.3);
+        }
+
+        &.fan {
+          background: rgba(255, 255, 255, 0.08);
+          color: rgba(255, 255, 255, 0.8);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+        }
+      }
+    }
+  }
+}
+
+// Form Sections
+.edit-form-section {
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  .section-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    i {
+      color: #A259FF;
+      font-size: 1.15rem;
+    }
+  }
+}
+
+.edit-field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 6px;
+}
+
+.edit-field-input {
+  width: 100%;
+  height: 44px;
+  background-color: #272545 !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    background-color: #272545 !important;
+    border-color: #A259FF !important;
+    box-shadow: 0 0 0 2px rgba(162, 89, 255, 0.3) !important;
+    outline: none !important;
+    color: #ffffff !important;
+  }
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.35) !important;
+  }
+}
+
+.edit-input-group {
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .input-group-prefix {
+    position: absolute;
+    left: 14px;
+    color: #A259FF;
+    font-weight: 700;
+    font-size: 15px;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .edit-field-input.with-prefix {
+    padding-left: 32px !important;
+  }
+}
+
+.edit-field-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 5px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  i {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+
+.edit-field-warning {
+  font-size: 12.5px;
+  color: #FFD166;
+  margin-top: 6px;
+  margin-bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.edit-change-pwd-link {
+  font-size: 12.5px;
+  color: #A259FF;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #C280FF;
+    text-decoration: underline;
+  }
+}
+
+// Artist Toggle Box
+.edit-artist-toggle-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+
+  .toggle-info {
+    flex: 1;
+
+    .toggle-title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .toggle-desc {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.55);
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  .toggle-switch-wrapper {
+    flex-shrink: 0;
+
+    .artist-switch-input {
+      width: 44px;
+      height: 24px;
+      cursor: pointer;
+      background-color: #272545;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+
+      &:checked {
+        background-color: #A259FF;
+        border-color: #A259FF;
+      }
+    }
+  }
+}
+
+// Save Changes Button
+.edit-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+  margin-bottom: 24px;
+
+  .btn-save-profile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #A259FF;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(162, 89, 255, 0.35);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    i {
+      font-size: 1.15rem;
+    }
+
+    &:hover {
+      background: #8e39f7;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(162, 89, 255, 0.5);
+      color: #ffffff;
+    }
+
+    &:active {
+      transform: scale(0.97);
+    }
+
+    @media (max-width: 480px) {
+      width: 100%;
+    }
+  }
+}
+
+// Danger Zone (Eliminar Cuenta)
+.edit-danger-zone {
+  background: rgba(239, 71, 111, 0.08);
+  border: 1px solid rgba(239, 71, 111, 0.28);
+  border-radius: 14px;
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  color: white;
+  gap: 14px;
+
+  .danger-zone-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    .danger-zone-icon {
+      font-size: 1.4rem;
+      color: #ef476f;
+      line-height: 1;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .danger-zone-text {
+      flex: 1;
+
+      .danger-zone-title {
+        font-size: 0.95rem;
+        font-weight: 800;
+        color: #ef476f;
+        margin: 0 0 4px 0;
+      }
+
+      .danger-zone-desc {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.65);
+        margin: 0;
+        line-height: 1.4;
+      }
+    }
+  }
+
+  .danger-zone-action {
+    display: flex;
+    justify-content: flex-end;
+
+    .btn-delete-account-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      color: #ef476f;
+      border: 1px solid rgba(239, 71, 111, 0.4);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      i {
+        font-size: 0.95rem;
+      }
+
+      &:hover {
+        background: #ef476f;
+        color: #ffffff;
+        box-shadow: 0 4px 12px rgba(239, 71, 111, 0.35);
+        border-color: #ef476f;
+      }
+
+      &:active {
+        transform: scale(0.96);
+      }
+
+      @media (max-width: 480px) {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
 }
 
-.artist-toggle-edit {
-  font-weight: bold;
-  color: white !important;
-  font-size: x-large;
-}
+// Delete Account Modal Styling
+.delete-modal-content {
+  background: #1B1933;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+  color: #ffffff;
 
-.update-button-edit {
-  padding: 10px;
-  background-color: $purple-primary;
-  border-radius: 15px;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
+  .delete-modal-warning-icon {
+    font-size: 3.2rem;
+    color: #ef476f;
+    margin-bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: rgba(239, 71, 111, 0.12);
+    border: 1px solid rgba(239, 71, 111, 0.3);
+  }
 
-.delete-button-edit {
-  background-color: #c82333;
-  border-color: #bd2130;
-  color: white;
-  padding: 8px 16px;
-  border-radius: 15px;
-  margin-top: 40px;
-}
+  .delete-modal-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
 
-.delete-button-edit:hover {
-  background-color: #dc3545;
-  border-color: #dc3545;
+  .delete-modal-desc {
+    font-size: 0.86rem;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+
+  .delete-modal-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .delete-modal-btn {
+      padding: 10px 22px;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &.cancel {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.18);
+        }
+      }
+
+      &.confirm {
+        background: #ef476f;
+        color: #ffffff;
+        box-shadow: 0 4px 14px rgba(239, 71, 111, 0.4);
+
+        &:hover {
+          background: #d63056;
+          box-shadow: 0 6px 18px rgba(239, 71, 111, 0.55);
+        }
+      }
+
+      @media (max-width: 480px) {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
 }
